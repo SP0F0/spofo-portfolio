@@ -1,11 +1,10 @@
 package spofo.portfolio.service;
 
 import static java.math.BigDecimal.ZERO;
-import static java.util.stream.Collectors.toList;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -43,31 +42,47 @@ public class PortfolioService {
                 .body(String.class)));
     }
 
-
     // 전체 포트폴리오 자산 조회 api-001
     //개요 여부에 따라 포함해서 계산
     public TotalPortfolioResponse getTotalPortfolio(Long memberId) {
         List<Portfolio> portfolios = portfolioRepository.findByMemberId(memberId);
-        BigDecimal totalAsset = getAllTotalAsset();
-        BigDecimal gain = getAllGain();
-        BigDecimal gainRate = getAllGainRate(getAllTotalAsset(), getAllBuy());
+        List<PortfolioResponse> portfolioResponses = new ArrayList<>();
+        for (Portfolio portfolio : portfolios) {
+            portfolioResponses.add(getPortfolio(portfolio.getId()));
+        }
+        BigDecimal totalAsset = getAllTotalAsset(portfolioResponses);
+        BigDecimal gain = getAllGain(portfolioResponses);
+        BigDecimal allBuy = getAllBuy(portfolioResponses);
+        BigDecimal gainRate = getAllGainRate(totalAsset, allBuy);
         BigDecimal dailyGainRate = getAllDailyGainRate();
         return TotalPortfolioResponse.from(totalAsset, gain, gainRate, dailyGainRate);
     }
 
     // todo: 전체 포폴 총 자산 계산 [목록 조회 총 자산의 합]
-    private BigDecimal getAllTotalAsset() {
-        return BigDecimal.ZERO;
+    private BigDecimal getAllTotalAsset(List<PortfolioResponse> portfolioResponses) {
+        BigDecimal totalAsset = BigDecimal.ZERO;
+        for (PortfolioResponse portfolioResponse : portfolioResponses) {
+            totalAsset = totalAsset.add(portfolioResponse.getTotalAsset());
+        }
+        return totalAsset;
     }
 
     // todo: 전체 포폴 평가 수익 [목록 조회 평가 수익금의 합]
-    private BigDecimal getAllGain() {
-        return BigDecimal.ZERO;
+    private BigDecimal getAllGain(List<PortfolioResponse> portfolioResponses) {
+        BigDecimal totalGain = BigDecimal.ZERO;
+        for (PortfolioResponse portfolioResponse : portfolioResponses) {
+            totalGain = totalGain.add(portfolioResponse.getGain());
+        }
+        return totalGain;
     }
 
     // todo: 전체 포폴 총 매수 금액 [목록 조회 총 매수 금액의 합]
-    private BigDecimal getAllBuy() {
-        return BigDecimal.ZERO;
+    private BigDecimal getAllBuy(List<PortfolioResponse> portfolioResponses) {
+        BigDecimal totalBuy = BigDecimal.ZERO;
+        for (PortfolioResponse portfolioResponse : portfolioResponses) {
+            totalBuy = totalBuy.add(portfolioResponse.getTotalBuy());
+        }
+        return totalBuy;
     }
 
     // todo: 전체 포폴 수익률 [((총자산/총매수금액)*100)-100]
@@ -87,13 +102,15 @@ public class PortfolioService {
 
     // 포트폴리오 목록 조회 api-002
     public List<PortfolioSimpleResponse> getPortfolioSimple(Long memberId) {
-        return portfolioRepository.findByMemberId(memberId).stream()
-                .map(portfolio -> PortfolioSimpleResponse.from(portfolio,
-                        getGain(getTotalAsset(portfolio.getId()), getTotalBuy(portfolio.getId())),
-                        getGainRate(getTotalAsset(portfolio.getId()),
-                                getTotalBuy(portfolio.getId())))
-                )
-                .collect(toList());
+        List<Portfolio> portfolios = portfolioRepository.findByMemberId(memberId);
+        List<PortfolioSimpleResponse> portfolioSimpleResponses = new ArrayList<>();
+        for (Portfolio portfolio : portfolios) {
+            PortfolioResponse portfolioResponse = getPortfolio(portfolio.getId());
+            portfolioSimpleResponses.add(
+                    PortfolioSimpleResponse.from(portfolio, portfolioResponse.getGain(),
+                            portfolioResponse.getGainRate()));
+        }
+        return portfolioSimpleResponses;
     }
 
     // 포트폴리오 생성 api-005
@@ -192,13 +209,5 @@ public class PortfolioService {
                 .multiply(BigDecimal.valueOf(100)).subtract(
                         BigDecimal.valueOf(100));
     }
-
-    /**
-     * TODO : 일간 수익률 계산
-     * private BigDecimal getReturnPerDay() {
-     * <p>
-     * }
-     **/
-
 
 }
