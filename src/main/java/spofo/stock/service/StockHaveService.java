@@ -2,6 +2,7 @@ package spofo.stock.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -36,15 +37,26 @@ public class StockHaveService {
         return stockHaveRepository
                 .findByPortfolioId(portfolioId)
                 .stream()
-                .map(stock -> StockHaveResponse
-                        .from(stock, getStockName(stock.getStockCode()),
-                                getSector(stock.getStockCode()),
-                                getStockAsset(stock.getStockCode(), stock.getId()),
-                                getGain(stock.getStockCode(), stock.getId()),
-                                getGainRate(stock.getStockCode(), stock.getId()),
-                                getAvgPrice(stock.getId()), getCurrentPrice(stock.getStockCode()),
-                                getQuantity(stock.getId()), getImageUrl()))
+                .map(this::stockHaveResponse)
                 .toList();
+    }
+
+    private StockHaveResponse stockHaveResponse(StockHave stockHave) {
+        String stockCode = stockHave.getStockCode();
+        Long stockId = stockHave.getId();
+
+        return StockHaveResponse.from(
+                stockHave,
+                getStockName(stockCode),
+                getSector(stockCode),
+                getStockAsset(stockCode, stockId),
+                getGain(stockCode, stockId),
+                getGainRate(stockCode, stockId),
+                getAvgPrice(stockId),
+                getCurrentPrice(stockCode),
+                getQuantity(stockId),
+                getImageUrl(stockCode)
+        );
     }
 
     // API - 009
@@ -59,9 +71,10 @@ public class StockHaveService {
 
     // API - 010
     // 종목 추가 매수하기
-//    public AddStockResponse addMoreStock(AddStockRequest addStockRequest, Long portfolioId, Long stockId) {
+//    public AddStockResponse addMoreStock(AddStockRequest addStockRequest, Long portfolioId,
+//            Long stockId) {
 //        Portfolio portfolio = portfolioRepository.getReferenceById(portfolioId);
-//        StockHave stockHave = addStockRequest.toEntity(portfolio, stockId);
+//        StockHave stockHave = stockHaveRepository.getReferenceById(stockId);
 //        stockHaveRepository.save(stockHave);
 //
 //        return AddStockResponse.from(stockHave);
@@ -73,14 +86,11 @@ public class StockHaveService {
         return null;
     }
 
-    // Stock & CurrentPrice 관련 코드는 RestClient로 변경 해야함
-
     // TODO : 종목명 불러오기
     // From Stock
     private String getStockName(String stockCode) {
-        // uri 000660 -> stockCode parameter로 변경해야함
         String json = restClient.get()
-                .uri("http://stock.spofo.net:8080/stocks/000660")
+                .uri("http://stock.spofo.net:8080/stocks/{stockCode}", stockCode)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .body(String.class);
@@ -96,13 +106,11 @@ public class StockHaveService {
         return jsonToMap.get("name");
     }
 
-
     // TODO : 섹터 (산업명) 불러오기
     // From Stock
     private String getSector(String stockCode) {
-        // uri 000660 -> stockCode parameter로 변경해야함
         String json = restClient.get()
-                .uri("http://stock.spofo.net:8080/stocks/000660")
+                .uri("http://stock.spofo.net:8080/stocks/{stockCode}", stockCode)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .body(String.class);
@@ -134,7 +142,7 @@ public class StockHaveService {
     }
 
     // TODO : 보유 종목의 수익률
-    // (수익금 / 매수가) * 100 - 100
+    // (보유 종목의 가치 / 매수가) * 100 - 100
     // From CurrentPrice
     private BigDecimal getGainRate(String stockCode, Long stockId) {
         BigDecimal gainRate = BigDecimal.ZERO;
@@ -177,9 +185,8 @@ public class StockHaveService {
     // TODO : 보유 종목의 현재가
     // From Stock
     private BigDecimal getCurrentPrice(String stockCode) {
-        // uri 000660 -> stockCode parameter로 변경해야함
         String json = restClient.get()
-                .uri("http://stock.spofo.net:8080/stocks/000660")
+                .uri("http://stock.spofo.net:8080/stocks/{stockCode}", stockCode)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .body(String.class);
@@ -210,9 +217,29 @@ public class StockHaveService {
 
     // TODO : 아이콘 이미지 URL
     // From Stock
-    private String getImageUrl() {
-        return "";
+    private String getImageUrl(String stockCode) {
+        String imageUrl = "";
+        String json = restClient.get()
+                .uri("http://stock.spofo.net:8080/stocks/search?keyword={stockCode}", stockCode)
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .body(String.class);
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNode;
+        try {
+            jsonNode = mapper.readTree(json);
+            for (JsonNode jn : jsonNode) {
+                String jsonStockCode = jn.get("stockCode").asText();
+                String jsonImageUrl = jn.get("imageUrl").asText();
+
+                if (stockCode.equals(jsonStockCode)) {
+                    imageUrl = jsonImageUrl;
+                }
+            }
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        return imageUrl;
     }
-
-
 }
