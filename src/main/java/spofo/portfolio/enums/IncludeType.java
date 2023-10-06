@@ -9,6 +9,6 @@ public enum IncludeType {
 
     @JsonCreator
     public static IncludeType from(String s) {
-        return Objects.equals(s, "true") ? IncludeType.Y : IncludeType.N;
+        return Objects.equals(s.toLowerCase(), "true") ? IncludeType.Y : IncludeType.N;
     }
 }
