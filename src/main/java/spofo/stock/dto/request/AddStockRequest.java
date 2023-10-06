@@ -1,5 +1,6 @@
 package spofo.stock.dto.request;
 
+import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,6 +15,9 @@ import spofo.stock.entity.StockHave;
 public class AddStockRequest {
 
     private String stockCode;
+    private String tradeDate;
+    private BigDecimal quantity;
+    private BigDecimal avgPrice;
 
     public StockHave toEntity(Portfolio portfolio) {
         return StockHave.builder()
@@ -22,12 +26,12 @@ public class AddStockRequest {
                 .build();
     }
 
-    public StockHave toEntity(Portfolio portfolio, StockHave stockHave) {
-        return StockHave.builder()
-                .id(stockHave.getId())
-                .stockCode(stockCode)
-                .portfolio(portfolio)
-                .build();
-    }
+//    public StockHave toEntity(Portfolio portfolio, StockHave stockHave) {
+//        return StockHave.builder()
+//                .id(stockHave.getId())
+//                .stockCode(stockCode)
+//                .portfolio(portfolio)
+//                .build();
+//    }
 
 }

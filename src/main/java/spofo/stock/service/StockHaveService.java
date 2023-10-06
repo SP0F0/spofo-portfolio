@@ -6,11 +6,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 import spofo.portfolio.entity.Portfolio;
 import spofo.portfolio.repository.PortfolioRepository;
@@ -19,8 +21,11 @@ import spofo.stock.dto.response.AddStockResponse;
 import spofo.stock.dto.response.StockHaveResponse;
 import spofo.stock.entity.StockHave;
 import spofo.stock.repository.StockHaveRepository;
+import spofo.tradelog.dto.request.CreateTradeLogRequest;
 import spofo.tradelog.entity.TradeLog;
+import spofo.tradelog.enums.TradeType;
 import spofo.tradelog.repository.TradeLogRepository;
+import spofo.tradelog.service.TradeLogService;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +34,7 @@ public class StockHaveService {
     private final StockHaveRepository stockHaveRepository;
     private final TradeLogRepository tradeLogRepository;
     private final PortfolioRepository portfolioRepository;
+    private final TradeLogService tradeLogService;
     private final RestClient restClient = RestClient.builder().build();
 
     // API - 008
@@ -64,26 +70,50 @@ public class StockHaveService {
     public AddStockResponse addStock(AddStockRequest addStockRequest, Long portfolioId) {
         Portfolio portfolio = portfolioRepository.getReferenceById(portfolioId);
         StockHave stockHave = addStockRequest.toEntity(portfolio);
+        StockHave sh = stockHaveRepository.save(stockHave);
+        CreateTradeLogRequest createTradeLogRequest =
+                CreateTradeLogRequest.builder()
+                        .stockHave(sh)
+                        .type(TradeType.B) // 매도 추가 시 수정
+                        .price(addStockRequest.getAvgPrice())
+                        .tradeDate(LocalDateTime.parse(addStockRequest.getTradeDate()))
+                        .quantity(addStockRequest.getQuantity())
+                        .marketPrice(getCurrentPrice(sh.getStockCode()))
+                        .build();
+
+        tradeLogService.createTradeLog(createTradeLogRequest);
+
+        return AddStockResponse.from(sh);
+    }
+
+    // API - 010
+    // 종목 추가 매수하기
+    public AddStockResponse addMoreStock(AddStockRequest addStockRequest,
+            Long portfolioId, Long stockId) {
+        Portfolio portfolio = portfolioRepository.getReferenceById(portfolioId);
+        StockHave stockHave = addStockRequest.toEntity(portfolio);
         stockHaveRepository.save(stockHave);
 
         return AddStockResponse.from(stockHave);
     }
 
-    // API - 010
-    // 종목 추가 매수하기
-//    public AddStockResponse addMoreStock(AddStockRequest addStockRequest, Long portfolioId,
-//            Long stockId) {
-//        Portfolio portfolio = portfolioRepository.getReferenceById(portfolioId);
-//        StockHave stockHave = stockHaveRepository.getReferenceById(stockId);
-//        stockHaveRepository.save(stockHave);
-//
-//        return AddStockResponse.from(stockHave);
-//    }
-
     // API - 011
     // 종목 삭제하기
-    public StockHaveResponse deleteStock(Long stockId) {
-        return null;
+    @Transactional
+    public void deleteStock(Long stockId) {
+        StockHave stockHave = stockHaveRepository.getReferenceById(stockId);
+        stockHaveRepository.delete(stockHave);
+    }
+
+    // API - 014
+    // 종목 단건 조회하기
+    public List<StockHaveResponse> getStocksByCode(Long portfolioId, String stockCode) {
+        return stockHaveRepository
+                .findByPortfolioId(portfolioId)
+                .stream()
+                .map(this::stockHaveResponse)
+                .filter(stock -> stockCode.equals(stock.getStockCode()))
+                .toList();
     }
 
     // TODO : 종목명 불러오기
@@ -142,16 +172,18 @@ public class StockHaveService {
     }
 
     // TODO : 보유 종목의 수익률
-    // (보유 종목의 가치 / 매수가) * 100 - 100
+    // (현재 자산 가치 / 매수가) * 100 - 100
     // From CurrentPrice
     private BigDecimal getGainRate(String stockCode, Long stockId) {
         BigDecimal gainRate = BigDecimal.ZERO;
 
         try {
-            (getGain(stockCode, stockId).divide(getAvgPrice(stockId)))
-                    .multiply(BigDecimal.valueOf(100)).subtract(BigDecimal.valueOf(100));
+            ((getCurrentPrice(stockCode).multiply(getQuantity(stockId)))
+                    .divide(getAvgPrice(stockId)))
+                    .multiply(BigDecimal.valueOf(100))
+                    .subtract(BigDecimal.valueOf(100));
         } catch (ArithmeticException ae) {
-            System.out.println("ArithmeticException occurs!");
+            throw new RuntimeException(ae);
         }
 
         return gainRate;

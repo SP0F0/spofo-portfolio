@@ -23,13 +23,6 @@ public class StockController {
 
     private final StockHaveService stockHaveService;
 
-    //    @GetMapping("/portfolios/{portfolioId}/stocks")
-//    public ResponseEntity<Map<String, List<StockHaveResponse>>> getStocks(@PathVariable("portfolioId") Long portfolioId) {
-//
-//        Map<String, List<StockHaveResponse>> result = new HashMap<>();
-//        result.put("data", stockHaveService.getStocks(portfolioId));
-//        return ResponseEntity.ok().body(result);
-//    }
     @GetMapping("/portfolios/{portfolioId}/stocks")
     public ResponseEntity<List<StockHaveResponse>> getStocks(
             @PathVariable("portfolioId") Long portfolioId) {
@@ -59,11 +52,21 @@ public class StockController {
 //    }
 
     @DeleteMapping("/portfolios/{portfolioId}/stocks/{stockId}")
-    public ResponseEntity<StockHaveResponse> deleteStock(
+    public ResponseEntity<Void> deleteStock(
             @PathVariable("portfolioId") Long portfolioId,
             @PathVariable("stockId") Long stockId) {
         // TODO : 종목 삭제
-        return null;
+        stockHaveService.deleteStock(stockId);
+        return ok().body(null);
+    }
+
+    @GetMapping("/portfolios/{portfolioId}/stocks/{stockCode}")
+    public ResponseEntity<List<StockHaveResponse>> getStocksByCode(
+            @PathVariable("portfolioId") Long portfolioId,
+            @PathVariable("stockCode") String stockCode) {
+        // TODO : 전체 보유 종목 조회
+        List<StockHaveResponse> result = stockHaveService.getStocksByCode(portfolioId, stockCode);
+        return ResponseEntity.ok().body(result);
     }
 
 }

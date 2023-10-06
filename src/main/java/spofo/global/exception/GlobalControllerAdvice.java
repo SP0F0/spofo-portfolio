@@ -25,6 +25,14 @@ public class GlobalControllerAdvice {
     }
     */
 
+    // 종합 에러 핸들러
+    @ExceptionHandler
+    public ResponseEntity exception(Exception e) {
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
+
+    }
+
     // 종목 추가 에러 핸들러
     @ExceptionHandler
     public ResponseEntity DataIntegrityViolationException(DataIntegrityViolationException e) {
