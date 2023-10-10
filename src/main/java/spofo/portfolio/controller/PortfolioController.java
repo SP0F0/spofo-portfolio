@@ -6,7 +6,6 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,14 +13,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import spofo.portfolio.dto.request.CreatePortfolioRequest;
-import spofo.portfolio.dto.request.UpdatePortfolioRequest;
-import spofo.portfolio.dto.response.CreatePortfolioResponse;
-import spofo.portfolio.dto.response.OnePortfolioResponse;
-import spofo.portfolio.dto.response.PortfolioResponse;
-import spofo.portfolio.dto.response.PortfolioSimpleResponse;
-import spofo.portfolio.dto.response.TotalPortfolioResponse;
-import spofo.portfolio.repository.PortfolioRepository;
+import spofo.auth.domain.MemberInfo;
+import spofo.auth.domain.annotation.LoginMember;
+import spofo.portfolio.controller.response.CreatePortfolioResponse;
+import spofo.portfolio.controller.response.PortfolioResponse;
+import spofo.portfolio.controller.response.PortfolioStatisticResponse;
+import spofo.portfolio.controller.response.PortfoliosStatisticResponse;
+import spofo.portfolio.domain.Portfolio;
+import spofo.portfolio.domain.PortfolioCreate;
+import spofo.portfolio.domain.PortfolioStatistic;
+import spofo.portfolio.domain.PortfolioUpdate;
+import spofo.portfolio.domain.PortfoliosStatistic;
 import spofo.portfolio.service.PortfolioService;
 
 @RestController
@@ -29,60 +31,66 @@ import spofo.portfolio.service.PortfolioService;
 public class PortfolioController {
 
     private final PortfolioService portfolioService;
-    private final PortfolioRepository portfolioRepository;
 
     @GetMapping("/portfolios/total")
-    public ResponseEntity<TotalPortfolioResponse> getTotalPortfolio() {
-        TotalPortfolioResponse totalPortfolioResponse = portfolioService.getTotalPortfolio(
-                /*portfolioService.getMemberId()*/
-                portfolioRepository.findmemberId()
-        );
-        return ok(totalPortfolioResponse);
+    public ResponseEntity<PortfoliosStatisticResponse> getPortfoliosStatistic(
+            @LoginMember MemberInfo memberInfo) {
+        PortfoliosStatistic statistic =
+                portfolioService.getPortfoliosStatistic(memberInfo.getId());
+
+        return ok(PortfoliosStatisticResponse.from(statistic));
     }
 
     @GetMapping("/portfolios")
-    public ResponseEntity<List<PortfolioSimpleResponse>> getPortfolioSimple() {
-        List<PortfolioSimpleResponse> portfolioSimpleResponse = portfolioService.getPortfolioSimple(
-                /*portfolioService.getMemberId()*/
-                portfolioRepository.findmemberId()
-        );
-        return ok(portfolioSimpleResponse);
-    }
+    public ResponseEntity<List<PortfolioStatisticResponse>> getPortfolioSimple(
+            @LoginMember MemberInfo memberInfo) {
+        List<PortfolioStatisticResponse> portfolios
+                = portfolioService.getPortfolios(memberInfo.getId())
+                .stream()
+                .map(PortfolioStatisticResponse::from)
+                .toList();
 
-    @PostMapping("/portfolios")
-    public ResponseEntity<CreatePortfolioResponse> createPortfolio(
-            @RequestBody @Validated CreatePortfolioRequest createPortfolioRequest) {
-        CreatePortfolioResponse createPortfolioResponse =
-                portfolioService.createPortfolio(createPortfolioRequest.toEntity());
-        return ok(createPortfolioResponse);
+        return ok(portfolios);
     }
 
     @GetMapping("/portfolios/{portfolioId}")
-    public ResponseEntity<OnePortfolioResponse> getOnePortfolio(
+    public ResponseEntity<PortfolioResponse> getPortfolio(
             @PathVariable(name = "portfolioId") Long portfolioId) {
-        OnePortfolioResponse onePortfolioResponse = portfolioService.getOnePortfolio(portfolioId);
-        return ok(onePortfolioResponse);
+        Portfolio portfolio = portfolioService.getPortfolio(portfolioId);
+
+        return ok(PortfolioResponse.from(portfolio));
     }
 
     @GetMapping("/portfolios/{portfolioId}/total")
-    public ResponseEntity<PortfolioResponse> getPortfolio(
+    public ResponseEntity<PortfolioStatisticResponse> getPortfolioStatistic(
             @PathVariable(name = "portfolioId") Long portfolioId) {
-        PortfolioResponse portfolioResponse = portfolioService.getPortfolio(portfolioId);
-        return ok().body(portfolioResponse);
+        PortfolioStatistic portfolio = portfolioService.getPortfolioStatistic(portfolioId);
+
+        return ok(PortfolioStatisticResponse.from(portfolio));
+    }
+
+    @PostMapping("/portfolios")
+    public ResponseEntity<CreatePortfolioResponse> create(
+            @RequestBody @Valid PortfolioCreate portfolioCreate,
+            @LoginMember MemberInfo memberInfo) {
+        Portfolio portfolio = portfolioService.create(portfolioCreate, memberInfo.getId());
+
+        return ok(CreatePortfolioResponse.from(portfolio));
     }
 
     @PutMapping("/portfolios/{portfolioId}")
-    public ResponseEntity<Void> updatePortfolio(
+    public ResponseEntity<Void> update(
             @PathVariable(name = "portfolioId") Long portfolioId,
-            @RequestBody @Valid UpdatePortfolioRequest updatePortfolioRequest) {
-        portfolioService.updatePortfolio(portfolioId, updatePortfolioRequest);
-        return ok().body(null);
+            @RequestBody @Valid PortfolioUpdate request,
+            @LoginMember MemberInfo memberInfo) {
+        portfolioService.update(request, portfolioId, memberInfo.getId());
+        return ok().build();
     }
 
     @DeleteMapping("/portfolios/{portfolioId}")
-    public ResponseEntity<Void> deletePortfolio(
+    public ResponseEntity<Void> delete(
             @PathVariable(name = "portfolioId") Long portfolioId) {
-        portfolioService.deletePortfolio(portfolioId);
-        return ok().body(null);
+        portfolioService.delete(portfolioId);
+        return ok().build();
     }
 }

@@ -1,7 +1,7 @@
 package spofo.tradelog.controller;
 
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -16,8 +16,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.test.web.servlet.MockMvc;
-import spofo.tradelog.dto.response.TradeLogResponse;
-import spofo.tradelog.enums.TradeType;
+import spofo.tradelog.controller.response.TradeLogResponse;
+import spofo.tradelog.domain.enums.TradeType;
 import spofo.tradelog.service.TradeLogService;
 
 @WebMvcTest(TradeLogController.class)

@@ -14,16 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
-import spofo.portfolio.entity.Portfolio;
-import spofo.portfolio.enums.IncludeType;
-import spofo.portfolio.enums.PortfolioType;
-import spofo.stock.entity.StockHave;
-import spofo.stock.repository.StockHaveRepository;
-import spofo.tradelog.dto.request.CreateTradeLogRequest;
-import spofo.tradelog.dto.response.TradeLogResponse;
-import spofo.tradelog.entity.TradeLog;
-import spofo.tradelog.enums.TradeType;
-import spofo.tradelog.repository.TradeLogRepository;
+import spofo.portfolio.domain.enums.IncludeType;
+import spofo.portfolio.domain.enums.PortfolioType;
+import spofo.portfolio.infrastructure.PortfolioEntity;
+import spofo.stockhave.infrastructure.StockHaveEntity;
+import spofo.stockhave.infrastructure.StockJpaHaveRepository;
+import spofo.tradelog.controller.response.TradeLogResponse;
+import spofo.tradelog.domain.CreateTradeLogRequest;
+import spofo.tradelog.domain.enums.TradeType;
+import spofo.tradelog.infrastructure.TradeJpaLogRepository;
+import spofo.tradelog.infrastructure.TradeLogEntity;
 
 @SpringBootTest(classes = {TradeLogService.class})
 @MockBean(JpaMetamodelMappingContext.class)
@@ -34,10 +34,10 @@ class TradeLogServiceTest {
     private TradeLogService tradeLogService;
 
     @MockBean
-    private TradeLogRepository tradeLogRepository;
+    private TradeJpaLogRepository tradeJpaLogRepository;
 
     @MockBean
-    private StockHaveRepository stockHaveRepository;
+    private StockJpaHaveRepository stockJpaHaveRepository;
 
     private static Long STOCK_ID = 1L;
     private static Long PORTFOLIO_ID = 1L;
@@ -47,10 +47,10 @@ class TradeLogServiceTest {
     void createTradeLog() {
 
         // given
-        Portfolio mockPortfolio = getMockPortfolio();
-        StockHave mockStockHave = getMockStockHave(mockPortfolio);
+        PortfolioEntity mockPortfolioEntity = getMockPortfolio();
+        StockHaveEntity mockStockHaveEntity = getMockStockHave(mockPortfolioEntity);
         CreateTradeLogRequest mockCreateTradeLogRequest = CreateTradeLogRequest.builder()
-                .stockHave(mockStockHave)
+                .stockHaveEntity(mockStockHaveEntity)
                 .type(TradeType.B)
                 .price(BigDecimal.valueOf(1000))
                 .tradeDate(LocalDateTime.now())
@@ -62,7 +62,7 @@ class TradeLogServiceTest {
         tradeLogService.createTradeLog(mockCreateTradeLogRequest);
 
         // when
-        then(tradeLogRepository).should().save(any(TradeLog.class));
+        then(tradeJpaLogRepository).should().save(any(TradeLogEntity.class));
     }
 
     @Test
@@ -70,15 +70,17 @@ class TradeLogServiceTest {
     void getTradeLogs() {
 
         // given
-        Portfolio mockPortfolio = getMockPortfolio();
-        StockHave mockStockHave = getMockStockHave(mockPortfolio);
-        TradeLog mockTradeLog = getMockTradeLog(mockStockHave);
+        PortfolioEntity mockPortfolioEntity = getMockPortfolio();
+        StockHaveEntity mockStockHaveEntity = getMockStockHave(mockPortfolioEntity);
+        TradeLogEntity mockTradeLogEntity = getMockTradeLog(mockStockHaveEntity);
 
-        List<TradeLog> mockTradeLogList = List.of(mockTradeLog);
+        List<TradeLogEntity> mockTradeLogEntityList = List.of(mockTradeLogEntity);
 
-        given(stockHaveRepository.getReferenceById(STOCK_ID)).willReturn(mockStockHave);
-        given(tradeLogRepository.findByStockHave(mockStockHave)).willReturn(mockTradeLogList);
-        TradeLogResponse tradeLogResponse = TradeLogResponse.from(mockTradeLog, BigDecimal.ZERO,
+        given(stockJpaHaveRepository.getReferenceById(STOCK_ID)).willReturn(mockStockHaveEntity);
+        given(tradeJpaLogRepository.findByStockHave(mockStockHaveEntity)).willReturn(
+                mockTradeLogEntityList);
+        TradeLogResponse tradeLogResponse = TradeLogResponse.from(mockTradeLogEntity,
+                BigDecimal.ZERO,
                 BigDecimal.valueOf(2000));
 
         // when
@@ -88,34 +90,38 @@ class TradeLogServiceTest {
         assertThat(findTradeLogsList.get(0)).isEqualTo(tradeLogResponse);
     }
 
-    private Portfolio getMockPortfolio() {
-        return Portfolio.builder()
+    private PortfolioEntity getMockPortfolio() {
+        return PortfolioEntity.builder()
                 .id(1L)
                 .memberId(1L)
                 .name("name-test")
                 .description("detail-test")
-                .currency("한국")
+                //.currency("한국")
                 .includeYn(IncludeType.Y)
                 .type(PortfolioType.FAKE)
                 .build();
     }
 
-    private StockHave getMockStockHave(Portfolio portfolio) {
-        return StockHave.builder()
+    private StockHaveEntity getMockStockHave(PortfolioEntity portfolioEntity) {
+        return StockHaveEntity.builder()
                 .id(1L)
                 .stockCode("test")
-                .portfolio(portfolio)
+                .portfolioEntity(portfolioEntity)
                 .build();
     }
 
-    private TradeLog getMockTradeLog(StockHave stockHave) {
-        return TradeLog.builder()
-                .stockHave(stockHave)
+    private TradeLogEntity getMockTradeLog(StockHaveEntity stockHaveEntity) {
+        return null;
+        /*
+        return TradeLogEntity.builder()
+                //.stockHave(stockHaveEntity)
                 .tradeType(TradeType.B)
                 .price(BigDecimal.valueOf(1000))
                 .tradeDate(LocalDateTime.now())
                 .quantity(BigDecimal.valueOf(2))
                 .marketPrice(BigDecimal.valueOf(1000))
                 .build();
+
+         */
     }
 }

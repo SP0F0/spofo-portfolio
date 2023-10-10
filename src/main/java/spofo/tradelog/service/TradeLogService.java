@@ -6,33 +6,34 @@ import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import spofo.stock.entity.StockHave;
-import spofo.stock.repository.StockHaveRepository;
-import spofo.tradelog.dto.request.CreateTradeLogRequest;
-import spofo.tradelog.dto.response.TradeLogResponse;
-import spofo.tradelog.entity.TradeLog;
-import spofo.tradelog.enums.TradeType;
-import spofo.tradelog.repository.TradeLogRepository;
+import spofo.stockhave.infrastructure.StockHaveEntity;
+import spofo.stockhave.infrastructure.StockJpaHaveRepository;
+import spofo.tradelog.controller.response.TradeLogResponse;
+import spofo.tradelog.domain.CreateTradeLogRequest;
+import spofo.tradelog.domain.enums.TradeType;
+import spofo.tradelog.infrastructure.TradeJpaLogRepository;
+import spofo.tradelog.infrastructure.TradeLogEntity;
 
 @Service
 @RequiredArgsConstructor
 public class TradeLogService {
 
-    private final TradeLogRepository tradeLogRepository;
-    private final StockHaveRepository stockHaveRepository;
+    private final TradeJpaLogRepository tradeJpaLogRepository;
+    private final StockJpaHaveRepository stockJpaHaveRepository;
 
     public void createTradeLog(CreateTradeLogRequest createTradeLogRequest) {
-        TradeLog tradeLog = createTradeLogRequest.toEntity();
-        tradeLogRepository.save(tradeLog);
+        TradeLogEntity tradeLogEntity = createTradeLogRequest.toEntity();
+        tradeJpaLogRepository.save(tradeLogEntity);
     }
 
     /**
      * 종목 이력 목록 리스트 전달
      **/
     public List<TradeLogResponse> getTradeLogs(Long stockId) {
-        StockHave stockHave = stockHaveRepository.getReferenceById(stockId);
-        List<TradeLog> tradeLogs = tradeLogRepository.findByStockHave(stockHave);
-        return tradeLogs.stream()
+        StockHaveEntity stockHaveEntity = stockJpaHaveRepository.getReferenceById(stockId);
+        List<TradeLogEntity> tradeLogEntities = tradeJpaLogRepository.findByStockHave(
+                stockHaveEntity);
+        return tradeLogEntities.stream()
                 .map(tradeLog -> TradeLogResponse.from(tradeLog, getProfit(tradeLog),
                         getTotalPrice(tradeLog)))
                 .toList();
@@ -41,19 +42,19 @@ public class TradeLogService {
     /**
      * 금액 계산
      **/
-    private BigDecimal getTotalPrice(TradeLog tradeLog) {
-        return tradeLog.getPrice().multiply(tradeLog.getQuantity());
+    private BigDecimal getTotalPrice(TradeLogEntity tradeLogEntity) {
+        return tradeLogEntity.getPrice().multiply(tradeLogEntity.getQuantity());
     }
 
     /**
      * 실현 수익 계산
      **/
-    private BigDecimal getProfit(TradeLog tradeLog) {
-        if (tradeLog.getType().equals(TradeType.B)) {
+    private BigDecimal getProfit(TradeLogEntity tradeLogEntity) {
+        if (tradeLogEntity.getType().equals(TradeType.B)) {
             return ZERO;
         }
         // TODO : 매도 시 계산 로직 작성했지만 불확실함
-        return getTotalPrice(tradeLog).subtract(
-                (tradeLog.getMarketPrice().multiply(tradeLog.getQuantity())));
+        return getTotalPrice(tradeLogEntity).subtract(
+                (tradeLogEntity.getMarketPrice().multiply(tradeLogEntity.getQuantity())));
     }
 }
