@@ -20,10 +20,8 @@ public class AddStockRequest {
     private BigDecimal avgPrice;
 
     public StockHaveEntity toEntity(PortfolioEntity portfolioEntity) {
-        return StockHaveEntity.builder()
-                .stockCode(stockCode)
-                .portfolioEntity(portfolioEntity)
-                .build();
+
+        return null;
     }
 
 //    public StockHave toEntity(Portfolio portfolio, StockHave stockHave) {

@@ -1,10 +1,8 @@
 package spofo.mock;
 
 import java.util.Optional;
-import org.springframework.stereotype.Service;
 import spofo.auth.service.AuthServerService;
 
-@Service
 public class FakeAuthServerServiceImpl implements AuthServerService {
 
     @Override

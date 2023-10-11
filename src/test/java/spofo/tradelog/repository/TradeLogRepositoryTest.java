@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import spofo.tradelog.infrastructure.TradeJpaLogRepository;
+import spofo.tradelog.infrastructure.TradeLogJpaRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -13,7 +13,7 @@ import spofo.tradelog.infrastructure.TradeJpaLogRepository;
 class TradeLogRepositoryTest {
 
     @Autowired
-    private TradeJpaLogRepository tradeJpaLogRepository;
+    private TradeLogJpaRepository tradeLogJpaRepository;
 
 //    @Test
 //    @DisplayName("보유 종목 ID로 종목 이력을 조회할 수 있다.")

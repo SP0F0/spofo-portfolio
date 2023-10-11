@@ -24,19 +24,19 @@ import spofo.portfolio.domain.PortfolioCreate;
 import spofo.portfolio.domain.PortfolioStatistic;
 import spofo.portfolio.domain.PortfolioUpdate;
 import spofo.portfolio.domain.PortfoliosStatistic;
-import spofo.portfolio.service.PortfolioService;
+import spofo.portfolio.service.PortfolioServiceImpl;
 
 @RestController
 @RequiredArgsConstructor
 public class PortfolioController {
 
-    private final PortfolioService portfolioService;
+    private final PortfolioServiceImpl portfolioServiceImpl;
 
     @GetMapping("/portfolios/total")
     public ResponseEntity<PortfoliosStatisticResponse> getPortfoliosStatistic(
             @LoginMember MemberInfo memberInfo) {
         PortfoliosStatistic statistic =
-                portfolioService.getPortfoliosStatistic(memberInfo.getId());
+                portfolioServiceImpl.getPortfoliosStatistic(memberInfo.getId());
 
         return ok(PortfoliosStatisticResponse.from(statistic));
     }
@@ -45,7 +45,7 @@ public class PortfolioController {
     public ResponseEntity<List<PortfolioStatisticResponse>> getPortfolioSimple(
             @LoginMember MemberInfo memberInfo) {
         List<PortfolioStatisticResponse> portfolios
-                = portfolioService.getPortfolios(memberInfo.getId())
+                = portfolioServiceImpl.getPortfolios(memberInfo.getId())
                 .stream()
                 .map(PortfolioStatisticResponse::from)
                 .toList();
@@ -56,7 +56,7 @@ public class PortfolioController {
     @GetMapping("/portfolios/{portfolioId}")
     public ResponseEntity<PortfolioResponse> getPortfolio(
             @PathVariable(name = "portfolioId") Long portfolioId) {
-        Portfolio portfolio = portfolioService.getPortfolio(portfolioId);
+        Portfolio portfolio = portfolioServiceImpl.getPortfolio(portfolioId);
 
         return ok(PortfolioResponse.from(portfolio));
     }
@@ -64,7 +64,7 @@ public class PortfolioController {
     @GetMapping("/portfolios/{portfolioId}/total")
     public ResponseEntity<PortfolioStatisticResponse> getPortfolioStatistic(
             @PathVariable(name = "portfolioId") Long portfolioId) {
-        PortfolioStatistic portfolio = portfolioService.getPortfolioStatistic(portfolioId);
+        PortfolioStatistic portfolio = portfolioServiceImpl.getPortfolioStatistic(portfolioId);
 
         return ok(PortfolioStatisticResponse.from(portfolio));
     }
@@ -73,7 +73,7 @@ public class PortfolioController {
     public ResponseEntity<CreatePortfolioResponse> create(
             @RequestBody @Valid PortfolioCreate portfolioCreate,
             @LoginMember MemberInfo memberInfo) {
-        Portfolio portfolio = portfolioService.create(portfolioCreate, memberInfo.getId());
+        Portfolio portfolio = portfolioServiceImpl.create(portfolioCreate, memberInfo.getId());
 
         return ok(CreatePortfolioResponse.from(portfolio));
     }
@@ -83,14 +83,14 @@ public class PortfolioController {
             @PathVariable(name = "portfolioId") Long portfolioId,
             @RequestBody @Valid PortfolioUpdate request,
             @LoginMember MemberInfo memberInfo) {
-        portfolioService.update(request, portfolioId, memberInfo.getId());
+        portfolioServiceImpl.update(request, portfolioId, memberInfo.getId());
         return ok().build();
     }
 
     @DeleteMapping("/portfolios/{portfolioId}")
     public ResponseEntity<Void> delete(
             @PathVariable(name = "portfolioId") Long portfolioId) {
-        portfolioService.delete(portfolioId);
+        portfolioServiceImpl.delete(portfolioId);
         return ok().build();
     }
 }

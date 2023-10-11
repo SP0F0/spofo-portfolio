@@ -2,10 +2,10 @@ package spofo.portfolio.domain;
 
 import static java.math.BigDecimal.ZERO;
 import static java.math.RoundingMode.HALF_UP;
-import static spofo.global.component.utils.CommonUtils.getCommonScale;
+import static spofo.global.component.utils.CommonUtils.getGlobalScale;
 import static spofo.global.component.utils.CommonUtils.isZero;
 import static spofo.global.component.utils.CommonUtils.toPercent;
-import static spofo.tradelog.domain.enums.TradeType.B;
+import static spofo.tradelog.domain.enums.TradeType.BUY;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -28,27 +28,30 @@ public class PortfolioStatistic {
     public static PortfolioStatistic of(Portfolio portfolio, Map<String, Stock> stocks) {
         BigDecimal totalAsset = ZERO;
         BigDecimal totalBuy = ZERO;
+        BigDecimal totalGain = ZERO;
         BigDecimal gainRate = ZERO;
 
-        for (StockHave stockHave : portfolio.getStockHaves()) {
-            Stock stock = stocks.get(stockHave.getStockCode());
-            BigDecimal currentPrice = stock.getPrice();
+        if (portfolio.getStockHaves() != null) {
+            for (StockHave stockHave : portfolio.getStockHaves()) {
+                Stock stock = stocks.get(stockHave.getStockCode());
+                BigDecimal currentPrice = stock.getPrice();
 
-            for (TradeLog tradeLog : stockHave.getTradeLogs()) {
-                if (tradeLog.getType() == B) {
-                    BigDecimal price = tradeLog.getPrice();
-                    BigDecimal quantity = tradeLog.getQuantity();
+                for (TradeLog tradeLog : stockHave.getTradeLogs()) {
+                    if (tradeLog.getType() == BUY) {
+                        BigDecimal price = tradeLog.getPrice();
+                        BigDecimal quantity = tradeLog.getQuantity();
 
-                    totalAsset = totalAsset.add(currentPrice.multiply(quantity));
-                    totalBuy = totalBuy.add(price.multiply(quantity));
+                        totalAsset = totalAsset.add(currentPrice.multiply(quantity));
+                        totalBuy = totalBuy.add(price.multiply(quantity));
+                    }
                 }
             }
-        }
 
-        BigDecimal totalGain = totalAsset.subtract(totalBuy);
+            totalGain = totalAsset.subtract(totalBuy);
 
-        if (!isZero(totalBuy)) {
-            gainRate = toPercent(totalGain.divide(totalBuy, getCommonScale(), HALF_UP));
+            if (!isZero(totalBuy)) {
+                gainRate = toPercent(totalGain.divide(totalBuy, getGlobalScale(), HALF_UP));
+            }
         }
 
         return PortfolioStatistic.builder()

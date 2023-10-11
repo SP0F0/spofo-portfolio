@@ -16,12 +16,7 @@ public class CreatePortfolioRequest {
     private PortfolioType type;
 
     public PortfolioEntity toEntity() {
-        return PortfolioEntity.builder()
-                .name(name)
-                .description(description)
-                //.currency(currency)
-                .type(type)
-                .build();
+        return null;
     }
 
     @Builder

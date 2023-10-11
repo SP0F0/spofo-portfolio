@@ -14,30 +14,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
-import spofo.portfolio.domain.enums.IncludeType;
-import spofo.portfolio.domain.enums.PortfolioType;
 import spofo.portfolio.infrastructure.PortfolioEntity;
 import spofo.stockhave.infrastructure.StockHaveEntity;
-import spofo.stockhave.infrastructure.StockJpaHaveRepository;
+import spofo.stockhave.infrastructure.StockHaveJpaRepository;
 import spofo.tradelog.controller.response.TradeLogResponse;
 import spofo.tradelog.domain.CreateTradeLogRequest;
 import spofo.tradelog.domain.enums.TradeType;
-import spofo.tradelog.infrastructure.TradeJpaLogRepository;
 import spofo.tradelog.infrastructure.TradeLogEntity;
+import spofo.tradelog.infrastructure.TradeLogJpaRepository;
 
-@SpringBootTest(classes = {TradeLogService.class})
+@SpringBootTest(classes = {TradeLogServiceImpl.class})
 @MockBean(JpaMetamodelMappingContext.class)
 @DisplayName("종목 이력 서비스")
-class TradeLogServiceTest {
+class TradeLogServiceImplTest {
 
     @Autowired
-    private TradeLogService tradeLogService;
+    private TradeLogServiceImpl tradeLogServiceImpl;
 
     @MockBean
-    private TradeJpaLogRepository tradeJpaLogRepository;
+    private TradeLogJpaRepository tradeLogJpaRepository;
 
     @MockBean
-    private StockJpaHaveRepository stockJpaHaveRepository;
+    private StockHaveJpaRepository stockHaveJpaRepository;
 
     private static Long STOCK_ID = 1L;
     private static Long PORTFOLIO_ID = 1L;
@@ -51,7 +49,7 @@ class TradeLogServiceTest {
         StockHaveEntity mockStockHaveEntity = getMockStockHave(mockPortfolioEntity);
         CreateTradeLogRequest mockCreateTradeLogRequest = CreateTradeLogRequest.builder()
                 .stockHaveEntity(mockStockHaveEntity)
-                .type(TradeType.B)
+                .type(TradeType.BUY)
                 .price(BigDecimal.valueOf(1000))
                 .tradeDate(LocalDateTime.now())
                 .quantity(BigDecimal.valueOf(2))
@@ -59,10 +57,10 @@ class TradeLogServiceTest {
                 .build();
 
         // then
-        tradeLogService.createTradeLog(mockCreateTradeLogRequest);
+        tradeLogServiceImpl.createTradeLog(mockCreateTradeLogRequest);
 
         // when
-        then(tradeJpaLogRepository).should().save(any(TradeLogEntity.class));
+        then(tradeLogJpaRepository).should().save(any(TradeLogEntity.class));
     }
 
     @Test
@@ -76,38 +74,26 @@ class TradeLogServiceTest {
 
         List<TradeLogEntity> mockTradeLogEntityList = List.of(mockTradeLogEntity);
 
-        given(stockJpaHaveRepository.getReferenceById(STOCK_ID)).willReturn(mockStockHaveEntity);
-        given(tradeJpaLogRepository.findByStockHave(mockStockHaveEntity)).willReturn(
+        given(stockHaveJpaRepository.getReferenceById(STOCK_ID)).willReturn(mockStockHaveEntity);
+        given(tradeLogJpaRepository.findByStockHaveEntity(mockStockHaveEntity)).willReturn(
                 mockTradeLogEntityList);
         TradeLogResponse tradeLogResponse = TradeLogResponse.from(mockTradeLogEntity,
                 BigDecimal.ZERO,
                 BigDecimal.valueOf(2000));
 
         // when
-        List<TradeLogResponse> findTradeLogsList = tradeLogService.getTradeLogs(STOCK_ID);
+        List<TradeLogResponse> findTradeLogsList = tradeLogServiceImpl.getTradeLogs(STOCK_ID);
 
         // then
         assertThat(findTradeLogsList.get(0)).isEqualTo(tradeLogResponse);
     }
 
     private PortfolioEntity getMockPortfolio() {
-        return PortfolioEntity.builder()
-                .id(1L)
-                .memberId(1L)
-                .name("name-test")
-                .description("detail-test")
-                //.currency("한국")
-                .includeYn(IncludeType.Y)
-                .type(PortfolioType.FAKE)
-                .build();
+        return null;
     }
 
     private StockHaveEntity getMockStockHave(PortfolioEntity portfolioEntity) {
-        return StockHaveEntity.builder()
-                .id(1L)
-                .stockCode("test")
-                .portfolioEntity(portfolioEntity)
-                .build();
+        return null;
     }
 
     private TradeLogEntity getMockTradeLog(StockHaveEntity stockHaveEntity) {

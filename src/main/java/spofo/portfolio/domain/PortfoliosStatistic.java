@@ -2,7 +2,7 @@ package spofo.portfolio.domain;
 
 import static java.math.BigDecimal.ZERO;
 import static java.math.RoundingMode.HALF_UP;
-import static spofo.global.component.utils.CommonUtils.getCommonScale;
+import static spofo.global.component.utils.CommonUtils.getGlobalScale;
 import static spofo.global.component.utils.CommonUtils.isZero;
 import static spofo.global.component.utils.CommonUtils.toPercent;
 import static spofo.portfolio.domain.enums.IncludeType.Y;
@@ -27,16 +27,17 @@ public class PortfoliosStatistic {
         BigDecimal totalGain = ZERO;
         BigDecimal gainRate = ZERO;
 
-        for (PortfolioStatistic statistic : portfolioStatistics) {
-            if (statistic.getPortfolio().getIncludeYn() == Y) {
-                totalAsset = totalAsset.add(statistic.getTotalAsset());
-                totalBuy = totalBuy.add(statistic.getTotalBuy());
-                totalGain = totalGain.add(statistic.getTotalGain());
+        if (portfolioStatistics != null) {
+            for (PortfolioStatistic statistic : portfolioStatistics) {
+                if (statistic.getPortfolio().getIncludeYn() == Y) {
+                    totalAsset = totalAsset.add(statistic.getTotalAsset());
+                    totalBuy = totalBuy.add(statistic.getTotalBuy());
+                    totalGain = totalGain.add(statistic.getTotalGain());
+                }
             }
-        }
-
-        if (!isZero(totalBuy)) {
-            gainRate = toPercent(totalGain.divide(totalBuy, getCommonScale(), HALF_UP));
+            if (!isZero(totalBuy)) {
+                gainRate = toPercent(totalGain.divide(totalBuy, getGlobalScale(), HALF_UP));
+            }
         }
 
         return PortfoliosStatistic.builder()

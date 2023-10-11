@@ -4,6 +4,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -12,7 +13,6 @@ import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,12 +26,11 @@ import spofo.tradelog.infrastructure.TradeLogEntity;
 @Table(name = "stock_have")
 @Getter
 @NoArgsConstructor
-@Builder
 @AllArgsConstructor
 public class StockHaveEntity extends BaseEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String stockCode; // 종목 코드 (FK)
@@ -41,7 +40,7 @@ public class StockHaveEntity extends BaseEntity {
     @Setter
     private PortfolioEntity portfolioEntity;
 
-    @OneToMany(mappedBy = "portfolioEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "stockHaveEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<TradeLogEntity> tradeLogEntities = new ArrayList<>();
 
     public static StockHaveEntity from(StockHave stockHave) {

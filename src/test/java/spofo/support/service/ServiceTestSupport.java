@@ -2,13 +2,29 @@ package spofo.support.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import spofo.portfolio.service.PortfolioService;
+import spofo.portfolio.service.port.PortfolioRepository;
+import spofo.stock.service.StockServerService;
+import spofo.stockhave.service.StockHaveService;
 import spofo.support.annotation.CustomServiceTest;
+import spofo.tradelog.service.TradeLogService;
 
 @CustomServiceTest
 public abstract class ServiceTestSupport {
 
     @Autowired
     protected PortfolioService portfolioService;
+
+    @Autowired
+    protected PortfolioRepository portfolioRepository;
+
+    @Autowired
+    protected StockServerService stockServerService;
+
+    @Autowired
+    protected StockHaveService stockHaveService;
+
+    @Autowired
+    protected TradeLogService tradeLogService;
 	/*
 
 	@Autowired

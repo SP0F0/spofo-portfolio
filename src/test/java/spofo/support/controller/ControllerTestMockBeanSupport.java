@@ -1,7 +1,7 @@
 package spofo.support.controller;
 
 import org.springframework.boot.test.mock.mockito.MockBean;
-import spofo.portfolio.service.PortfolioService;
+import spofo.portfolio.service.PortfolioServiceImpl;
 
 /**
  * ControllerTestMockBeanSupport를 상속받아 다양한 ControllerTestSupport를 구성할 수 있다. 예를들어 Spring Security를
@@ -12,5 +12,5 @@ import spofo.portfolio.service.PortfolioService;
 public abstract class ControllerTestMockBeanSupport {
 
     @MockBean
-    protected PortfolioService portfolioService;
+    protected PortfolioServiceImpl portfolioServiceImpl;
 }

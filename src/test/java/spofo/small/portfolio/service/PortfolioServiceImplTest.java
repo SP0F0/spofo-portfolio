@@ -11,7 +11,7 @@ import static spofo.portfolio.domain.enums.IncludeType.N;
 import static spofo.portfolio.domain.enums.IncludeType.Y;
 import static spofo.portfolio.domain.enums.PortfolioType.FAKE;
 import static spofo.portfolio.domain.enums.PortfolioType.REAL;
-import static spofo.tradelog.domain.enums.TradeType.B;
+import static spofo.tradelog.domain.enums.TradeType.BUY;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -30,11 +30,12 @@ import spofo.portfolio.domain.enums.Currency;
 import spofo.portfolio.domain.enums.IncludeType;
 import spofo.portfolio.domain.enums.PortfolioType;
 import spofo.portfolio.service.PortfolioService;
+import spofo.portfolio.service.PortfolioServiceImpl;
 import spofo.stock.domain.Stock;
 import spofo.stockhave.domain.StockHave;
 import spofo.tradelog.domain.TradeLog;
 
-public class PortfolioServiceTest {
+public class PortfolioServiceImplTest {
 
     private PortfolioService portfolioService;
     private FakeStockServerService fakeStockServerService;
@@ -45,7 +46,8 @@ public class PortfolioServiceTest {
     void setup() {
         fakePortfolioRepository = new FakePortfolioRepository();
         fakeStockServerService = new FakeStockServerService();
-        portfolioService = new PortfolioService(fakePortfolioRepository, fakeStockServerService);
+        portfolioService = new PortfolioServiceImpl(fakePortfolioRepository,
+                fakeStockServerService);
 
         Stock stock = Stock.builder()
                 .code(TEST_STOCK_CODE)
@@ -381,9 +383,9 @@ public class PortfolioServiceTest {
                 .build();
     }
 
-    private static TradeLog getTradeLog() {
+    private TradeLog getTradeLog() {
         return TradeLog.builder()
-                .type(B)
+                .type(BUY)
                 .price(valueOf(33000))
                 .quantity(valueOf(1))
                 .build();

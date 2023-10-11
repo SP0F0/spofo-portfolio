@@ -9,20 +9,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import spofo.tradelog.controller.response.TradeLogResponse;
-import spofo.tradelog.service.TradeLogService;
+import spofo.tradelog.service.TradeLogServiceImpl;
 
 @RestController
 @RequiredArgsConstructor
 public class TradeLogController {
 
-    private final TradeLogService tradeLogService;
+    private final TradeLogServiceImpl tradeLogServiceImpl;
 
     // 종목 이력 조회
     @GetMapping("/portfolios/{portfolioId}/stocks/{stockId}/trade-log")
     public ResponseEntity<List<TradeLogResponse>> viewTradeLogs(
             @PathVariable("stockId") Long stockId,
             @PathVariable("portfolioId") Long portfolioId) {
-        List<TradeLogResponse> tradeLogResponseList = tradeLogService.getTradeLogs(stockId);
+        List<TradeLogResponse> tradeLogResponseList = tradeLogServiceImpl.getTradeLogs(stockId);
         return ok().body(tradeLogResponseList);
     }
 

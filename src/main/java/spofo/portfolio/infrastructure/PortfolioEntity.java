@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -31,7 +30,6 @@ import spofo.stockhave.infrastructure.StockHaveEntity;
 @Table(name = "portfolio")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder
 @AllArgsConstructor
 @DynamicInsert
 public class PortfolioEntity extends BaseEntity {

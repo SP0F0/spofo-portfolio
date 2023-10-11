@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 import spofo.stockhave.controller.response.AddStockResponse;
 import spofo.stockhave.controller.response.StockHaveResponse;
 import spofo.stockhave.domain.AddStockRequest;
-import spofo.stockhave.service.StockHaveService;
+import spofo.stockhave.service.StockHaveServiceImpl;
 
 @RestController
 @RequiredArgsConstructor
 public class StockController {
 
-    private final StockHaveService stockHaveService;
+    private final StockHaveServiceImpl stockHaveServiceImpl;
 
     @GetMapping("/portfolios/{portfolioId}/stocks")
     public ResponseEntity<List<StockHaveResponse>> getStocks(
@@ -37,7 +37,7 @@ public class StockController {
             @RequestBody @Validated AddStockRequest addStockRequest,
             @PathVariable("portfolioId") Long portfolioId) {
         // TODO : 종목 매수
-        AddStockResponse addStockResponse = stockHaveService.addStock(
+        AddStockResponse addStockResponse = stockHaveServiceImpl.addStock(
                 addStockRequest, portfolioId);
         return ok(addStockResponse);
     }
@@ -57,7 +57,7 @@ public class StockController {
             @PathVariable("portfolioId") Long portfolioId,
             @PathVariable("stockId") Long stockId) {
         // TODO : 종목 삭제
-        stockHaveService.deleteStock(stockId);
+        stockHaveServiceImpl.deleteStock(stockId);
         return ok().body(null);
     }
 
@@ -66,7 +66,7 @@ public class StockController {
             @PathVariable("portfolioId") Long portfolioId,
             @PathVariable("stockCode") String stockCode) {
         // TODO : 전체 보유 종목 조회
-        List<StockHaveResponse> result = stockHaveService.getStocksByCode(portfolioId, stockCode);
+        List<StockHaveResponse> result = stockHaveServiceImpl.getStocksByCode(portfolioId, stockCode);
         return ResponseEntity.ok().body(result);
     }
 

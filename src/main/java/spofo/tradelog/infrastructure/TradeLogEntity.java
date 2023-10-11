@@ -32,7 +32,8 @@ public class TradeLogEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "VARCHAR(1) DEFAULT 'B'", nullable = false)
+    //    @Column(columnDefinition = "VARCHAR(100) DEFAULT 'BUY'", nullable = false)
+    @Column
     @Enumerated(EnumType.STRING)
     private TradeType type;
 
@@ -57,7 +58,7 @@ public class TradeLogEntity {
     @Setter
     private StockHaveEntity stockHaveEntity;
 
-    public TradeLogEntity from(TradeLog tradeLog) {
+    public static TradeLogEntity from(TradeLog tradeLog) {
         TradeLogEntity entity = new TradeLogEntity();
 
         entity.id = tradeLog.getId();
