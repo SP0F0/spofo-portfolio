@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
+import spofo.stockhave.domain.StockHave;
 import spofo.tradelog.domain.enums.TradeType;
 
 @Getter
@@ -17,4 +18,5 @@ public class TradeLog {
     private final BigDecimal quantity;
     private final BigDecimal marketPrice;
     private final LocalDateTime createdAt;
+    private final StockHave stockHave;
 }

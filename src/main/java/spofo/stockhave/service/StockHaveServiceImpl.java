@@ -111,6 +111,7 @@ public class StockHaveServiceImpl implements StockHaveService {
                 .price(getBD(10000))
                 .tradeDate(LocalDateTime.now())
                 .type(BUY)
+                .stockHave(savedStockHave)
                 .build();
         // savedStockHave.addTradeLog(tradeLog);
         //TradeLog tradeLog1 = tradeLog.addStockHave(savedStockHave);
