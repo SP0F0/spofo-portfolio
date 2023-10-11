@@ -10,27 +10,11 @@ import spofo.tradelog.domain.enums.TradeType;
 @Builder
 public class TradeLog {
 
-    private Long id;
-    private TradeType type;
-    private BigDecimal price;
-    private LocalDateTime tradeDate;
-    private BigDecimal quantity;
-    private BigDecimal marketPrice;
-    private LocalDateTime createdAt;
-
-    public static TradeLog of() {
-        // 얘는 컨트롤러가 아닌 서비스에서 주입받아 만드는 것이므로 뭐가 필요한지 보고 처리!
-        return null;
-        /*
-        return TradeLog.builder()
-                .type(tradeLogCreate.getType())
-                .price(tradeLogCreate.getPrice())
-                .tradeDate(tradeLogCreate.getTradeDate())
-                .quantity(tradeLogCreate.getQuantity())
-                .marketPrice(tradeLogCreate.getMarketPrice())
-                .createdAt(tradeLogCreate.getCreatedAt())
-                .build();
-
-         */
-    }
+    private final Long id;
+    private final TradeType type;
+    private final BigDecimal price;
+    private final LocalDateTime tradeDate;
+    private final BigDecimal quantity;
+    private final BigDecimal marketPrice;
+    private final LocalDateTime createdAt;
 }

@@ -45,5 +45,4 @@ public class Portfolio {
                 .memberId(memberId)
                 .build();
     }
-
 }
