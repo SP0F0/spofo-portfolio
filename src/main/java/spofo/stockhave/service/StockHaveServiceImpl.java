@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 import spofo.portfolio.infrastructure.PortfolioEntity;
 import spofo.portfolio.infrastructure.PortfolioJpaRepository;
+import spofo.stockhave.controller.port.StockHaveService;
 import spofo.stockhave.controller.response.AddStockResponse;
 import spofo.stockhave.controller.response.StockHaveResponse;
 import spofo.stockhave.domain.AddStockRequest;
@@ -94,7 +95,16 @@ public class StockHaveServiceImpl implements StockHaveService {
     }
 
     @Override
+    @Transactional
     public StockHave addStock(StockHave stockHave) {
+        // stockhave 만들기
+        // tradeLog 만들기
+
+        // 쌍방 연관관계 만들기
+
+        //StockHave stockHave1 = stockHave.addTradeLog(tradeLog);
+        StockHave savedStockHave = stockHaveRepository.save(stockHave);
+
         TradeLog tradeLog = TradeLog.builder()
                 .marketPrice(getBD(10000))
                 .quantity(getBD(100))
@@ -102,11 +112,10 @@ public class StockHaveServiceImpl implements StockHaveService {
                 .tradeDate(LocalDateTime.now())
                 .type(BUY)
                 .build();
-
+        // savedStockHave.addTradeLog(tradeLog);
+        //TradeLog tradeLog1 = tradeLog.addStockHave(savedStockHave);
         TradeLog savedTradeLogs = tradeLogRepository.save(tradeLog);
-        StockHave savedStockHave = stockHaveRepository.save(stockHave).addTradeLog(savedTradeLogs);
-        savedTradeLogs = tradeLogRepository.save(savedTradeLogs);
-        return stockHaveRepository.save(savedStockHave);
+        return savedStockHave;
     }
 
     // API - 010

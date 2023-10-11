@@ -1,4 +1,4 @@
-package spofo.stockhave.service;
+package spofo.stockhave.controller.port;
 
 import java.util.List;
 import spofo.stockhave.controller.response.AddStockResponse;

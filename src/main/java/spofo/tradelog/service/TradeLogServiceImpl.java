@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import spofo.stockhave.infrastructure.StockHaveEntity;
 import spofo.stockhave.infrastructure.StockHaveJpaRepository;
+import spofo.tradelog.controller.port.TradeLogService;
 import spofo.tradelog.controller.response.TradeLogResponse;
 import spofo.tradelog.domain.CreateTradeLogRequest;
 import spofo.tradelog.domain.enums.TradeType;
