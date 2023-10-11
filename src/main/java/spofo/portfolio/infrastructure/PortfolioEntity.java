@@ -1,10 +1,8 @@
 package spofo.portfolio.infrastructure;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,7 +15,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
 import spofo.global.infrastructure.BaseEntity;
 import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.enums.Currency;
@@ -31,7 +28,6 @@ import spofo.stockhave.infrastructure.StockHaveEntity;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@DynamicInsert
 public class PortfolioEntity extends BaseEntity {
 
     @Id
@@ -54,7 +50,7 @@ public class PortfolioEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private PortfolioType type;
 
-    @OneToMany(mappedBy = "portfolioEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "portfolioEntity")
     private List<StockHaveEntity> stockHaveEntities = new ArrayList<>();
 
     public static PortfolioEntity from(Portfolio portfolio) {
@@ -86,19 +82,5 @@ public class PortfolioEntity extends BaseEntity {
                 .type(type)
                 .stockHaves(stockHaves)
                 .build();
-    }
-
-    public void toUpdate(String name, String description, IncludeType includeYn) {
-        this.name = name;
-        this.description = description;
-        this.includeYn = includeYn;
-    }
-
-    public void addStockHaveEntity(StockHaveEntity entity) {
-        if (stockHaveEntities.size() > 0) {
-            stockHaveEntities.remove(entity);
-        }
-        entity.setPortfolioEntity(this);
-        stockHaveEntities.add(entity);
     }
 }
