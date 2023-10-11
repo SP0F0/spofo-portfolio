@@ -1,9 +1,8 @@
 package spofo.tradelog.infrastructure;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,6 +15,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import spofo.global.component.converter.TradeTypeConverter;
 import spofo.stockhave.infrastructure.StockHaveEntity;
 import spofo.tradelog.domain.TradeLog;
 import spofo.tradelog.domain.enums.TradeType;
@@ -30,9 +30,8 @@ public class TradeLogEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //    @Column(columnDefinition = "VARCHAR(100) DEFAULT 'BUY'", nullable = false)
-    @Column
-    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Convert(converter = TradeTypeConverter.class)
     private TradeType type;
 
     @Column(precision = 18, scale = 2, nullable = false)
