@@ -35,7 +35,7 @@ import spofo.stock.domain.Stock;
 import spofo.stockhave.domain.StockHave;
 import spofo.tradelog.domain.TradeLog;
 
-public class PortfolioServiceImplTest {
+public class PortfolioServiceTest {
 
     private PortfolioService portfolioService;
     private FakeStockServerService fakeStockServerService;
