@@ -217,7 +217,7 @@ public class PortfolioServiceTest {
     }
 
     @Test
-    @DisplayName("포트폴리오 1건을 통계외 함께 조회한다.")
+    @DisplayName("포트폴리오 1건을 통계와 함께 조회한다.")
     void getPortfolioStatistic() {
         // given
         Long portfolioId = 1L;
