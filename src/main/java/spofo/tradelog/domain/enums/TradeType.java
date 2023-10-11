@@ -15,7 +15,7 @@ public enum TradeType {
 
     BUY(1), SELL(2);
 
-    private int dbData;
+    private final int dbData;
 
     private static final Map<Integer, TradeType> map = Stream.of(TradeType.values())
             .collect(toMap(
