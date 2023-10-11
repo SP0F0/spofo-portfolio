@@ -152,6 +152,11 @@ public class StockHaveServiceImpl implements StockHaveService {
                 .toList();
     }
 
+    @Override
+    public void deleteByPortfolioId(Long id) {
+        stockHaveRepository.deleteByPortfolioId(id);
+    }
+
     // TODO : 종목명 불러오기
     // From Stock
     private String getStockName(String stockCode) {
