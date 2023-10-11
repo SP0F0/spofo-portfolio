@@ -15,7 +15,7 @@ import spofo.portfolio.domain.PortfolioUpdate;
 import spofo.portfolio.domain.PortfoliosStatistic;
 import spofo.support.service.ServiceTestSupport;
 
-public class PortfolioServiceImplTest extends ServiceTestSupport {
+public class PortfolioServiceTest extends ServiceTestSupport {
 
     private static final String PORTFOLIO_CREATE_NAME = "포트폴리오 생성";
     private static final String PORTFOLIO_CREATE_DESC = "포트폴리오 생성입니다.";
