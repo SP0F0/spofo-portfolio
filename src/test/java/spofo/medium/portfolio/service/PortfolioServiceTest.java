@@ -2,6 +2,7 @@ package spofo.medium.portfolio.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.fail;
 import static spofo.global.domain.exception.ErrorCode.PORTFOLIO_NOT_FOUND;
 import static spofo.portfolio.domain.enums.Currency.KRW;
 import static spofo.portfolio.domain.enums.PortfolioType.REAL;
@@ -24,7 +25,82 @@ public class PortfolioServiceTest extends ServiceTestSupport {
     private static final Long MEMBER_ID = 1L;
 
     @Test
-    @DisplayName("포트폴리오를 등록한다.")
+    @DisplayName("회원 1명이 등록한 전체 포트폴리오의 개요를 조회한다.")
+    void getPortfoliosStatistic() {
+        fail("테스트 작성 필요");
+    }
+
+    @Test
+    @DisplayName("포트폴리오 포함여부가 N인 포트폴리오는 전체 통계 계산 시 제외된다.")
+    void getPortfoliosStatisticWithNoInclude() {
+        fail("테스트 작성 필요");
+    }
+
+    @Test
+    @DisplayName("포트폴리오 한 개의 자산 통계를 조회한다.")
+    void getPortfolioStatisticById() {
+        // given
+        Portfolio savedPortfolio = portfolioService.create(getCreatePortfolio(), MEMBER_ID);
+
+        // when
+        PortfoliosStatistic portfoliosStatistic = portfolioService.getPortfoliosStatistic(1L);
+
+        // then
+        assertThat(portfoliosStatistic).isNotNull();
+    }
+
+    @Test
+    @DisplayName("회원 1명이 등록한 포트폴리오가 존재하지 않으면 통계 결과는 모두 0이다.")
+    void getPortfoliosStatisticWithNoResult() {
+        fail("테스트 작성 필요");
+    }
+
+    @Test
+    @DisplayName("회원 1명이 가진 여러 개의 포트폴리오를 조회한다.")
+    void getPortfolios() {
+        fail("테스트 작성 필요");
+    }
+
+    @Test
+    @DisplayName("회원 1명이 등록한 포트폴리오가 존재하지 않으면 비어있는 리스트를 반환한다.")
+    void getPortfoliosWithNoResult() {
+        fail("테스트 작성 필요");
+    }
+
+    @Test
+    @DisplayName("포트폴리오 1건을 조회한다.")
+    void getPortfolio() {
+        // given
+        Portfolio savedPortfolio = portfolioService.create(getCreatePortfolio(), MEMBER_ID);
+
+        // when
+        Portfolio findPortfolio = portfolioService.getPortfolio(savedPortfolio.getId());
+
+        // then
+        assertThat(findPortfolio.getId()).isEqualTo(savedPortfolio.getId());
+        assertThat(findPortfolio.getName()).isEqualTo(findPortfolio.getName());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 포트폴리오를 조회할 수 없다.")
+    void getPortfolioWithNoResult() {
+        // given
+        Long portfolioId = 1L;
+
+        // expected
+        assertThatThrownBy(() -> portfolioService.getPortfolio(portfolioId))
+                .isInstanceOf(PortfolioNotFound.class)
+                .hasMessage(PORTFOLIO_NOT_FOUND.getMessage());
+    }
+
+    @Test
+    @DisplayName("포트폴리오 1건을 통계와 함께 조회한다.")
+    void getPortfolioStatistic() {
+        fail("테스트 작성 필요");
+    }
+
+    @Test
+    @DisplayName("포트폴리오 1건을 생성한다.")
     void createPortfolio() {
         // given
         PortfolioCreate createPortfolio = getCreatePortfolio();
@@ -42,7 +118,7 @@ public class PortfolioServiceTest extends ServiceTestSupport {
     }
 
     @Test
-    @DisplayName("포트폴리오를 수정한다.")
+    @DisplayName("포트폴리오 1건을 수정한다.")
     void updatePortfolio() {
         // given
         Portfolio savedPortfolio = portfolioService.create(getCreatePortfolio(), MEMBER_ID);
@@ -60,21 +136,21 @@ public class PortfolioServiceTest extends ServiceTestSupport {
     }
 
     @Test
-    @DisplayName("포트폴리오 한 개를 조회한다.")
-    void getPortfolio() {
+    @DisplayName("존재하지 않는 포트폴리오를 수정할 수 없다.")
+    void updatePortfolioWithNoResult() {
         // given
-        Portfolio savedPortfolio = portfolioService.create(getCreatePortfolio(), MEMBER_ID);
+        Long memberId = 1L;
+        Long portfolioId = 1L;
+        PortfolioUpdate portfolioUpdate = PortfolioUpdate.builder().build();
 
-        // when
-        Portfolio findPortfolio = portfolioService.getPortfolio(savedPortfolio.getId());
-
-        // then
-        assertThat(findPortfolio.getId()).isEqualTo(savedPortfolio.getId());
-        assertThat(findPortfolio.getName()).isEqualTo(findPortfolio.getName());
+        // expected
+        assertThatThrownBy(() -> portfolioService.update(portfolioUpdate, portfolioId, memberId))
+                .isInstanceOf(PortfolioNotFound.class)
+                .hasMessage(PORTFOLIO_NOT_FOUND.getMessage());
     }
 
     @Test
-    @DisplayName("포트폴리오를 삭제한다.")
+    @DisplayName("포트폴리오 1건을 삭제한다.")
     void deletePortfolio() {
         // given
         Portfolio savedPortfolio = portfolioService.create(getCreatePortfolio(), MEMBER_ID);
@@ -89,16 +165,15 @@ public class PortfolioServiceTest extends ServiceTestSupport {
     }
 
     @Test
-    @DisplayName("포트폴리오 한 개의 자산 통계를 조회한다.")
-    void getPortfolioStatisticById() {
+    @DisplayName("존재하지 않는 포트폴리오를 삭제할 수 없다.")
+    void deletePortfolioWithNoResult() {
         // given
-        Portfolio savedPortfolio = portfolioService.create(getCreatePortfolio(), MEMBER_ID);
+        Long portfolioId = 1L;
 
-        // when
-        PortfoliosStatistic portfoliosStatistic = portfolioService.getPortfoliosStatistic(1L);
-
-        // then
-        assertThat(portfoliosStatistic).isNotNull();
+        // expected
+        assertThatThrownBy(() -> portfolioService.delete(portfolioId))
+                .isInstanceOf(PortfolioNotFound.class)
+                .hasMessage(PORTFOLIO_NOT_FOUND.getMessage());
     }
 
     private PortfolioCreate getCreatePortfolio() {
