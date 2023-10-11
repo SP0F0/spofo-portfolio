@@ -10,4 +10,6 @@ public interface TradeLogJpaRepository extends JpaRepository<TradeLogEntity, Lon
 //    List<TradeLog> findByStockId(@Param("stockId") Long stockId);
 
     List<TradeLogEntity> findByStockHaveEntity(StockHaveEntity stock);
+
+    void findByStockHaveEntityId(Long id);
 }

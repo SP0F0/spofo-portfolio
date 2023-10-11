@@ -9,4 +9,6 @@ public interface TradeLogService {
     void createTradeLog(CreateTradeLogRequest createTradeLogRequest);
 
     List<TradeLogResponse> getTradeLogs(Long stockId);
+
+    void deleteByStockHaveId(Long id);
 }

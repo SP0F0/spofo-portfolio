@@ -15,4 +15,9 @@ public class TradeLogRepositoryImpl implements TradeLogRepository {
     public TradeLog save(TradeLog tradeLog) {
         return tradeLogJpaRepository.save(TradeLogEntity.from(tradeLog)).toModel();
     }
+
+    @Override
+    public void deleteByStockHaveId(Long id) {
+        tradeLogJpaRepository.findByStockHaveEntityId(id);
+    }
 }
