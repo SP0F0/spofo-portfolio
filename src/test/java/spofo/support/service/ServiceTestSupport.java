@@ -1,6 +1,8 @@
 package spofo.support.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import spofo.portfolio.controller.port.PortfolioService;
 import spofo.portfolio.service.port.PortfolioRepository;
 import spofo.stock.service.StockServerService;
@@ -15,52 +17,14 @@ public abstract class ServiceTestSupport {
     protected PortfolioService portfolioService;
 
     @Autowired
-    protected PortfolioRepository portfolioRepository;
-
-    @Autowired
-    protected StockServerService stockServerService;
+    protected TradeLogService tradeLogService;
 
     @Autowired
     protected StockHaveService stockHaveService;
 
-    @Autowired
-    protected TradeLogService tradeLogService;
-	/*
+    @SpyBean
+    protected PortfolioRepository portfolioRepository;
 
-	@Autowired
-	protected RoleService roleService;
-
-	@Autowired
-	protected RoleQueryService roleQueryService;
-
-	@Autowired
-	protected RoleRepository roleRepository;
-
-	@Autowired
-	protected RoleHierarchyService roleHierarchyService;
-
-	@Autowired
-	protected RoleHierarchyQueryService roleHierarchyQueryService;
-
-	@Autowired
-	protected RoleHierarchyRepository roleHierarchyRepository;
-
-	@Autowired
-	protected PasswordService passwordService;
-
-	@Autowired
-	protected PasswordQueryService passwordQueryService;
-
-	@Autowired
-	protected PasswordEncoder passwordEncoder;
-
-	@Autowired
-	protected ResourceService resourceService;
-
-	@Autowired
-	protected ResourceQueryService resourceQueryService;
-
-	@Autowired
-	protected ResourceRepository resourcesRepository;
-*/
+    @MockBean
+    protected StockServerService mockStockServerService;
 }

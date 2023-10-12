@@ -1,31 +1,37 @@
 package spofo.medium.portfolio.service;
 
-import static org.assertj.core.api.Assertions.*;
+import static java.math.BigDecimal.ZERO;
+import static java.util.Collections.EMPTY_LIST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.fail;
-import static spofo.global.component.utils.CommonUtils.*;
+import static org.assertj.core.api.Assertions.tuple;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+import static spofo.global.component.utils.CommonUtils.getBD;
+import static spofo.global.component.utils.CommonUtils.round;
 import static spofo.global.domain.exception.ErrorCode.PORTFOLIO_NOT_FOUND;
 import static spofo.portfolio.domain.enums.Currency.KRW;
+import static spofo.portfolio.domain.enums.IncludeType.N;
+import static spofo.portfolio.domain.enums.IncludeType.Y;
 import static spofo.portfolio.domain.enums.PortfolioType.REAL;
-import static spofo.tradelog.domain.enums.TradeType.*;
+import static spofo.tradelog.domain.enums.TradeType.BUY;
 
-import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.annotation.Rollback;
-import spofo.global.component.utils.CommonUtils;
 import spofo.global.domain.exception.PortfolioNotFound;
 import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioCreate;
 import spofo.portfolio.domain.PortfolioStatistic;
 import spofo.portfolio.domain.PortfolioUpdate;
 import spofo.portfolio.domain.PortfoliosStatistic;
+import spofo.stock.domain.Stock;
 import spofo.stockhave.domain.StockHave;
-import spofo.stockhave.domain.StockHaveCreate;
 import spofo.support.service.ServiceTestSupport;
-import spofo.tradelog.domain.TradeLogCreate;
-import spofo.tradelog.domain.enums.TradeType;
+import spofo.tradelog.domain.TradeLog;
 
 public class PortfolioServiceTest extends ServiceTestSupport {
 
@@ -34,62 +40,163 @@ public class PortfolioServiceTest extends ServiceTestSupport {
     private static final String PORTFOLIO_UPDATE_NAME = "포트폴리오 수정";
     private static final String PORTFOLIO_UPDATE_DESC = "포트폴리오 수정입니다.";
     private static final Long MEMBER_ID = 1L;
+    private static final String TEST_STOCK_CODE = "000660";
 
     @Test
     @DisplayName("회원 1명이 등록한 전체 포트폴리오의 개요를 조회한다.")
     void getPortfoliosStatistic() {
-        fail("테스트 작성 필요");
+        // given
+        TradeLog tradeLog = getTradeLog();
+        StockHave stockHave = getStockHave(tradeLog);
+
+        Portfolio portfolio1 = Portfolio.builder()
+                .includeYn(Y)
+                .stockHaves(List.of(stockHave))
+                .build();
+
+        Portfolio portfolio2 = Portfolio.builder()
+                .includeYn(Y)
+                .stockHaves(List.of(stockHave))
+                .build();
+
+        given(portfolioRepository.findByMemberIdWithTradeLogs(MEMBER_ID))
+                .willReturn(List.of(portfolio1, portfolio2));
+
+        given(mockStockServerService.getStocks(anyList()))
+                .willReturn(getStockMap());
+
+        // when
+        PortfoliosStatistic portfoliosStatistic =
+                portfolioService.getPortfoliosStatistic(MEMBER_ID);
+
+        // then
+        assertThat(portfoliosStatistic.getTotalAsset()).isEqualTo(getBD(132000));
+        assertThat(portfoliosStatistic.getGain()).isEqualTo(getBD(66000));
+        assertThat(portfoliosStatistic.getGainRate()).isEqualTo(round(getBD(100)));
     }
 
     @Test
     @DisplayName("포트폴리오 포함여부가 N인 포트폴리오는 전체 통계 계산 시 제외된다.")
     void getPortfoliosStatisticWithNoInclude() {
-        fail("테스트 작성 필요");
-    }
-
-    @Test
-    @DisplayName("포트폴리오 한 개의 자산 통계를 조회한다.")
-    void getPortfolioStatisticById() {
         // given
-        Portfolio savedPortfolio = portfolioService.create(getCreatePortfolio(), MEMBER_ID);
+        TradeLog tradeLog = getTradeLog();
+        StockHave stockHave = getStockHave(tradeLog);
+
+        Portfolio portfolio = Portfolio.builder()
+                .includeYn(N)
+                .stockHaves(List.of(stockHave))
+                .build();
+
+        given(portfolioRepository.findByMemberIdWithTradeLogs(MEMBER_ID))
+                .willReturn(List.of(portfolio));
+
+        given(mockStockServerService.getStocks(anyList()))
+                .willReturn(getStockMap());
 
         // when
-        PortfoliosStatistic portfoliosStatistic = portfolioService.getPortfoliosStatistic(1L);
+        PortfoliosStatistic portfoliosStatistic =
+                portfolioService.getPortfoliosStatistic(MEMBER_ID);
 
         // then
-        assertThat(portfoliosStatistic).isNotNull();
+        assertThat(portfoliosStatistic.getTotalAsset()).isEqualTo(ZERO);
+        assertThat(portfoliosStatistic.getGain()).isEqualTo(ZERO);
+        assertThat(portfoliosStatistic.getGainRate()).isEqualTo(ZERO);
     }
 
     @Test
     @DisplayName("회원 1명이 등록한 포트폴리오가 존재하지 않으면 통계 결과는 모두 0이다.")
     void getPortfoliosStatisticWithNoResult() {
-        fail("테스트 작성 필요");
+        // given
+        given(portfolioRepository.findByMemberIdWithTradeLogs(MEMBER_ID))
+                .willReturn(EMPTY_LIST);
+
+        // when
+        PortfoliosStatistic portfoliosStatistic =
+                portfolioService.getPortfoliosStatistic(MEMBER_ID);
+
+        // then
+        assertThat(portfoliosStatistic.getTotalAsset()).isEqualTo(ZERO);
+        assertThat(portfoliosStatistic.getGain()).isEqualTo(ZERO);
+        assertThat(portfoliosStatistic.getGainRate()).isEqualTo(ZERO);
     }
 
     @Test
     @DisplayName("회원 1명이 가진 여러 개의 포트폴리오를 조회한다.")
     void getPortfolios() {
-        fail("테스트 작성 필요");
+        // given
+        TradeLog tradeLog = getTradeLog();
+        StockHave stockHave = getStockHave(tradeLog);
+
+        Portfolio portfolio1 = Portfolio.builder()
+                .id(1L)
+                .includeYn(Y)
+                .stockHaves(List.of(stockHave))
+                .build();
+
+        Portfolio portfolio2 = Portfolio.builder()
+                .id(2L)
+                .includeYn(Y)
+                .stockHaves(List.of(stockHave, stockHave))
+                .build();
+
+        given(portfolioRepository.findByMemberIdWithTradeLogs(MEMBER_ID))
+                .willReturn(List.of(portfolio1, portfolio2));
+
+        given(mockStockServerService.getStocks(anyList()))
+                .willReturn(getStockMap());
+
+        // when
+        List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(MEMBER_ID);
+
+        // then
+        assertThat(portfolios).hasSize(2)
+                .extracting("portfolio.id", "totalAsset", "totalBuy", "totalGain", "gainRate")
+                .containsExactlyInAnyOrder(
+                        tuple(1L, getBD(66000), getBD(33000),
+                                getBD(33000), round(getBD(100))),
+
+                        tuple(2L, getBD(132000), getBD(66000),
+                                getBD(66000), round(getBD(100)))
+                );
     }
 
     @Test
     @DisplayName("회원 1명이 등록한 포트폴리오가 존재하지 않으면 비어있는 리스트를 반환한다.")
     void getPortfoliosWithNoResult() {
-        fail("테스트 작성 필요");
+        // given
+        // when
+        List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(MEMBER_ID);
+
+        // then
+        assertThat(portfolios).isEmpty();
     }
 
     @Test
     @DisplayName("포트폴리오 1건을 조회한다.")
     void getPortfolio() {
         // given
-        Portfolio savedPortfolio = portfolioService.create(getCreatePortfolio(), MEMBER_ID);
+        Portfolio portfolio = Portfolio.builder()
+                .memberId(MEMBER_ID)
+                .name("포트폴리오 이름")
+                .description("포트폴리오 설명")
+                .currency(KRW)
+                .includeYn(Y)
+                .type(REAL)
+                .build();
+
+        Portfolio savedPortfolio = portfolioRepository.save(portfolio);
 
         // when
-        Portfolio findPortfolio = portfolioService.getPortfolio(savedPortfolio.getId());
+        Portfolio foundPortfolio = portfolioService.getPortfolio(savedPortfolio.getId());
 
         // then
-        assertThat(findPortfolio.getId()).isEqualTo(savedPortfolio.getId());
-        assertThat(findPortfolio.getName()).isEqualTo(findPortfolio.getName());
+        assertThat(foundPortfolio.getId()).isNotNull();
+        assertThat(foundPortfolio.getMemberId()).isEqualTo(MEMBER_ID);
+        assertThat(foundPortfolio.getName()).isEqualTo("포트폴리오 이름");
+        assertThat(foundPortfolio.getDescription()).isEqualTo("포트폴리오 설명");
+        assertThat(foundPortfolio.getCurrency()).isEqualTo(KRW);
+        assertThat(foundPortfolio.getIncludeYn()).isEqualTo(Y);
+        assertThat(foundPortfolio.getType()).isEqualTo(REAL);
     }
 
     @Test
@@ -105,38 +212,29 @@ public class PortfolioServiceTest extends ServiceTestSupport {
     }
 
     @Test
-    @Rollback(false)
-    @DisplayName("포트폴리오 1건을 통계와 함께 조회한다.") // api-004
+    @DisplayName("포트폴리오 1건을 통계와 함께 조회한다.")
     void getPortfolioStatistic() {
         // given
-        PortfolioCreate createPortfolio = getCreatePortfolio();
-        Portfolio savedPortfolio = portfolioService.create(createPortfolio, MEMBER_ID);
+        TradeLog tradeLog = getTradeLog();
+        StockHave stockHave = getStockHave(tradeLog);
 
-        StockHaveCreate stockHaveCreate = StockHaveCreate.builder()
-                .stockCode("000660")
+        Portfolio portfolio = Portfolio.builder()
+                .stockHaves(List.of(stockHave))
                 .build();
 
-        StockHave savedStockHave = stockHaveService.addStock(stockHaveCreate, savedPortfolio);
+        given(portfolioRepository.findByIdWithTradeLogs(anyLong()))
+                .willReturn(Optional.of(portfolio));
 
-        TradeLogCreate tradeLogCreate = TradeLogCreate.builder()
-                .type(BUY)
-                .price(getBD(10000))
-                .tradeDate(LocalDateTime.now())
-                .marketPrice(getBD(20000))
-//                .stockHave(savedStockHave)
-                .quantity(getBD(10))
-                .type(BUY)
-                .build();
-
-        tradeLogService.createTradeLog(tradeLogCreate, savedStockHave);
+        given(mockStockServerService.getStocks(anyList()))
+                .willReturn(getStockMap());
 
         // when
         PortfolioStatistic statistic = portfolioService.getPortfolioStatistic(MEMBER_ID);
 
-        // then
-//        assertThat(statistic.getTotalGain()).isEqualTo(getBD(100000));
-        assertThat(statistic.getPortfolio().getId()).isEqualTo(savedPortfolio.getId());
-//        assertThat(statistic.getTotalBuy()).isEqualTo()
+        assertThat(statistic.getTotalAsset()).isEqualTo(getBD(66000));
+        assertThat(statistic.getTotalBuy()).isEqualTo(getBD(33000));
+        assertThat(statistic.getTotalGain()).isEqualTo(getBD(33000));
+        assertThat(statistic.getGainRate()).isEqualTo(round(getBD(100)));
     }
 
     @Test
@@ -162,7 +260,6 @@ public class PortfolioServiceTest extends ServiceTestSupport {
     void updatePortfolio() {
         // given
         Portfolio savedPortfolio = portfolioService.create(getCreatePortfolio(), MEMBER_ID);
-
         PortfolioUpdate updatePortfolio = getUpdatePortfolio(savedPortfolio.getId());
 
         // when
@@ -179,12 +276,11 @@ public class PortfolioServiceTest extends ServiceTestSupport {
     @DisplayName("존재하지 않는 포트폴리오를 수정할 수 없다.")
     void updatePortfolioWithNoResult() {
         // given
-        Long memberId = 1L;
         Long portfolioId = 1L;
         PortfolioUpdate portfolioUpdate = PortfolioUpdate.builder().build();
 
         // expected
-        assertThatThrownBy(() -> portfolioService.update(portfolioUpdate, portfolioId, memberId))
+        assertThatThrownBy(() -> portfolioService.update(portfolioUpdate, portfolioId, MEMBER_ID))
                 .isInstanceOf(PortfolioNotFound.class)
                 .hasMessage(PORTFOLIO_NOT_FOUND.getMessage());
     }
@@ -233,5 +329,31 @@ public class PortfolioServiceTest extends ServiceTestSupport {
                 .currency(KRW)
                 .type(REAL)
                 .build();
+    }
+
+    private StockHave getStockHave(TradeLog tradeLog) {
+        return StockHave.builder()
+                .stockCode(TEST_STOCK_CODE)
+                .tradeLogs(List.of(tradeLog))
+                .build();
+    }
+
+    private TradeLog getTradeLog() {
+        return TradeLog.builder()
+                .type(BUY)
+                .price(getBD(33000))
+                .quantity(getBD(1))
+                .build();
+    }
+
+    private Map<String, Stock> getStockMap() {
+        Stock stock = Stock.builder()
+                .code(TEST_STOCK_CODE)
+                .name("SK하이닉스")
+                .price(getBD(66000))
+                .sector("반도체")
+                .build();
+
+        return Map.of(TEST_STOCK_CODE, stock);
     }
 }
