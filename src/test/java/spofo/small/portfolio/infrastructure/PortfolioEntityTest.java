@@ -6,7 +6,7 @@ import static spofo.portfolio.domain.enums.Currency.KRW;
 import static spofo.portfolio.domain.enums.IncludeType.Y;
 import static spofo.portfolio.domain.enums.PortfolioType.FAKE;
 
-import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import spofo.portfolio.domain.Portfolio;
@@ -46,7 +46,7 @@ public class PortfolioEntityTest {
                 .portfolio(portfolio)
                 .build();
 
-        setField(portfolioEntity, "stockHaveEntities", List.of(StockHaveEntity.from(stockHave)));
+        setField(portfolioEntity, "stockHaveEntities", Set.of(StockHaveEntity.from(stockHave)));
 
         // when
         Portfolio model = portfolioEntity.toModel();
