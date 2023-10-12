@@ -69,7 +69,7 @@ public class PortfolioServiceTest {
 
         Portfolio portfolio = Portfolio.builder()
                 .memberId(memberId)
-                .includeYn(Y)
+                .includeType(Y)
                 .stockHaves(List.of(stockHave))
                 .build();
 
@@ -95,7 +95,7 @@ public class PortfolioServiceTest {
 
         Portfolio portfolio = Portfolio.builder()
                 .memberId(memberId)
-                .includeYn(N)
+                .includeType(N)
                 .stockHaves(List.of(stockHave))
                 .build();
 
@@ -185,7 +185,7 @@ public class PortfolioServiceTest {
                 .name("포트폴리오 이름")
                 .description("포트폴리오 설명")
                 .currency(KRW)
-                .includeYn(Y)
+                .includeType(Y)
                 .type(REAL)
                 .build();
 
@@ -200,7 +200,7 @@ public class PortfolioServiceTest {
         assertThat(savedPortfolio.getName()).isEqualTo("포트폴리오 이름");
         assertThat(savedPortfolio.getDescription()).isEqualTo("포트폴리오 설명");
         assertThat(savedPortfolio.getCurrency()).isEqualTo(KRW);
-        assertThat(savedPortfolio.getIncludeYn()).isEqualTo(Y);
+        assertThat(savedPortfolio.getIncludeType()).isEqualTo(Y);
         assertThat(savedPortfolio.getType()).isEqualTo(REAL);
     }
 
@@ -231,7 +231,7 @@ public class PortfolioServiceTest {
                 .name(name)
                 .description(description)
                 .currency(KRW)
-                .includeYn(Y)
+                .includeType(Y)
                 .type(REAL)
                 .stockHaves(List.of(stockHave))
                 .build();
@@ -249,7 +249,7 @@ public class PortfolioServiceTest {
         assertThat(savedPortfolio.getName()).isEqualTo(name);
         assertThat(savedPortfolio.getDescription()).isEqualTo(description);
         assertThat(savedPortfolio.getCurrency()).isEqualTo(KRW);
-        assertThat(savedPortfolio.getIncludeYn()).isEqualTo(Y);
+        assertThat(savedPortfolio.getIncludeType()).isEqualTo(Y);
         assertThat(savedPortfolio.getType()).isEqualTo(REAL);
         assertThat(statistic.getTotalAsset()).isEqualTo(BigDecimal.valueOf(66000));
         assertThat(statistic.getTotalBuy()).isEqualTo(BigDecimal.valueOf(33000));
@@ -283,7 +283,7 @@ public class PortfolioServiceTest {
         assertThat(savedPortfolio.getName()).isEqualTo(name);
         assertThat(savedPortfolio.getDescription()).isEqualTo(description);
         assertThat(savedPortfolio.getCurrency()).isEqualTo(currency);
-        assertThat(savedPortfolio.getIncludeYn()).isEqualTo(Y);
+        assertThat(savedPortfolio.getIncludeType()).isEqualTo(Y);
         assertThat(savedPortfolio.getType()).isEqualTo(REAL);
     }
 
@@ -303,7 +303,7 @@ public class PortfolioServiceTest {
                 .name("포트폴리오 이름")
                 .description("포트폴리오 설명")
                 .currency(currency)
-                .includeYn(Y)
+                .includeType(Y)
                 .type(REAL)
                 .build();
 
@@ -314,7 +314,7 @@ public class PortfolioServiceTest {
                 .name(updateName)
                 .description(updatedDescription)
                 .currency(savedPortfolio.getCurrency())
-                .includeYn(updatedIncludeYn)
+                .includeType(updatedIncludeYn)
                 .type(updatedType)
                 .build();
 
@@ -328,7 +328,7 @@ public class PortfolioServiceTest {
         assertThat(updatedPortfolio.getName()).isEqualTo(updateName);
         assertThat(updatedPortfolio.getDescription()).isEqualTo(updatedDescription);
         assertThat(updatedPortfolio.getCurrency()).isEqualTo(KRW);
-        assertThat(updatedPortfolio.getIncludeYn()).isEqualTo(updatedIncludeYn);
+        assertThat(updatedPortfolio.getIncludeType()).isEqualTo(updatedIncludeYn);
         assertThat(updatedPortfolio.getType()).isEqualTo(updatedType);
     }
 

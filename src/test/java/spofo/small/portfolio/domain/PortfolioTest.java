@@ -46,7 +46,7 @@ public class PortfolioTest {
                 .name("업데이트 포트폴리오")
                 .description("업데이트 된 포트폴리오입니다")
                 .currency(KRW)
-                .includeYn(N)
+                .includeType(N)
                 .type(FAKE)
                 .build();
 
@@ -58,7 +58,7 @@ public class PortfolioTest {
         assertThat(updatedPortfolio.getName()).isEqualTo("업데이트 포트폴리오");
         assertThat(updatedPortfolio.getDescription()).isEqualTo("업데이트 된 포트폴리오입니다");
         assertThat(updatedPortfolio.getCurrency()).isEqualTo(portfolioUpdate.getCurrency());
-        assertThat(updatedPortfolio.getIncludeYn()).isEqualTo(portfolioUpdate.getIncludeYn());
+        assertThat(updatedPortfolio.getIncludeType()).isEqualTo(portfolioUpdate.getIncludeType());
         assertThat(updatedPortfolio.getType()).isEqualTo(portfolioUpdate.getType());
     }
 }

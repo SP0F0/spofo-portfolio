@@ -9,14 +9,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static spofo.global.component.utils.CommonUtils.getBD;
 import static spofo.portfolio.domain.enums.Currency.KRW;
 import static spofo.portfolio.domain.enums.IncludeType.N;
 import static spofo.portfolio.domain.enums.IncludeType.Y;
 import static spofo.portfolio.domain.enums.PortfolioType.REAL;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,8 +60,9 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("id").value(1L));
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("id").value(1L))
+                .andDo(print());
     }
 
     @Test
@@ -201,9 +203,9 @@ public class PortfolioControllerTest extends ControllerTestSupport {
     void getPortfoliosStatistic() throws Exception {
         // given
         PortfoliosStatistic statistic = PortfoliosStatistic.builder()
-                .totalAsset(BigDecimal.valueOf(1000))
-                .gain(BigDecimal.valueOf(100))
-                .gainRate(BigDecimal.valueOf(10))
+                .totalAsset(getBD(1000))
+                .gain(getBD(100))
+                .gainRate(getBD(10))
                 .build();
 
         given(portfolioServiceImpl.getPortfoliosStatistic(anyLong()))
@@ -234,10 +236,10 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         PortfolioStatistic statistic = PortfolioStatistic.builder()
                 .portfolio(portfolio)
-                .totalAsset(BigDecimal.valueOf(100))
-                .totalBuy(BigDecimal.valueOf(60))
-                .totalGain(BigDecimal.valueOf(40))
-                .gainRate(BigDecimal.valueOf(40))
+                .totalAsset(getBD(100))
+                .totalBuy(getBD(60))
+                .totalGain(getBD(40))
+                .gainRate(getBD(40))
                 .build();
 
         given(portfolioServiceImpl.getPortfolios(anyLong()))
@@ -256,6 +258,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.[0].totalBuy").value("60"))
                 .andExpect(jsonPath("$.[0].gain").value("40"))
                 .andExpect(jsonPath("$.[0].gainRate").value("40"))
+                .andExpect(jsonPath("$.[0].includeType").value("true"))
                 .andExpect(jsonPath("$.[0].type").value(REAL.toString()));
     }
 
@@ -273,10 +276,10 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         PortfolioStatistic statistic = PortfolioStatistic.builder()
                 .portfolio(portfolio)
-                .totalAsset(BigDecimal.valueOf(100))
-                .totalBuy(BigDecimal.valueOf(60))
-                .totalGain(BigDecimal.valueOf(40))
-                .gainRate(BigDecimal.valueOf(40))
+                .totalAsset(getBD(100))
+                .totalBuy(getBD(60))
+                .totalGain(getBD(40))
+                .gainRate(getBD(40))
                 .build();
 
         given(portfolioServiceImpl.getPortfolioStatistic(anyLong()))
@@ -288,9 +291,12 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                         .contentType(APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("id").value(1L))
+                .andExpect(jsonPath("id").value("1"))
+                .andExpect(jsonPath("memberId").value("1"))
                 .andExpect(jsonPath("name").value(name))
                 .andExpect(jsonPath("detail").value(description))
+                .andExpect(jsonPath("currency").value("KRW"))
+                .andExpect(jsonPath("includeType").value("true"))
                 .andExpect(jsonPath("type").value("REAL"))
                 .andExpect(jsonPath("totalAsset").value("100"))
                 .andExpect(jsonPath("totalBuy").value("60"))
@@ -526,7 +532,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .name(name)
                 .description(description)
                 .currency(currency)
-                .includeYn(includeType)
+                .includeType(includeType)
                 .type(type)
                 .build();
     }

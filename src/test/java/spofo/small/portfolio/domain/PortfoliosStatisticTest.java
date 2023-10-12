@@ -31,12 +31,12 @@ public class PortfoliosStatisticTest {
         StockHave stockHave = getStockHave(tradeLog);
 
         Portfolio portfolio1 = Portfolio.builder()
-                .includeYn(Y)
+                .includeType(Y)
                 .stockHaves(List.of(stockHave))
                 .build();
 
         Portfolio portfolio2 = Portfolio.builder()
-                .includeYn(Y)
+                .includeType(Y)
                 .stockHaves(List.of(stockHave, stockHave))
                 .build();
 
@@ -60,7 +60,7 @@ public class PortfoliosStatisticTest {
         StockHave stockHave = getStockHave(tradeLog);
 
         Portfolio portfolio = Portfolio.builder()
-                .includeYn(Y)
+                .includeType(Y)
                 .stockHaves(List.of(stockHave))
                 .build();
 
@@ -83,7 +83,7 @@ public class PortfoliosStatisticTest {
         StockHave stockHave = getStockHave(tradeLog);
 
         Portfolio portfolio = Portfolio.builder()
-                .includeYn(N)
+                .includeType(N)
                 .stockHaves(List.of(stockHave))
                 .build();
 
@@ -104,7 +104,7 @@ public class PortfoliosStatisticTest {
         // given
         Portfolio portfolio1 = Portfolio.builder()
                 .memberId(1L)
-                .includeYn(Y)
+                .includeType(Y)
                 .build();
 
         PortfolioStatistic statistic1 = PortfolioStatistic.of(portfolio1, getStockMap());

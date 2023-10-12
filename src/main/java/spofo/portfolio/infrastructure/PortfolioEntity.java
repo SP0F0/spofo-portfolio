@@ -62,7 +62,7 @@ public class PortfolioEntity extends BaseEntity {
         entity.name = portfolio.getName();
         entity.description = portfolio.getDescription();
         entity.currency = portfolio.getCurrency();
-        entity.includeYn = portfolio.getIncludeYn();
+        entity.includeYn = portfolio.getIncludeType();
         entity.type = portfolio.getType();
 
         return entity;
@@ -79,7 +79,7 @@ public class PortfolioEntity extends BaseEntity {
                 .name(name)
                 .description(description)
                 .currency(currency)
-                .includeYn(includeYn)
+                .includeType(includeYn)
                 .type(type)
                 .stockHaves(stockHaves)
                 .build();

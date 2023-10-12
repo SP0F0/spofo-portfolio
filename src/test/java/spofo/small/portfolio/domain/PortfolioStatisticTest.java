@@ -31,7 +31,7 @@ public class PortfolioStatisticTest {
         Portfolio portfolio = Portfolio.builder()
                 .id(1L)
                 .memberId(memberId)
-                .includeYn(Y)
+                .includeType(Y)
                 .stockHaves(List.of(stockHave))
                 .build();
 
@@ -51,7 +51,7 @@ public class PortfolioStatisticTest {
     void PortfolioStatisticWithoutStockHave() {
         // given
         Portfolio portfolio = Portfolio.builder()
-                .includeYn(Y)
+                .includeType(Y)
                 .build();
 
         // when

@@ -29,7 +29,7 @@ public class PortfolioSimpleResponse {
                 .id(portfolio.getId())
                 .name(portfolio.getName())
                 .type(portfolio.getType())
-                .includeYn(portfolio.getIncludeYn())
+                .includeYn(portfolio.getIncludeType())
                 .gain(gain)
                 .gainRate(gainRate)
                 .build();

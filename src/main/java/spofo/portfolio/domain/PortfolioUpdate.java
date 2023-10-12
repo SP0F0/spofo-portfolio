@@ -28,7 +28,7 @@ public class PortfolioUpdate {
     private Currency currency;
 
     @NotNull(message = "포트폴리오 포합여부는 필수 입력입니다.")
-    private IncludeType includeYn;
+    private IncludeType includeType;
 
     @NotNull(message = "포트폴리오 타입은 필수 입력입니다.")
     private PortfolioType type;

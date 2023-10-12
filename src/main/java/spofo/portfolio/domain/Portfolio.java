@@ -19,7 +19,7 @@ public class Portfolio {
     private final String name;
     private final String description;
     private final Currency currency;
-    private final IncludeType includeYn;
+    private final IncludeType includeType;
     private final PortfolioType type;
     private final List<StockHave> stockHaves;
 
@@ -28,7 +28,7 @@ public class Portfolio {
                 .name(create.getName())
                 .description(create.getDescription())
                 .currency(create.getCurrency())
-                .includeYn(Y)
+                .includeType(Y)
                 .type(create.getType())
                 .memberId(memberId)
                 .build();
@@ -40,7 +40,7 @@ public class Portfolio {
                 .name(update.getName())
                 .description(update.getDescription())
                 .currency(update.getCurrency())
-                .includeYn(update.getIncludeYn())
+                .includeType(update.getIncludeType())
                 .type(update.getType())
                 .memberId(memberId)
                 .build();

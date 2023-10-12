@@ -54,7 +54,7 @@ public class FakePortfolioRepository implements PortfolioRepository {
                     .name(portfolio.getName())
                     .description(portfolio.getDescription())
                     .currency(portfolio.getCurrency())
-                    .includeYn(portfolio.getIncludeYn())
+                    .includeType(portfolio.getIncludeType())
                     .stockHaves(portfolio.getStockHaves())
                     .type(portfolio.getType())
                     .build();

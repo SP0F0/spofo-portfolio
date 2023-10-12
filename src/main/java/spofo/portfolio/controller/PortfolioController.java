@@ -1,9 +1,12 @@
 package spofo.portfolio.controller;
 
+import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
 import jakarta.validation.Valid;
+import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import spofo.auth.domain.MemberInfo;
 import spofo.auth.domain.annotation.LoginMember;
-import spofo.portfolio.controller.response.CreatePortfolioResponse;
 import spofo.portfolio.controller.response.PortfolioResponse;
 import spofo.portfolio.controller.response.PortfolioStatisticResponse;
 import spofo.portfolio.controller.response.PortfoliosStatisticResponse;
@@ -70,12 +72,16 @@ public class PortfolioController {
     }
 
     @PostMapping("/portfolios")
-    public ResponseEntity<CreatePortfolioResponse> create(
+    public ResponseEntity<Map<String, Long>> create(
             @RequestBody @Valid PortfolioCreate portfolioCreate,
             @LoginMember MemberInfo memberInfo) {
         Portfolio portfolio = portfolioServiceImpl.create(portfolioCreate, memberInfo.getId());
+        Long portfolioId = portfolio.getId();
 
-        return ok(CreatePortfolioResponse.from(portfolio));
+        Map<String, Long> response = Map.of("id", portfolioId);
+
+        return created(URI.create("/portfolios/" + portfolioId))
+                .body(response);
     }
 
     @PutMapping("/portfolios/{portfolioId}")

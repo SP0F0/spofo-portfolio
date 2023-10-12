@@ -57,7 +57,7 @@ public class PortfolioEntityTest {
         assertThat(model.getName()).isEqualTo("모의 포트폴리오");
         assertThat(model.getDescription()).isEqualTo("모의 포트폴리오입니다.");
         assertThat(model.getCurrency()).isEqualTo(KRW);
-        assertThat(model.getIncludeYn()).isEqualTo(Y);
+        assertThat(model.getIncludeType()).isEqualTo(Y);
         assertThat(model.getType()).isEqualTo(FAKE);
         assertThat(model.getStockHaves()).hasSize(1);
     }
@@ -78,7 +78,7 @@ public class PortfolioEntityTest {
         assertThat(model.getName()).isEqualTo("모의 포트폴리오");
         assertThat(model.getDescription()).isEqualTo("모의 포트폴리오입니다.");
         assertThat(model.getCurrency()).isEqualTo(KRW);
-        assertThat(model.getIncludeYn()).isEqualTo(Y);
+        assertThat(model.getIncludeType()).isEqualTo(Y);
         assertThat(model.getType()).isEqualTo(FAKE);
         assertThat(model.getStockHaves()).hasSize(0);
     }
@@ -90,7 +90,7 @@ public class PortfolioEntityTest {
                 .name("모의 포트폴리오")
                 .description("모의 포트폴리오입니다.")
                 .currency(KRW)
-                .includeYn(Y)
+                .includeType(Y)
                 .type(FAKE)
                 .build();
     }

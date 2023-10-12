@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioStatistic;
+import spofo.portfolio.domain.enums.Currency;
+import spofo.portfolio.domain.enums.IncludeType;
 import spofo.portfolio.domain.enums.PortfolioType;
 
 @Data
@@ -12,26 +14,32 @@ import spofo.portfolio.domain.enums.PortfolioType;
 public class PortfolioStatisticResponse {
 
     private Long id;
+    private Long memberId;
     private String name;
     private String detail;
+    private Currency currency;
+    private IncludeType includeType;
+    private PortfolioType type;
     private BigDecimal totalAsset;
     private BigDecimal totalBuy;
     private BigDecimal gain;
     private BigDecimal gainRate;
-    private PortfolioType type;
 
     public static PortfolioStatisticResponse from(PortfolioStatistic statistic) {
         Portfolio portfolio = statistic.getPortfolio();
 
         return PortfolioStatisticResponse.builder()
                 .id(portfolio.getId())
+                .memberId(portfolio.getMemberId())
                 .name(portfolio.getName())
                 .detail(portfolio.getDescription())
+                .currency(portfolio.getCurrency())
+                .includeType(portfolio.getIncludeType())
+                .type(portfolio.getType())
                 .totalAsset(statistic.getTotalAsset())
                 .totalBuy(statistic.getTotalBuy())
                 .gain(statistic.getTotalGain())
                 .gainRate(statistic.getGainRate())
-                .type(portfolio.getType())
                 .build();
     }
 }

@@ -29,7 +29,7 @@ public class PortfoliosStatistic {
 
         if (portfolioStatistics != null) {
             for (PortfolioStatistic statistic : portfolioStatistics) {
-                if (statistic.getPortfolio().getIncludeYn() == Y) {
+                if (statistic.getPortfolio().getIncludeType() == Y) {
                     totalAsset = totalAsset.add(statistic.getTotalAsset());
                     totalBuy = totalBuy.add(statistic.getTotalBuy());
                     totalGain = totalGain.add(statistic.getTotalGain());

@@ -50,12 +50,12 @@ public class PortfolioServiceTest extends ServiceTestSupport {
         StockHave stockHave = getStockHave(tradeLog);
 
         Portfolio portfolio1 = Portfolio.builder()
-                .includeYn(Y)
+                .includeType(Y)
                 .stockHaves(List.of(stockHave))
                 .build();
 
         Portfolio portfolio2 = Portfolio.builder()
-                .includeYn(Y)
+                .includeType(Y)
                 .stockHaves(List.of(stockHave))
                 .build();
 
@@ -83,7 +83,7 @@ public class PortfolioServiceTest extends ServiceTestSupport {
         StockHave stockHave = getStockHave(tradeLog);
 
         Portfolio portfolio = Portfolio.builder()
-                .includeYn(N)
+                .includeType(N)
                 .stockHaves(List.of(stockHave))
                 .build();
 
@@ -129,13 +129,13 @@ public class PortfolioServiceTest extends ServiceTestSupport {
 
         Portfolio portfolio1 = Portfolio.builder()
                 .id(1L)
-                .includeYn(Y)
+                .includeType(Y)
                 .stockHaves(List.of(stockHave))
                 .build();
 
         Portfolio portfolio2 = Portfolio.builder()
                 .id(2L)
-                .includeYn(Y)
+                .includeType(Y)
                 .stockHaves(List.of(stockHave, stockHave))
                 .build();
 
@@ -180,7 +180,7 @@ public class PortfolioServiceTest extends ServiceTestSupport {
                 .name("포트폴리오 이름")
                 .description("포트폴리오 설명")
                 .currency(KRW)
-                .includeYn(Y)
+                .includeType(Y)
                 .type(REAL)
                 .build();
 
@@ -195,7 +195,7 @@ public class PortfolioServiceTest extends ServiceTestSupport {
         assertThat(foundPortfolio.getName()).isEqualTo("포트폴리오 이름");
         assertThat(foundPortfolio.getDescription()).isEqualTo("포트폴리오 설명");
         assertThat(foundPortfolio.getCurrency()).isEqualTo(KRW);
-        assertThat(foundPortfolio.getIncludeYn()).isEqualTo(Y);
+        assertThat(foundPortfolio.getIncludeType()).isEqualTo(Y);
         assertThat(foundPortfolio.getType()).isEqualTo(REAL);
     }
 
