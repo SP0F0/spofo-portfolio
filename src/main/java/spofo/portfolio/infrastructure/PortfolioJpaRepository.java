@@ -15,10 +15,10 @@ public interface PortfolioJpaRepository extends JpaRepository<PortfolioEntity, L
     @Query(value = "select id from member m where m.id = 1", nativeQuery = true)
     Long findmemberId();
 
-    @Query("select p "
+    @Query("select distinct p "
             + "from PortfolioEntity p "
-            + "inner join fetch p.stockHaveEntities s "
-            + "inner join s.tradeLogEntities t "
+            + "left join fetch p.stockHaveEntities s "
+            + "left join fetch s.tradeLogEntities t "
             + "where p.id = :id")
     Optional<PortfolioEntity> findByIdWithTradeLogs(@Param("id") Long id);
 
