@@ -8,8 +8,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -51,7 +52,7 @@ public class PortfolioEntity extends BaseEntity {
     private PortfolioType type;
 
     @OneToMany(mappedBy = "portfolioEntity")
-    private List<StockHaveEntity> stockHaveEntities = new ArrayList<>();
+    private Set<StockHaveEntity> stockHaveEntities = new LinkedHashSet<>();
 
     public static PortfolioEntity from(Portfolio portfolio) {
         PortfolioEntity entity = new PortfolioEntity();

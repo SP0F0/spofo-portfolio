@@ -8,8 +8,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,7 +38,7 @@ public class StockHaveEntity extends BaseEntity {
     private PortfolioEntity portfolioEntity;
 
     @OneToMany(mappedBy = "stockHaveEntity")
-    private List<TradeLogEntity> tradeLogEntities = new ArrayList<>();
+    private Set<TradeLogEntity> tradeLogEntities = new LinkedHashSet<>();
 
     public static StockHaveEntity from(StockHave stockHave) {
         StockHaveEntity entity = new StockHaveEntity();
