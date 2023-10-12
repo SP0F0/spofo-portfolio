@@ -12,7 +12,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -25,10 +24,9 @@ import spofo.stockhave.domain.StockHave;
 import spofo.stockhave.infrastructure.StockHaveEntity;
 
 @Entity
-@Table(name = "portfolio")
 @Getter
+@Table(name = "portfolio")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class PortfolioEntity extends BaseEntity {
 
     @Id
