@@ -1,12 +1,14 @@
 package spofo.portfolio.controller;
 
+import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
 import jakarta.validation.Valid;
+import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,75 +16,87 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import spofo.portfolio.dto.request.CreatePortfolioRequest;
-import spofo.portfolio.dto.request.UpdatePortfolioRequest;
-import spofo.portfolio.dto.response.CreatePortfolioResponse;
-import spofo.portfolio.dto.response.OnePortfolioResponse;
-import spofo.portfolio.dto.response.PortfolioResponse;
-import spofo.portfolio.dto.response.PortfolioSimpleResponse;
-import spofo.portfolio.dto.response.TotalPortfolioResponse;
-import spofo.portfolio.repository.PortfolioRepository;
-import spofo.portfolio.service.PortfolioService;
+import spofo.auth.domain.MemberInfo;
+import spofo.auth.domain.annotation.LoginMember;
+import spofo.portfolio.controller.response.PortfolioResponse;
+import spofo.portfolio.controller.response.PortfolioStatisticResponse;
+import spofo.portfolio.controller.response.PortfoliosStatisticResponse;
+import spofo.portfolio.domain.Portfolio;
+import spofo.portfolio.domain.PortfolioCreate;
+import spofo.portfolio.domain.PortfolioStatistic;
+import spofo.portfolio.domain.PortfolioUpdate;
+import spofo.portfolio.domain.PortfoliosStatistic;
+import spofo.portfolio.service.PortfolioServiceImpl;
 
 @RestController
 @RequiredArgsConstructor
 public class PortfolioController {
 
-    private final PortfolioService portfolioService;
-    private final PortfolioRepository portfolioRepository;
+    private final PortfolioServiceImpl portfolioServiceImpl;
 
     @GetMapping("/portfolios/total")
-    public ResponseEntity<TotalPortfolioResponse> getTotalPortfolio() {
-        TotalPortfolioResponse totalPortfolioResponse = portfolioService.getTotalPortfolio(
-                /*portfolioService.getMemberId()*/
-                portfolioRepository.findmemberId()
-        );
-        return ok(totalPortfolioResponse);
+    public ResponseEntity<PortfoliosStatisticResponse> getPortfoliosStatistic(
+            @LoginMember MemberInfo memberInfo) {
+        PortfoliosStatistic statistic =
+                portfolioServiceImpl.getPortfoliosStatistic(memberInfo.getId());
+
+        return ok(PortfoliosStatisticResponse.from(statistic));
     }
 
     @GetMapping("/portfolios")
-    public ResponseEntity<List<PortfolioSimpleResponse>> getPortfolioSimple() {
-        List<PortfolioSimpleResponse> portfolioSimpleResponse = portfolioService.getPortfolioSimple(
-                /*portfolioService.getMemberId()*/
-                portfolioRepository.findmemberId()
-        );
-        return ok(portfolioSimpleResponse);
-    }
+    public ResponseEntity<List<PortfolioStatisticResponse>> getPortfolioSimple(
+            @LoginMember MemberInfo memberInfo) {
+        List<PortfolioStatisticResponse> portfolios
+                = portfolioServiceImpl.getPortfolios(memberInfo.getId())
+                .stream()
+                .map(PortfolioStatisticResponse::from)
+                .toList();
 
-    @PostMapping("/portfolios")
-    public ResponseEntity<CreatePortfolioResponse> createPortfolio(
-            @RequestBody @Validated CreatePortfolioRequest createPortfolioRequest) {
-        CreatePortfolioResponse createPortfolioResponse =
-                portfolioService.createPortfolio(createPortfolioRequest.toEntity());
-        return ok(createPortfolioResponse);
+        return ok(portfolios);
     }
 
     @GetMapping("/portfolios/{portfolioId}")
-    public ResponseEntity<OnePortfolioResponse> getOnePortfolio(
+    public ResponseEntity<PortfolioResponse> getPortfolio(
             @PathVariable(name = "portfolioId") Long portfolioId) {
-        OnePortfolioResponse onePortfolioResponse = portfolioService.getOnePortfolio(portfolioId);
-        return ok(onePortfolioResponse);
+        Portfolio portfolio = portfolioServiceImpl.getPortfolio(portfolioId);
+
+        return ok(PortfolioResponse.from(portfolio));
     }
 
     @GetMapping("/portfolios/{portfolioId}/total")
-    public ResponseEntity<PortfolioResponse> getPortfolio(
+    public ResponseEntity<PortfolioStatisticResponse> getPortfolioStatistic(
             @PathVariable(name = "portfolioId") Long portfolioId) {
-        PortfolioResponse portfolioResponse = portfolioService.getPortfolio(portfolioId);
-        return ok().body(portfolioResponse);
+        PortfolioStatistic portfolio = portfolioServiceImpl.getPortfolioStatistic(portfolioId);
+
+        return ok(PortfolioStatisticResponse.from(portfolio));
+    }
+
+    @PostMapping("/portfolios")
+    public ResponseEntity<Map<String, Long>> create(
+            @RequestBody @Valid PortfolioCreate portfolioCreate,
+            @LoginMember MemberInfo memberInfo) {
+        Portfolio portfolio = portfolioServiceImpl.create(portfolioCreate, memberInfo.getId());
+        Long portfolioId = portfolio.getId();
+
+        Map<String, Long> response = Map.of("id", portfolioId);
+
+        return created(URI.create("/portfolios/" + portfolioId))
+                .body(response);
     }
 
     @PutMapping("/portfolios/{portfolioId}")
-    public ResponseEntity<Void> updatePortfolio(
+    public ResponseEntity<Void> update(
             @PathVariable(name = "portfolioId") Long portfolioId,
-            @RequestBody @Valid UpdatePortfolioRequest updatePortfolioRequest) {
-        portfolioService.updatePortfolio(portfolioId, updatePortfolioRequest);
-        return ok().body(null);
+            @RequestBody @Valid PortfolioUpdate request,
+            @LoginMember MemberInfo memberInfo) {
+        portfolioServiceImpl.update(request, portfolioId, memberInfo.getId());
+        return ok().build();
     }
 
     @DeleteMapping("/portfolios/{portfolioId}")
-    public ResponseEntity<Void> deletePortfolio(
+    public ResponseEntity<Void> delete(
             @PathVariable(name = "portfolioId") Long portfolioId) {
-        portfolioService.deletePortfolio(portfolioId);
-        return ok().body(null);
+        portfolioServiceImpl.delete(portfolioId);
+        return ok().build();
     }
 }

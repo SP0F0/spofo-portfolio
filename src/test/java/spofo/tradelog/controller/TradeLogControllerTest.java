@@ -1,7 +1,7 @@
 package spofo.tradelog.controller;
 
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -16,9 +16,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.test.web.servlet.MockMvc;
-import spofo.tradelog.dto.response.TradeLogResponse;
-import spofo.tradelog.enums.TradeType;
-import spofo.tradelog.service.TradeLogService;
+import spofo.tradelog.controller.response.TradeLogResponse;
+import spofo.tradelog.domain.enums.TradeType;
+import spofo.tradelog.service.TradeLogServiceImpl;
 
 @WebMvcTest(TradeLogController.class)
 @MockBean(JpaMetamodelMappingContext.class)
@@ -32,7 +32,7 @@ class TradeLogControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private TradeLogService tradeLogService;
+    private TradeLogServiceImpl tradeLogServiceImpl;
 
     private static Long PORTFOLIO_ID = 1L;
     private static Long STOCK_ID = 1L;
@@ -43,12 +43,12 @@ class TradeLogControllerTest {
     void viewTradeLogs() throws Exception {
 
         // given
-        given(tradeLogService.getTradeLogs(STOCK_ID))
+        given(tradeLogServiceImpl.getTradeLogs(STOCK_ID))
                 .willReturn(List.of(
                         TradeLogResponse.builder()
                                 .id(1L)
                                 .price(BigDecimal.valueOf(1000))
-                                .type(TradeType.B)
+                                .type(TradeType.BUY)
                                 .profit(BigDecimal.valueOf(0))
                                 .quantity(BigDecimal.valueOf(2))
                                 .totalPrice(BigDecimal.valueOf(2000))

@@ -1,7 +1,7 @@
 package spofo.portfolio.dto.request;
 
 import lombok.Getter;
-import spofo.portfolio.enums.IncludeType;
+import spofo.portfolio.domain.enums.IncludeType;
 
 @Getter
 public class UpdatePortfolioRequest {
