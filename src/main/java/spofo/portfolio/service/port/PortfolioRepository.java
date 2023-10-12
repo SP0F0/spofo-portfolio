@@ -14,8 +14,6 @@ public interface PortfolioRepository {
 
     List<Portfolio> findByMemberIdWithTradeLogs(Long id);
 
-    Portfolio getReferenceById(Long id);
-
     Portfolio save(Portfolio portfolio);
 
     void delete(Portfolio portfolio);
