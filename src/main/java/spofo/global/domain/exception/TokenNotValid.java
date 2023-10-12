@@ -2,9 +2,9 @@ package spofo.global.domain.exception;
 
 import static spofo.global.domain.exception.ErrorCode.MEMBER_NOT_VALID;
 
-public class TokenNotValidException extends PortfolioException {
+public class TokenNotValid extends PortfolioException {
 
-    public TokenNotValidException() {
+    public TokenNotValid() {
         super(MEMBER_NOT_VALID);
     }
 }
