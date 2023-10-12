@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import spofo.global.domain.exception.PortfolioNotFound;
 import spofo.mock.FakePortfolioRepository;
 import spofo.mock.FakeStockServerService;
+import spofo.portfolio.controller.port.PortfolioService;
 import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioCreate;
 import spofo.portfolio.domain.PortfolioStatistic;
@@ -29,13 +30,12 @@ import spofo.portfolio.domain.PortfoliosStatistic;
 import spofo.portfolio.domain.enums.Currency;
 import spofo.portfolio.domain.enums.IncludeType;
 import spofo.portfolio.domain.enums.PortfolioType;
-import spofo.portfolio.service.PortfolioService;
 import spofo.portfolio.service.PortfolioServiceImpl;
 import spofo.stock.domain.Stock;
 import spofo.stockhave.domain.StockHave;
 import spofo.tradelog.domain.TradeLog;
 
-public class PortfolioServiceImplTest {
+public class PortfolioServiceTest {
 
     private PortfolioService portfolioService;
     private FakeStockServerService fakeStockServerService;
@@ -217,7 +217,7 @@ public class PortfolioServiceImplTest {
     }
 
     @Test
-    @DisplayName("포트폴리오 1건을 통계외 함께 조회한다.")
+    @DisplayName("포트폴리오 1건을 통계와 함께 조회한다.")
     void getPortfolioStatistic() {
         // given
         Long portfolioId = 1L;

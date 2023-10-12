@@ -8,16 +8,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import spofo.stockhave.infrastructure.StockHaveEntity;
 import spofo.stockhave.infrastructure.StockHaveJpaRepository;
+import spofo.tradelog.controller.port.TradeLogService;
 import spofo.tradelog.controller.response.TradeLogResponse;
 import spofo.tradelog.domain.CreateTradeLogRequest;
 import spofo.tradelog.domain.enums.TradeType;
 import spofo.tradelog.infrastructure.TradeLogEntity;
 import spofo.tradelog.infrastructure.TradeLogJpaRepository;
+import spofo.tradelog.service.port.TradeLogRepository;
 
 @Service
 @RequiredArgsConstructor
 public class TradeLogServiceImpl implements TradeLogService {
 
+    private final TradeLogRepository tradeLogRepository;
     private final TradeLogJpaRepository tradeLogJpaRepository;
     private final StockHaveJpaRepository stockHaveJpaRepository;
 
@@ -39,6 +42,11 @@ public class TradeLogServiceImpl implements TradeLogService {
                 .map(tradeLog -> TradeLogResponse.from(tradeLog, getProfit(tradeLog),
                         getTotalPrice(tradeLog)))
                 .toList();
+    }
+
+    @Override
+    public void deleteByStockHaveId(Long id) {
+        tradeLogRepository.deleteByStockHaveId(id);
     }
 
     /**

@@ -14,4 +14,5 @@ public interface StockHaveRepository {
 
     void deleteById(Long id);
 
+    void deleteByPortfolioId(Long id);
 }

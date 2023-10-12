@@ -6,4 +6,5 @@ public interface TradeLogRepository {
 
     TradeLog save(TradeLog tradeLog);
 
+    void deleteByStockHaveId(Long id);
 }

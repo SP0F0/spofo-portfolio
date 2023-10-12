@@ -1,8 +1,6 @@
 package spofo.stockhave.infrastructure;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -15,7 +13,6 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import spofo.global.infrastructure.BaseEntity;
 import spofo.portfolio.infrastructure.PortfolioEntity;
 import spofo.stockhave.domain.StockHave;
@@ -35,12 +32,11 @@ public class StockHaveEntity extends BaseEntity {
 
     private String stockCode; // 종목 코드 (FK)
 
+    @ManyToOne
     @JoinColumn(name = "portfolio_id")
-    @ManyToOne(fetch = FetchType.LAZY) // Fecth 타입 Lazy 설정, Default: Eager
-    @Setter
     private PortfolioEntity portfolioEntity;
 
-    @OneToMany(mappedBy = "stockHaveEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "stockHaveEntity")
     private List<TradeLogEntity> tradeLogEntities = new ArrayList<>();
 
     public static StockHaveEntity from(StockHave stockHave) {
@@ -64,13 +60,5 @@ public class StockHaveEntity extends BaseEntity {
                 .portfolio(portfolioEntity.toModel())
                 .tradeLogs(tradeLogs)
                 .build();
-    }
-
-    public void addStockHaveEntity(TradeLogEntity entity) {
-        if (tradeLogEntities.size() > 0) {
-            tradeLogEntities.remove(entity);
-        }
-        entity.setStockHaveEntity(this);
-        tradeLogEntities.add(entity);
     }
 }

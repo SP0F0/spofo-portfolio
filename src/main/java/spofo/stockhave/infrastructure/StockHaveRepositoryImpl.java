@@ -34,4 +34,9 @@ public class StockHaveRepositoryImpl implements StockHaveRepository {
     public void deleteById(Long id) {
         stockHaveJpaRepository.deleteById(id);
     }
+
+    @Override
+    public void deleteByPortfolioId(Long id) {
+        stockHaveJpaRepository.deleteByPortfolioEntityId(id);
+    }
 }

@@ -12,4 +12,5 @@ public interface StockHaveJpaRepository extends JpaRepository<StockHaveEntity, L
     @Query(value = "SELECT * FROM stock_have sh WHERE sh.portfolio_id = :portfolioId", nativeQuery = true)
     List<StockHaveEntity> findByPortfolioId(@Param("portfolioId") Long portfolioId);
 
+    void deleteByPortfolioEntityId(Long id);
 }

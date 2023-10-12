@@ -1,4 +1,4 @@
-package spofo.stockhave.service;
+package spofo.stockhave.controller.port;
 
 import java.util.List;
 import spofo.stockhave.controller.response.AddStockResponse;
@@ -19,4 +19,6 @@ public interface StockHaveService {
     List<StockHaveResponse> getStocksByCode(Long portfolioId, String stockCode);
 
     StockHave addStock(StockHave stockHave);
+
+    void deleteByPortfolioId(Long id);
 }

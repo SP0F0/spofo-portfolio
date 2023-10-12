@@ -1,4 +1,4 @@
-package spofo.portfolio.service;
+package spofo.portfolio.controller.port;
 
 import java.util.List;
 import spofo.portfolio.domain.Portfolio;
