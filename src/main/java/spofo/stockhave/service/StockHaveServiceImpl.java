@@ -30,8 +30,6 @@ import spofo.stockhave.infrastructure.StockHaveEntity;
 import spofo.stockhave.infrastructure.StockHaveJpaRepository;
 import spofo.stockhave.service.port.StockHaveRepository;
 import spofo.tradelog.domain.CreateTradeLogRequest;
-import spofo.tradelog.domain.TradeLog;
-import spofo.tradelog.domain.TradeLogCreate;
 import spofo.tradelog.infrastructure.TradeLogEntity;
 import spofo.tradelog.infrastructure.TradeLogJpaRepository;
 import spofo.tradelog.service.TradeLogServiceImpl;
@@ -224,8 +222,8 @@ public class StockHaveServiceImpl implements StockHaveService {
         try {
             ((getCurrentPrice(stockCode).multiply(getQuantity(stockId)))
                     .divide(getAvgPrice(stockId)))
-                    .multiply(BigDecimal.valueOf(100))
-                    .subtract(BigDecimal.valueOf(100));
+                    .multiply(getBD(100))
+                    .subtract(getBD(100));
         } catch (ArithmeticException ae) {
             throw new RuntimeException(ae);
         }

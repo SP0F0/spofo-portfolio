@@ -1,10 +1,10 @@
 package spofo.small.portfolio.service;
 
 import static java.math.BigDecimal.ZERO;
-import static java.math.BigDecimal.valueOf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
+import static spofo.global.component.utils.CommonUtils.getBD;
 import static spofo.global.domain.exception.ErrorCode.PORTFOLIO_NOT_FOUND;
 import static spofo.portfolio.domain.enums.Currency.KRW;
 import static spofo.portfolio.domain.enums.IncludeType.N;
@@ -13,7 +13,6 @@ import static spofo.portfolio.domain.enums.PortfolioType.FAKE;
 import static spofo.portfolio.domain.enums.PortfolioType.REAL;
 import static spofo.tradelog.domain.enums.TradeType.BUY;
 
-import java.math.BigDecimal;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -52,7 +51,7 @@ public class PortfolioServiceTest {
         Stock stock = Stock.builder()
                 .code(TEST_STOCK_CODE)
                 .name("삼성전자")
-                .price(BigDecimal.valueOf(66000))
+                .price(getBD(66000))
                 .sector("반도체")
                 .build();
 
@@ -79,10 +78,10 @@ public class PortfolioServiceTest {
         PortfoliosStatistic portfoliosStatistic = portfolioService.getPortfoliosStatistic(memberId);
 
         // then
-        assertThat(portfoliosStatistic.getTotalAsset()).isEqualTo(BigDecimal.valueOf(66000));
-        assertThat(portfoliosStatistic.getGain()).isEqualTo(BigDecimal.valueOf(33000));
+        assertThat(portfoliosStatistic.getTotalAsset()).isEqualTo(getBD(66000));
+        assertThat(portfoliosStatistic.getGain()).isEqualTo(getBD(33000));
         assertThat(portfoliosStatistic.getGainRate()).isEqualTo(
-                BigDecimal.valueOf(100).setScale(2));
+                getBD(100).setScale(2));
     }
 
     @Test
@@ -105,8 +104,8 @@ public class PortfolioServiceTest {
         PortfoliosStatistic portfoliosStatistic = portfolioService.getPortfoliosStatistic(memberId);
 
         // then
-        assertThat(portfoliosStatistic.getTotalAsset()).isEqualTo(BigDecimal.valueOf(0));
-        assertThat(portfoliosStatistic.getGain()).isEqualTo(BigDecimal.valueOf(0));
+        assertThat(portfoliosStatistic.getTotalAsset()).isEqualTo(getBD(0));
+        assertThat(portfoliosStatistic.getGain()).isEqualTo(getBD(0));
         assertThat(portfoliosStatistic.getGainRate()).isEqualTo(ZERO);
     }
 
@@ -120,8 +119,8 @@ public class PortfolioServiceTest {
         PortfoliosStatistic portfoliosStatistic = portfolioService.getPortfoliosStatistic(memberId);
 
         // then
-        assertThat(portfoliosStatistic.getTotalAsset()).isEqualTo(BigDecimal.valueOf(0));
-        assertThat(portfoliosStatistic.getGain()).isEqualTo(BigDecimal.valueOf(0));
+        assertThat(portfoliosStatistic.getTotalAsset()).isEqualTo(getBD(0));
+        assertThat(portfoliosStatistic.getGain()).isEqualTo(getBD(0));
         assertThat(portfoliosStatistic.getGainRate()).isEqualTo(ZERO);
     }
 
@@ -153,11 +152,11 @@ public class PortfolioServiceTest {
         assertThat(portfolios).hasSize(2)
                 .extracting("portfolio.id", "totalAsset", "totalBuy", "totalGain", "gainRate")
                 .containsExactlyInAnyOrder(
-                        tuple(1L, BigDecimal.valueOf(66000), BigDecimal.valueOf(33000),
-                                BigDecimal.valueOf(33000), BigDecimal.valueOf(100).setScale(2)),
+                        tuple(1L, getBD(66000), getBD(33000),
+                                getBD(33000), getBD(100).setScale(2)),
 
-                        tuple(2L, BigDecimal.valueOf(132000), BigDecimal.valueOf(66000),
-                                BigDecimal.valueOf(66000), BigDecimal.valueOf(100).setScale(2))
+                        tuple(2L, getBD(132000), getBD(66000),
+                                getBD(66000), getBD(100).setScale(2))
                 );
     }
 
@@ -251,10 +250,10 @@ public class PortfolioServiceTest {
         assertThat(savedPortfolio.getCurrency()).isEqualTo(KRW);
         assertThat(savedPortfolio.getIncludeType()).isEqualTo(Y);
         assertThat(savedPortfolio.getType()).isEqualTo(REAL);
-        assertThat(statistic.getTotalAsset()).isEqualTo(BigDecimal.valueOf(66000));
-        assertThat(statistic.getTotalBuy()).isEqualTo(BigDecimal.valueOf(33000));
-        assertThat(statistic.getTotalGain()).isEqualTo(BigDecimal.valueOf(33000));
-        assertThat(statistic.getGainRate()).isEqualTo(BigDecimal.valueOf(100).setScale(2));
+        assertThat(statistic.getTotalAsset()).isEqualTo(getBD(66000));
+        assertThat(statistic.getTotalBuy()).isEqualTo(getBD(33000));
+        assertThat(statistic.getTotalGain()).isEqualTo(getBD(33000));
+        assertThat(statistic.getGainRate()).isEqualTo(getBD(100).setScale(2));
     }
 
     @Test
@@ -386,8 +385,8 @@ public class PortfolioServiceTest {
     private TradeLog getTradeLog() {
         return TradeLog.builder()
                 .type(BUY)
-                .price(valueOf(33000))
-                .quantity(valueOf(1))
+                .price(getBD(33000))
+                .quantity(getBD(1))
                 .build();
     }
 }
