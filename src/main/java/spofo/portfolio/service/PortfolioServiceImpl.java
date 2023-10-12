@@ -12,7 +12,7 @@ import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioCreate;
 import spofo.portfolio.domain.PortfolioStatistic;
 import spofo.portfolio.domain.PortfolioUpdate;
-import spofo.portfolio.domain.PortfoliosStatistic;
+import spofo.portfolio.domain.TotalPortofoliosStatistic;
 import spofo.portfolio.service.port.PortfolioRepository;
 import spofo.stock.domain.Stock;
 import spofo.stock.service.StockServerService;
@@ -28,10 +28,10 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     // 전체 포트폴리오 자산 조회 api-001
     @Override
-    public PortfoliosStatistic getPortfoliosStatistic(Long memberId) {
+    public TotalPortofoliosStatistic getPortfoliosStatistic(Long memberId) {
         List<Portfolio> portfolios = portfolioRepository.findByMemberIdWithTradeLogs(memberId);
         List<PortfolioStatistic> portfolioStatistics = getPortfolioStatistics(portfolios);
-        return PortfoliosStatistic.of(portfolioStatistics);
+        return TotalPortofoliosStatistic.of(portfolioStatistics);
     }
 
     // 포트폴리오 목록 조회 api-002
