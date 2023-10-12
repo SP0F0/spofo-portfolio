@@ -57,7 +57,7 @@ class TradeLogServiceImplTest {
                 .build();
 
         // then
-        tradeLogServiceImpl.createTradeLog(mockCreateTradeLogRequest);
+//        tradeLogServiceImpl.createTradeLog(mockCreateTradeLogRequest);
 
         // when
         then(tradeLogJpaRepository).should().save(any(TradeLogEntity.class));

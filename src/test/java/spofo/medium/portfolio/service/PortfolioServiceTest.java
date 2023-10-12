@@ -1,20 +1,31 @@
 package spofo.medium.portfolio.service;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
+import static spofo.global.component.utils.CommonUtils.*;
 import static spofo.global.domain.exception.ErrorCode.PORTFOLIO_NOT_FOUND;
 import static spofo.portfolio.domain.enums.Currency.KRW;
 import static spofo.portfolio.domain.enums.PortfolioType.REAL;
+import static spofo.tradelog.domain.enums.TradeType.*;
 
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.annotation.Rollback;
+import spofo.global.component.utils.CommonUtils;
 import spofo.global.domain.exception.PortfolioNotFound;
 import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioCreate;
+import spofo.portfolio.domain.PortfolioStatistic;
 import spofo.portfolio.domain.PortfolioUpdate;
 import spofo.portfolio.domain.PortfoliosStatistic;
+import spofo.stockhave.domain.StockHave;
+import spofo.stockhave.domain.StockHaveCreate;
 import spofo.support.service.ServiceTestSupport;
+import spofo.tradelog.domain.TradeLogCreate;
+import spofo.tradelog.domain.enums.TradeType;
 
 public class PortfolioServiceTest extends ServiceTestSupport {
 
@@ -94,9 +105,38 @@ public class PortfolioServiceTest extends ServiceTestSupport {
     }
 
     @Test
-    @DisplayName("포트폴리오 1건을 통계와 함께 조회한다.")
+    @Rollback(false)
+    @DisplayName("포트폴리오 1건을 통계와 함께 조회한다.") // api-004
     void getPortfolioStatistic() {
-        fail("테스트 작성 필요");
+        // given
+        PortfolioCreate createPortfolio = getCreatePortfolio();
+        Portfolio savedPortfolio = portfolioService.create(createPortfolio, MEMBER_ID);
+
+        StockHaveCreate stockHaveCreate = StockHaveCreate.builder()
+                .stockCode("000660")
+                .build();
+
+        StockHave savedStockHave = stockHaveService.addStock(stockHaveCreate, savedPortfolio);
+
+        TradeLogCreate tradeLogCreate = TradeLogCreate.builder()
+                .type(BUY)
+                .price(getBD(10000))
+                .tradeDate(LocalDateTime.now())
+                .marketPrice(getBD(20000))
+//                .stockHave(savedStockHave)
+                .quantity(getBD(10))
+                .type(BUY)
+                .build();
+
+        tradeLogService.createTradeLog(tradeLogCreate, savedStockHave);
+
+        // when
+        PortfolioStatistic statistic = portfolioService.getPortfolioStatistic(MEMBER_ID);
+
+        // then
+//        assertThat(statistic.getTotalGain()).isEqualTo(getBD(100000));
+        assertThat(statistic.getPortfolio().getId()).isEqualTo(savedPortfolio.getId());
+//        assertThat(statistic.getTotalBuy()).isEqualTo()
     }
 
     @Test

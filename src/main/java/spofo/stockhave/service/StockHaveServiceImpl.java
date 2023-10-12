@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
+import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.infrastructure.PortfolioEntity;
 import spofo.portfolio.infrastructure.PortfolioJpaRepository;
 import spofo.stockhave.controller.port.StockHaveService;
@@ -24,11 +25,13 @@ import spofo.stockhave.controller.response.AddStockResponse;
 import spofo.stockhave.controller.response.StockHaveResponse;
 import spofo.stockhave.domain.AddStockRequest;
 import spofo.stockhave.domain.StockHave;
+import spofo.stockhave.domain.StockHaveCreate;
 import spofo.stockhave.infrastructure.StockHaveEntity;
 import spofo.stockhave.infrastructure.StockHaveJpaRepository;
 import spofo.stockhave.service.port.StockHaveRepository;
 import spofo.tradelog.domain.CreateTradeLogRequest;
 import spofo.tradelog.domain.TradeLog;
+import spofo.tradelog.domain.TradeLogCreate;
 import spofo.tradelog.infrastructure.TradeLogEntity;
 import spofo.tradelog.infrastructure.TradeLogJpaRepository;
 import spofo.tradelog.service.TradeLogServiceImpl;
@@ -89,33 +92,33 @@ public class StockHaveServiceImpl implements StockHaveService {
                         .marketPrice(getCurrentPrice(sh.getStockCode()))
                         .build();
 
-        tradeLogServiceImpl.createTradeLog(createTradeLogRequest);
+//        tradeLogServiceImpl.createTradeLog(new TradeLogCreate());
 
         return AddStockResponse.from(sh);
     }
 
     @Override
     @Transactional
-    public StockHave addStock(StockHave stockHave) {
+    public StockHave addStock(StockHaveCreate request, Portfolio portfolio) {
         // stockhave 만들기
         // tradeLog 만들기
 
         // 쌍방 연관관계 만들기
 
-        //StockHave stockHave1 = stockHave.addTradeLog(tradeLog);
+        StockHave stockHave = StockHave.of(request, portfolio);
         StockHave savedStockHave = stockHaveRepository.save(stockHave);
 
-        TradeLog tradeLog = TradeLog.builder()
-                .marketPrice(getBD(10000))
-                .quantity(getBD(100))
-                .price(getBD(10000))
-                .tradeDate(LocalDateTime.now())
-                .type(BUY)
-                .stockHave(savedStockHave)
-                .build();
-        // savedStockHave.addTradeLog(tradeLog);
-        //TradeLog tradeLog1 = tradeLog.addStockHave(savedStockHave);
-        TradeLog savedTradeLogs = tradeLogRepository.save(tradeLog);
+//        TradeLog tradeLog = TradeLog.builder()
+//                .marketPrice(getBD(10000))
+//                .quantity(getBD(100))
+//                .price(getBD(10000))
+//                .tradeDate(LocalDateTime.now())
+//                .type(BUY)
+//                .stockHave(savedStockHave)
+//                .build();
+//        // savedStockHave.addTradeLog(tradeLog);
+//        //TradeLog tradeLog1 = tradeLog.addStockHave(savedStockHave);
+//        TradeLog savedTradeLogs = tradeLogRepository.save(tradeLog);
         return savedStockHave;
     }
 

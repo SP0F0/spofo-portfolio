@@ -35,7 +35,7 @@ public class StockHaveServiceTest extends ServiceTestSupport {
         StockHave stockHave = StockHave.of(stockHaveCreate, savedPortfolio);
 
         // when
-        StockHave savedStockHave = stockHaveService.addStock(stockHave);
+        StockHave savedStockHave = stockHaveService.addStock(stockHaveCreate, savedPortfolio);
 
         // then
         System.out.println(savedStockHave);

@@ -6,11 +6,14 @@ import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import spofo.stockhave.domain.StockHave;
 import spofo.stockhave.infrastructure.StockHaveEntity;
 import spofo.stockhave.infrastructure.StockHaveJpaRepository;
 import spofo.tradelog.controller.port.TradeLogService;
 import spofo.tradelog.controller.response.TradeLogResponse;
 import spofo.tradelog.domain.CreateTradeLogRequest;
+import spofo.tradelog.domain.TradeLog;
+import spofo.tradelog.domain.TradeLogCreate;
 import spofo.tradelog.domain.enums.TradeType;
 import spofo.tradelog.infrastructure.TradeLogEntity;
 import spofo.tradelog.infrastructure.TradeLogJpaRepository;
@@ -25,8 +28,9 @@ public class TradeLogServiceImpl implements TradeLogService {
     private final StockHaveJpaRepository stockHaveJpaRepository;
 
     @Override
-    public void createTradeLog(CreateTradeLogRequest createTradeLogRequest) {
-        TradeLogEntity tradeLogEntity = createTradeLogRequest.toEntity();
+    public void createTradeLog(TradeLogCreate request, StockHave stockHave) {
+        TradeLog tradeLog = TradeLog.of(request, stockHave);
+        TradeLogEntity tradeLogEntity = TradeLogEntity.from(tradeLog);
         tradeLogJpaRepository.save(tradeLogEntity);
     }
 

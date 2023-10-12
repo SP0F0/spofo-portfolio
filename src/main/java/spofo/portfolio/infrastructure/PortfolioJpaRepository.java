@@ -18,7 +18,7 @@ public interface PortfolioJpaRepository extends JpaRepository<PortfolioEntity, L
     @Query("select p "
             + "from PortfolioEntity p "
             + "inner join fetch p.stockHaveEntities s "
-            + "inner join fetch s.tradeLogEntities t "
+            + "inner join s.tradeLogEntities t "
             + "where p.id = :id")
     Optional<PortfolioEntity> findByIdWithTradeLogs(@Param("id") Long id);
 
