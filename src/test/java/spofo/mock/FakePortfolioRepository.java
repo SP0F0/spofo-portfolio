@@ -41,11 +41,6 @@ public class FakePortfolioRepository implements PortfolioRepository {
     }
 
     @Override
-    public Portfolio getReferenceById(Long id) {
-        return null;
-    }
-
-    @Override
     public Portfolio save(Portfolio portfolio) {
         if (portfolio.getId() == null || portfolio.getId() == 0) {
             Portfolio newPortfolio = Portfolio.builder()
