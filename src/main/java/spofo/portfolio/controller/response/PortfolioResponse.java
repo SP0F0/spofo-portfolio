@@ -14,7 +14,7 @@ public class PortfolioResponse {
     private final Long id;
     private final Long memberId;
     private final String name;
-    private final String detail;
+    private final String description;
     private final Currency currency;
     private final IncludeType includeType;
     private final PortfolioType type;
@@ -24,7 +24,7 @@ public class PortfolioResponse {
                 .id(portfolio.getId())
                 .memberId(portfolio.getMemberId())
                 .name(portfolio.getName())
-                .detail(portfolio.getDescription())
+                .description(portfolio.getDescription())
                 .currency(portfolio.getCurrency())
                 .includeType(portfolio.getIncludeType())
                 .type(portfolio.getType())

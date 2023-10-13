@@ -44,7 +44,7 @@ public class PortfolioEntity extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'Y'")
-    private IncludeType includeYn;
+    private IncludeType includeType;
 
     @Enumerated(EnumType.STRING)
     private PortfolioType type;
@@ -60,7 +60,7 @@ public class PortfolioEntity extends BaseEntity {
         entity.name = portfolio.getName();
         entity.description = portfolio.getDescription();
         entity.currency = portfolio.getCurrency();
-        entity.includeYn = portfolio.getIncludeType();
+        entity.includeType = portfolio.getIncludeType();
         entity.type = portfolio.getType();
 
         return entity;
@@ -77,7 +77,7 @@ public class PortfolioEntity extends BaseEntity {
                 .name(name)
                 .description(description)
                 .currency(currency)
-                .includeType(includeYn)
+                .includeType(includeType)
                 .type(type)
                 .stockHaves(stockHaves)
                 .build();

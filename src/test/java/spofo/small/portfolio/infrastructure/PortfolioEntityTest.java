@@ -31,7 +31,7 @@ public class PortfolioEntityTest {
         assertThat(entity.getName()).isEqualTo("모의 포트폴리오");
         assertThat(entity.getDescription()).isEqualTo("모의 포트폴리오입니다.");
         assertThat(entity.getCurrency()).isEqualTo(KRW);
-        assertThat(entity.getIncludeYn()).isEqualTo(Y);
+        assertThat(entity.getIncludeType()).isEqualTo(Y);
         assertThat(entity.getType()).isEqualTo(FAKE);
     }
 

@@ -19,7 +19,7 @@ public class PortfolioSimpleResponse {
     private Long id;
     private String name;
     private PortfolioType type;
-    private IncludeType includeYn;
+    private IncludeType includeType;
     private BigDecimal gain;
     private BigDecimal gainRate;
 
@@ -29,7 +29,7 @@ public class PortfolioSimpleResponse {
                 .id(portfolio.getId())
                 .name(portfolio.getName())
                 .type(portfolio.getType())
-                .includeYn(portfolio.getIncludeType())
+                .includeType(portfolio.getIncludeType())
                 .gain(gain)
                 .gainRate(gainRate)
                 .build();
