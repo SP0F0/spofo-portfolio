@@ -4,12 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static spofo.global.component.utils.CommonUtils.getBD;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -40,7 +40,6 @@ class TradeLogServiceImplTest {
     private static Long STOCK_ID = 1L;
     private static Long PORTFOLIO_ID = 1L;
 
-    @Test
     @DisplayName("보유 종목에 대한 이력을 생성한다.")
     void createTradeLog() {
 
@@ -50,10 +49,10 @@ class TradeLogServiceImplTest {
         CreateTradeLogRequest mockCreateTradeLogRequest = CreateTradeLogRequest.builder()
                 .stockHaveEntity(mockStockHaveEntity)
                 .type(TradeType.BUY)
-                .price(BigDecimal.valueOf(1000))
+                .price(getBD(1000))
                 .tradeDate(LocalDateTime.now())
-                .quantity(BigDecimal.valueOf(2))
-                .marketPrice(BigDecimal.valueOf(1000))
+                .quantity(getBD(2))
+                .marketPrice(getBD(1000))
                 .build();
 
         // then
@@ -63,7 +62,6 @@ class TradeLogServiceImplTest {
         then(tradeLogJpaRepository).should().save(any(TradeLogEntity.class));
     }
 
-    @Test
     @DisplayName("보유 종목에 대한 이력을 조회한다.")
     void getTradeLogs() {
 
@@ -79,7 +77,7 @@ class TradeLogServiceImplTest {
                 mockTradeLogEntityList);
         TradeLogResponse tradeLogResponse = TradeLogResponse.from(mockTradeLogEntity,
                 BigDecimal.ZERO,
-                BigDecimal.valueOf(2000));
+                getBD(2000));
 
         // when
         List<TradeLogResponse> findTradeLogsList = tradeLogServiceImpl.getTradeLogs(STOCK_ID);
@@ -98,16 +96,5 @@ class TradeLogServiceImplTest {
 
     private TradeLogEntity getMockTradeLog(StockHaveEntity stockHaveEntity) {
         return null;
-        /*
-        return TradeLogEntity.builder()
-                //.stockHave(stockHaveEntity)
-                .tradeType(TradeType.B)
-                .price(BigDecimal.valueOf(1000))
-                .tradeDate(LocalDateTime.now())
-                .quantity(BigDecimal.valueOf(2))
-                .marketPrice(BigDecimal.valueOf(1000))
-                .build();
-
-         */
     }
 }

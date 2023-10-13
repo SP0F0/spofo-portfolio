@@ -11,7 +11,7 @@ import jakarta.persistence.Table;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import spofo.global.infrastructure.BaseEntity;
@@ -21,10 +21,9 @@ import spofo.tradelog.domain.TradeLog;
 import spofo.tradelog.infrastructure.TradeLogEntity;
 
 @Entity
-@Table(name = "stock_have")
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@Table(name = "stock_have")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class StockHaveEntity extends BaseEntity {
 
     @Id

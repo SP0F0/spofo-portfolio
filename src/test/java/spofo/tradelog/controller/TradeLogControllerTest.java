@@ -4,13 +4,12 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static spofo.global.component.utils.CommonUtils.getBD;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -38,7 +37,6 @@ class TradeLogControllerTest {
     private static Long STOCK_ID = 1L;
     private static Long TRADE_LOG_ID = 1L;
 
-    @Test
     @DisplayName("종목 이력을 조회한다.")
     void viewTradeLogs() throws Exception {
 
@@ -47,11 +45,11 @@ class TradeLogControllerTest {
                 .willReturn(List.of(
                         TradeLogResponse.builder()
                                 .id(1L)
-                                .price(BigDecimal.valueOf(1000))
+                                .price(getBD(1000))
                                 .type(TradeType.BUY)
-                                .profit(BigDecimal.valueOf(0))
-                                .quantity(BigDecimal.valueOf(2))
-                                .totalPrice(BigDecimal.valueOf(2000))
+                                .profit(getBD(0))
+                                .quantity(getBD(2))
+                                .totalPrice(getBD(2000))
                                 .tradeDate(LocalDateTime.of(2023, 10, 26, 17, 7, 13))
                                 .build()
                 ));

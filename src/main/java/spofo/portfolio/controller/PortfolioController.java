@@ -25,7 +25,7 @@ import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioCreate;
 import spofo.portfolio.domain.PortfolioStatistic;
 import spofo.portfolio.domain.PortfolioUpdate;
-import spofo.portfolio.domain.PortfoliosStatistic;
+import spofo.portfolio.domain.TotalPortofoliosStatistic;
 import spofo.portfolio.service.PortfolioServiceImpl;
 
 @RestController
@@ -37,7 +37,7 @@ public class PortfolioController {
     @GetMapping("/portfolios/total")
     public ResponseEntity<PortfoliosStatisticResponse> getPortfoliosStatistic(
             @LoginMember MemberInfo memberInfo) {
-        PortfoliosStatistic statistic =
+        TotalPortofoliosStatistic statistic =
                 portfolioServiceImpl.getPortfoliosStatistic(memberInfo.getId());
 
         return ok(PortfoliosStatisticResponse.from(statistic));

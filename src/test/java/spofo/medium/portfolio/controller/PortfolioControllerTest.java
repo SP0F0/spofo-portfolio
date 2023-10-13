@@ -28,7 +28,7 @@ import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioCreate;
 import spofo.portfolio.domain.PortfolioStatistic;
 import spofo.portfolio.domain.PortfolioUpdate;
-import spofo.portfolio.domain.PortfoliosStatistic;
+import spofo.portfolio.domain.TotalPortofoliosStatistic;
 import spofo.portfolio.domain.enums.Currency;
 import spofo.portfolio.domain.enums.IncludeType;
 import spofo.portfolio.domain.enums.PortfolioType;
@@ -113,7 +113,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").value(1L));
     }
 
@@ -194,7 +194,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("name").value(name))
                 .andExpect(jsonPath("detail").value(description))
                 .andExpect(jsonPath("type").value("REAL"))
-                .andExpect(jsonPath("includeYn").value("true"))
+                .andExpect(jsonPath("includeType").value("true"))
                 .andExpect(jsonPath("currency").value("KRW"));
     }
 
@@ -202,7 +202,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
     @DisplayName("전체 포트폴리오에 대한 개요를 조회한다.")
     void getPortfoliosStatistic() throws Exception {
         // given
-        PortfoliosStatistic statistic = PortfoliosStatistic.builder()
+        TotalPortofoliosStatistic statistic = TotalPortofoliosStatistic.builder()
                 .totalAsset(getBD(1000))
                 .gain(getBD(100))
                 .gainRate(getBD(10))
@@ -429,7 +429,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
     @Test
     @DisplayName("포트폴리오를 수정 시 포트폴리오 통화는 필수 입력이다.")
-    void updateWithNoIncludeYn() throws Exception {
+    void updateWithNoincludeType() throws Exception {
         // given
         String name = "portfolio name";
         String description = "portfolio description";
@@ -446,7 +446,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                         .content(objectMapper.writeValueAsString(params))
                 )
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("fieldErrors[0].field").value("includeYn"))
+                .andExpect(jsonPath("fieldErrors[0].field").value("includeType"))
                 .andExpect(jsonPath("fieldErrors[0].errorMessage").value("포트폴리오 포합여부는 필수 입력입니다."));
     }
 
@@ -506,7 +506,8 @@ public class PortfolioControllerTest extends ControllerTestSupport {
         params.put("id", String.valueOf(id));
         params.put("name", name);
         params.put("description", description);
-        params.put("includeYn", includeType == null ? null : (includeType == Y ? "true" : "false"));
+        params.put("includeType", includeType == null ?
+                null : (includeType == Y ? "true" : "false"));
         params.put("currency", currency == null ? null : currency.toString());
         params.put("type", type == null ? null : type.toString());
 

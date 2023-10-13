@@ -15,7 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import spofo.auth.domain.MemberInfoHolder;
 import spofo.auth.service.AuthServerService;
 import spofo.global.domain.exception.ErrorCode;
-import spofo.global.domain.exception.TokenNotValidException;
+import spofo.global.domain.exception.TokenNotValid;
 import spofo.global.domain.exception.dto.ErrorResult;
 
 @Component
@@ -33,12 +33,12 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         try {
             String idToken = request.getHeader(AUTHORIZATION);
             Long memberId = authServerService.verify(idToken)
-                    .orElseThrow(() -> new TokenNotValidException());
+                    .orElseThrow(() -> new TokenNotValid());
 
             MemberInfoHolder.set(memberId);
 
             filterChain.doFilter(request, response);
-        } catch (TokenNotValidException ex) {
+        } catch (TokenNotValid ex) {
             handleTokenNotValidException(response, ex);
         } finally {
             MemberInfoHolder.clear();
@@ -46,7 +46,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void handleTokenNotValidException(HttpServletResponse response,
-            TokenNotValidException ex) throws IOException {
+            TokenNotValid ex) throws IOException {
         ErrorCode errorCode = ex.getErrorCode();
 
         ErrorResult errorResult = ErrorResult.builder()

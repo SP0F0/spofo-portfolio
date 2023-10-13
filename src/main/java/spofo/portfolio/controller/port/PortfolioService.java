@@ -5,11 +5,11 @@ import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioCreate;
 import spofo.portfolio.domain.PortfolioStatistic;
 import spofo.portfolio.domain.PortfolioUpdate;
-import spofo.portfolio.domain.PortfoliosStatistic;
+import spofo.portfolio.domain.TotalPortofoliosStatistic;
 
 public interface PortfolioService {
 
-    PortfoliosStatistic getPortfoliosStatistic(Long memberId);
+    TotalPortofoliosStatistic getPortfoliosStatistic(Long memberId);
 
     List<PortfolioStatistic> getPortfolios(Long memberId);
 

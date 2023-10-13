@@ -39,11 +39,6 @@ public class PortfolioRepositoryImpl implements PortfolioRepository {
     }
 
     @Override
-    public Portfolio getReferenceById(Long id) {
-        return portfolioJpaRepository.getReferenceById(id).toModel();
-    }
-
-    @Override
     public Portfolio save(Portfolio portfolio) {
         return portfolioJpaRepository.save(PortfolioEntity.from(portfolio)).toModel();
     }
