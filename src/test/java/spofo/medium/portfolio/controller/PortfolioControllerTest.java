@@ -192,7 +192,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").value(1L))
                 .andExpect(jsonPath("name").value(name))
-                .andExpect(jsonPath("detail").value(description))
+                .andExpect(jsonPath("description").value(description))
                 .andExpect(jsonPath("type").value("REAL"))
                 .andExpect(jsonPath("includeType").value("true"))
                 .andExpect(jsonPath("currency").value("KRW"));
