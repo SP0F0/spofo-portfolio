@@ -16,7 +16,7 @@ public class PortfolioStatisticResponse {
     private Long id;
     private Long memberId;
     private String name;
-    private String detail;
+    private String description;
     private Currency currency;
     private IncludeType includeType;
     private PortfolioType type;
@@ -32,7 +32,7 @@ public class PortfolioStatisticResponse {
                 .id(portfolio.getId())
                 .memberId(portfolio.getMemberId())
                 .name(portfolio.getName())
-                .detail(portfolio.getDescription())
+                .description(portfolio.getDescription())
                 .currency(portfolio.getCurrency())
                 .includeType(portfolio.getIncludeType())
                 .type(portfolio.getType())
