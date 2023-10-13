@@ -21,7 +21,7 @@ import spofo.tradelog.domain.TradeLog;
 import spofo.tradelog.domain.enums.TradeType;
 
 @Entity
-@Table(name = "TRADE_LOG_TB")
+@Table(name = "trade_log")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TradeLogEntity {
