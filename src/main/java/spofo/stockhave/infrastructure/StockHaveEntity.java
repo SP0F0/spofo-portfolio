@@ -57,7 +57,7 @@ public class StockHaveEntity extends BaseEntity {
         return StockHave.builder()
                 .id(id)
                 .stockCode(stockCode)
-                .portfolio(portfolioEntity.toModel())
+                //.portfolio(portfolioEntity.toModel())
                 .tradeLogs(tradeLogs)
                 .build();
     }
