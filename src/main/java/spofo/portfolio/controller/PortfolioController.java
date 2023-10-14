@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import spofo.auth.domain.MemberInfo;
 import spofo.auth.domain.annotation.LoginMember;
+import spofo.portfolio.controller.port.PortfolioService;
 import spofo.portfolio.controller.response.PortfolioResponse;
 import spofo.portfolio.controller.response.PortfolioStatisticResponse;
 import spofo.portfolio.controller.response.PortfoliosStatisticResponse;
@@ -26,19 +27,20 @@ import spofo.portfolio.domain.PortfolioCreate;
 import spofo.portfolio.domain.PortfolioStatistic;
 import spofo.portfolio.domain.PortfolioUpdate;
 import spofo.portfolio.domain.TotalPortofoliosStatistic;
-import spofo.portfolio.service.PortfolioServiceImpl;
+
+;
 
 @RestController
 @RequiredArgsConstructor
 public class PortfolioController {
 
-    private final PortfolioServiceImpl portfolioServiceImpl;
+    private final PortfolioService portfolioService;
 
     @GetMapping("/portfolios/total")
     public ResponseEntity<PortfoliosStatisticResponse> getPortfoliosStatistic(
             @LoginMember MemberInfo memberInfo) {
-        TotalPortofoliosStatistic statistic =
-                portfolioServiceImpl.getPortfoliosStatistic(memberInfo.getId());
+        TotalPortofoliosStatistic statistic
+                = portfolioService.getPortfoliosStatistic(memberInfo.getId());
 
         return ok(PortfoliosStatisticResponse.from(statistic));
     }
@@ -47,7 +49,7 @@ public class PortfolioController {
     public ResponseEntity<List<PortfolioStatisticResponse>> getPortfolioSimple(
             @LoginMember MemberInfo memberInfo) {
         List<PortfolioStatisticResponse> portfolios
-                = portfolioServiceImpl.getPortfolios(memberInfo.getId())
+                = portfolioService.getPortfolios(memberInfo.getId())
                 .stream()
                 .map(PortfolioStatisticResponse::from)
                 .toList();
@@ -58,7 +60,7 @@ public class PortfolioController {
     @GetMapping("/portfolios/{portfolioId}")
     public ResponseEntity<PortfolioResponse> getPortfolio(
             @PathVariable(name = "portfolioId") Long portfolioId) {
-        Portfolio portfolio = portfolioServiceImpl.getPortfolio(portfolioId);
+        Portfolio portfolio = portfolioService.getPortfolio(portfolioId);
 
         return ok(PortfolioResponse.from(portfolio));
     }
@@ -66,7 +68,7 @@ public class PortfolioController {
     @GetMapping("/portfolios/{portfolioId}/total")
     public ResponseEntity<PortfolioStatisticResponse> getPortfolioStatistic(
             @PathVariable(name = "portfolioId") Long portfolioId) {
-        PortfolioStatistic portfolio = portfolioServiceImpl.getPortfolioStatistic(portfolioId);
+        PortfolioStatistic portfolio = portfolioService.getPortfolioStatistic(portfolioId);
 
         return ok(PortfolioStatisticResponse.from(portfolio));
     }
@@ -75,7 +77,7 @@ public class PortfolioController {
     public ResponseEntity<Map<String, Long>> create(
             @RequestBody @Valid PortfolioCreate portfolioCreate,
             @LoginMember MemberInfo memberInfo) {
-        Portfolio portfolio = portfolioServiceImpl.create(portfolioCreate, memberInfo.getId());
+        Portfolio portfolio = portfolioService.create(portfolioCreate, memberInfo.getId());
         Long portfolioId = portfolio.getId();
 
         Map<String, Long> response = Map.of("id", portfolioId);
@@ -89,14 +91,14 @@ public class PortfolioController {
             @PathVariable(name = "portfolioId") Long portfolioId,
             @RequestBody @Valid PortfolioUpdate request,
             @LoginMember MemberInfo memberInfo) {
-        portfolioServiceImpl.update(request, portfolioId, memberInfo.getId());
+        portfolioService.update(request, portfolioId, memberInfo.getId());
         return ok().build();
     }
 
     @DeleteMapping("/portfolios/{portfolioId}")
     public ResponseEntity<Void> delete(
             @PathVariable(name = "portfolioId") Long portfolioId) {
-        portfolioServiceImpl.delete(portfolioId);
+        portfolioService.delete(portfolioId);
         return ok().build();
     }
 }

@@ -51,7 +51,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         setField(portfolio, "id", 1L);
 
-        given(portfolioServiceImpl.create(any(PortfolioCreate.class), anyLong()))
+        given(portfolioService.create(any(PortfolioCreate.class), anyLong()))
                 .willReturn(portfolio);
 
         // expected
@@ -77,7 +77,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
         PortfolioCreate portfolioCreate = create(name, description, KRW, REAL);
         Portfolio portfolio = Portfolio.of(portfolioCreate, memberId);
 
-        given(portfolioServiceImpl.create(any(PortfolioCreate.class), anyLong()))
+        given(portfolioService.create(any(PortfolioCreate.class), anyLong()))
                 .willReturn(portfolio);
 
         // expected
@@ -104,7 +104,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         setField(portfolio, "id", 1L);
 
-        given(portfolioServiceImpl.create(any(PortfolioCreate.class), anyLong()))
+        given(portfolioService.create(any(PortfolioCreate.class), anyLong()))
                 .willReturn(portfolio);
 
         // expected
@@ -129,7 +129,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
         PortfolioCreate portfolioCreate = create(name, description, null, REAL);
         Portfolio portfolio = Portfolio.of(portfolioCreate, memberId);
 
-        given(portfolioServiceImpl.create(any(PortfolioCreate.class), anyLong()))
+        given(portfolioService.create(any(PortfolioCreate.class), anyLong()))
                 .willReturn(portfolio);
 
         // expected
@@ -155,7 +155,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
         PortfolioCreate portfolioCreate = create(name, description, KRW, null);
         Portfolio portfolio = Portfolio.of(portfolioCreate, memberId);
 
-        given(portfolioServiceImpl.create(any(PortfolioCreate.class), anyLong()))
+        given(portfolioService.create(any(PortfolioCreate.class), anyLong()))
                 .willReturn(portfolio);
 
         // expected
@@ -181,7 +181,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         setField(portfolio, "id", 1L);
 
-        given(portfolioServiceImpl.getPortfolio(anyLong()))
+        given(portfolioService.getPortfolio(anyLong()))
                 .willReturn(portfolio);
 
         // expected
@@ -208,7 +208,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .gainRate(getBD(10))
                 .build();
 
-        given(portfolioServiceImpl.getPortfoliosStatistic(anyLong()))
+        given(portfolioService.getPortfoliosStatistic(anyLong()))
                 .willReturn(statistic);
 
         // expected
@@ -242,7 +242,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .gainRate(getBD(40))
                 .build();
 
-        given(portfolioServiceImpl.getPortfolios(anyLong()))
+        given(portfolioService.getPortfolios(anyLong()))
                 .willReturn(List.of(statistic));
 
         // expected
@@ -282,7 +282,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .gainRate(getBD(40))
                 .build();
 
-        given(portfolioServiceImpl.getPortfolioStatistic(anyLong()))
+        given(portfolioService.getPortfolioStatistic(anyLong()))
                 .willReturn(statistic);
 
         // expected
@@ -308,7 +308,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
     @DisplayName("존재하지 않는 포트폴리오는 조회할 수 없다.")
     void getPortfolioWithNotValidId() throws Exception {
         // given
-        given(portfolioServiceImpl.getPortfolio(anyLong()))
+        given(portfolioService.getPortfolio(anyLong()))
                 .willThrow(new PortfolioNotFound());
 
         // expected
@@ -344,7 +344,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
         Portfolio portfolio = Portfolio.of(portfolioCreate, memberId);
         Portfolio updatedPortfolio = portfolio.update(portfolioUpdate, memberId);
 
-        given(portfolioServiceImpl.update(any(PortfolioUpdate.class), anyLong(), anyLong()))
+        given(portfolioService.update(any(PortfolioUpdate.class), anyLong(), anyLong()))
                 .willReturn(updatedPortfolio);
 
         // expected
