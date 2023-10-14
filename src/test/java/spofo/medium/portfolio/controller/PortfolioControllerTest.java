@@ -10,7 +10,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static spofo.global.component.utils.CommonUtils.getBD;
@@ -62,8 +61,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                         .content(objectMapper.writeValueAsString(params))
                 )
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("id").value(1L))
-                .andDo(print());
+                .andExpect(jsonPath("id").value(1L));
     }
 
     @Test
