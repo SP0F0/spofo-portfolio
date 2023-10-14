@@ -37,6 +37,8 @@ import spofo.support.controller.ControllerTestSupport;
 
 public class PortfolioControllerTest extends ControllerTestSupport {
 
+    public static final String AUTH_TOKEN = "JWT";
+
     @Test
     @DisplayName("포트폴리오를 생성한다.")
     void createPortfolio() throws Exception {
@@ -56,7 +58,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         // expected
         mockMvc.perform(post("/portfolios")
-                        .header(AUTHORIZATION, "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -64,7 +66,6 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("id").value(1L));
     }
 
-    @Test
     @DisplayName("포트폴리오 생성 시 이름은 필수 입력이다.")
     void createPortfolioWithNoName() throws Exception {
         // given
@@ -81,7 +82,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         // expected
         mockMvc.perform(post("/portfolios")
-                        .header(AUTHORIZATION, "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -108,7 +109,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         // expected
         mockMvc.perform(post("/portfolios")
-                        .header(AUTHORIZATION, "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -133,7 +134,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         // expected
         mockMvc.perform(post("/portfolios")
-                        .header(AUTHORIZATION, "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -159,7 +160,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         // expected
         mockMvc.perform(post("/portfolios")
-                        .header(AUTHORIZATION, "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -184,17 +185,18 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .willReturn(portfolio);
 
         // expected
-        mockMvc.perform(get("/portfolios/" + 1)
-                        .header(AUTHORIZATION, "token")
+        mockMvc.perform(get("/portfolios/{portfolioId}", 1L)
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").value(1L))
+                .andExpect(jsonPath("memberId").value(memberId))
                 .andExpect(jsonPath("name").value(name))
                 .andExpect(jsonPath("description").value(description))
-                .andExpect(jsonPath("type").value("REAL"))
+                .andExpect(jsonPath("currency").value("KRW"))
                 .andExpect(jsonPath("includeType").value("true"))
-                .andExpect(jsonPath("currency").value("KRW"));
+                .andExpect(jsonPath("type").value("REAL"));
     }
 
     @Test
@@ -212,7 +214,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         // expected
         mockMvc.perform(get("/portfolios/total")
-                        .header(AUTHORIZATION, "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -246,7 +248,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         // expected
         mockMvc.perform(get("/portfolios")
-                        .header(AUTHORIZATION, "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -286,7 +288,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         // expected
         mockMvc.perform(get("/portfolios/" + 1 + "/total")
-                        .header(AUTHORIZATION, "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -312,7 +314,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         // expected
         mockMvc.perform(get("/portfolios/" + 1)
-                        .header(AUTHORIZATION, "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                 )
                 .andExpect(status().isBadRequest())
@@ -348,7 +350,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         // expected
         mockMvc.perform(put("/portfolios/" + 1)
-                        .header(AUTHORIZATION, "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -370,7 +372,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         // expected
         mockMvc.perform(put("/portfolios/" + 1)
-                        .header(AUTHORIZATION, "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -394,7 +396,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         // expected
         mockMvc.perform(put("/portfolios/" + 1)
-                        .header(AUTHORIZATION, "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -417,7 +419,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         // expected
         mockMvc.perform(put("/portfolios/" + 1)
-                        .header(AUTHORIZATION, "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -440,7 +442,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         // expected
         mockMvc.perform(put("/portfolios/" + 1)
-                        .header(AUTHORIZATION, "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -463,7 +465,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         // expected
         mockMvc.perform(put("/portfolios/" + 1)
-                        .header(AUTHORIZATION, "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -478,7 +480,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
         // given
         // expected
         mockMvc.perform(delete("/portfolios/" + 1)
-                        .header(AUTHORIZATION, "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                 )
                 .andExpect(status().isOk());
