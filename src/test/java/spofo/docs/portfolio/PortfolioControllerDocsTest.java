@@ -74,6 +74,7 @@ public class PortfolioControllerDocsTest extends RestDocsSupport {
         given(portfolioService.create(any(PortfolioCreate.class), nullable(Long.class)))
                 .willReturn(portfolio);
 
+        // expected
         mockMvc.perform(post("/portfolios")
                         .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
