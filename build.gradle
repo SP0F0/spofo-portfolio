@@ -60,6 +60,7 @@ test {
 }
 
 asciidoctor {
+    dependsOn test
     inputs.dir snippetsDir
     configurations 'asciidoctorExt'
 
@@ -67,7 +68,6 @@ asciidoctor {
         include("**/index.adoc")
     }
     baseDirFollowsSourceFile() // 다른 adoc 파일을 include 할 때 경로를 baseDir로 맞춘다.
-    dependsOn test
 }
 
 bootJar {
