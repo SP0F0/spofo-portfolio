@@ -1,6 +1,7 @@
 package spofo.global.component.filter;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,7 +23,6 @@ import spofo.global.domain.exception.dto.ErrorResult;
 @RequiredArgsConstructor
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
-    private static final String AUTHORIZATION = "authorization";
     private final AuthServerService authServerService;
     private final ObjectMapper objectMapper;
 
