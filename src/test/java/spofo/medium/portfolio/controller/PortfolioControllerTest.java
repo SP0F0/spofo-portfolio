@@ -3,13 +3,13 @@ package spofo.medium.portfolio.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static spofo.global.component.utils.CommonUtils.getBD;
@@ -37,6 +37,8 @@ import spofo.support.controller.ControllerTestSupport;
 
 public class PortfolioControllerTest extends ControllerTestSupport {
 
+    public static final String AUTH_TOKEN = "JWT";
+
     @Test
     @DisplayName("포트폴리오를 생성한다.")
     void createPortfolio() throws Exception {
@@ -51,21 +53,19 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         setField(portfolio, "id", 1L);
 
-        given(portfolioServiceImpl.create(any(PortfolioCreate.class), anyLong()))
+        given(portfolioService.create(any(PortfolioCreate.class), anyLong()))
                 .willReturn(portfolio);
 
         // expected
         mockMvc.perform(post("/portfolios")
-                        .header("authorization", "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("id").value(1L))
-                .andDo(print());
+                .andExpect(jsonPath("id").value(1L));
     }
 
-    @Test
     @DisplayName("포트폴리오 생성 시 이름은 필수 입력이다.")
     void createPortfolioWithNoName() throws Exception {
         // given
@@ -77,12 +77,12 @@ public class PortfolioControllerTest extends ControllerTestSupport {
         PortfolioCreate portfolioCreate = create(name, description, KRW, REAL);
         Portfolio portfolio = Portfolio.of(portfolioCreate, memberId);
 
-        given(portfolioServiceImpl.create(any(PortfolioCreate.class), anyLong()))
+        given(portfolioService.create(any(PortfolioCreate.class), anyLong()))
                 .willReturn(portfolio);
 
         // expected
         mockMvc.perform(post("/portfolios")
-                        .header("authorization", "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -104,12 +104,12 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         setField(portfolio, "id", 1L);
 
-        given(portfolioServiceImpl.create(any(PortfolioCreate.class), anyLong()))
+        given(portfolioService.create(any(PortfolioCreate.class), anyLong()))
                 .willReturn(portfolio);
 
         // expected
         mockMvc.perform(post("/portfolios")
-                        .header("authorization", "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -129,12 +129,12 @@ public class PortfolioControllerTest extends ControllerTestSupport {
         PortfolioCreate portfolioCreate = create(name, description, null, REAL);
         Portfolio portfolio = Portfolio.of(portfolioCreate, memberId);
 
-        given(portfolioServiceImpl.create(any(PortfolioCreate.class), anyLong()))
+        given(portfolioService.create(any(PortfolioCreate.class), anyLong()))
                 .willReturn(portfolio);
 
         // expected
         mockMvc.perform(post("/portfolios")
-                        .header("authorization", "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -155,12 +155,12 @@ public class PortfolioControllerTest extends ControllerTestSupport {
         PortfolioCreate portfolioCreate = create(name, description, KRW, null);
         Portfolio portfolio = Portfolio.of(portfolioCreate, memberId);
 
-        given(portfolioServiceImpl.create(any(PortfolioCreate.class), anyLong()))
+        given(portfolioService.create(any(PortfolioCreate.class), anyLong()))
                 .willReturn(portfolio);
 
         // expected
         mockMvc.perform(post("/portfolios")
-                        .header("authorization", "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -181,21 +181,22 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         setField(portfolio, "id", 1L);
 
-        given(portfolioServiceImpl.getPortfolio(anyLong()))
+        given(portfolioService.getPortfolio(anyLong()))
                 .willReturn(portfolio);
 
         // expected
-        mockMvc.perform(get("/portfolios/" + 1)
-                        .header("authorization", "token")
+        mockMvc.perform(get("/portfolios/{portfolioId}", 1L)
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").value(1L))
+                .andExpect(jsonPath("memberId").value(memberId))
                 .andExpect(jsonPath("name").value(name))
                 .andExpect(jsonPath("description").value(description))
-                .andExpect(jsonPath("type").value("REAL"))
+                .andExpect(jsonPath("currency").value("KRW"))
                 .andExpect(jsonPath("includeType").value("true"))
-                .andExpect(jsonPath("currency").value("KRW"));
+                .andExpect(jsonPath("type").value("REAL"));
     }
 
     @Test
@@ -208,12 +209,12 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .gainRate(getBD(10))
                 .build();
 
-        given(portfolioServiceImpl.getPortfoliosStatistic(anyLong()))
+        given(portfolioService.getPortfoliosStatistic(anyLong()))
                 .willReturn(statistic);
 
         // expected
         mockMvc.perform(get("/portfolios/total")
-                        .header("authorization", "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -242,12 +243,12 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .gainRate(getBD(40))
                 .build();
 
-        given(portfolioServiceImpl.getPortfolios(anyLong()))
+        given(portfolioService.getPortfolios(anyLong()))
                 .willReturn(List.of(statistic));
 
         // expected
         mockMvc.perform(get("/portfolios")
-                        .header("authorization", "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -282,12 +283,12 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .gainRate(getBD(40))
                 .build();
 
-        given(portfolioServiceImpl.getPortfolioStatistic(anyLong()))
+        given(portfolioService.getPortfolioStatistic(anyLong()))
                 .willReturn(statistic);
 
         // expected
         mockMvc.perform(get("/portfolios/" + 1 + "/total")
-                        .header("authorization", "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -308,12 +309,12 @@ public class PortfolioControllerTest extends ControllerTestSupport {
     @DisplayName("존재하지 않는 포트폴리오는 조회할 수 없다.")
     void getPortfolioWithNotValidId() throws Exception {
         // given
-        given(portfolioServiceImpl.getPortfolio(anyLong()))
+        given(portfolioService.getPortfolio(anyLong()))
                 .willThrow(new PortfolioNotFound());
 
         // expected
         mockMvc.perform(get("/portfolios/" + 1)
-                        .header("authorization", "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                 )
                 .andExpect(status().isBadRequest())
@@ -344,12 +345,12 @@ public class PortfolioControllerTest extends ControllerTestSupport {
         Portfolio portfolio = Portfolio.of(portfolioCreate, memberId);
         Portfolio updatedPortfolio = portfolio.update(portfolioUpdate, memberId);
 
-        given(portfolioServiceImpl.update(any(PortfolioUpdate.class), anyLong(), anyLong()))
+        given(portfolioService.update(any(PortfolioUpdate.class), anyLong(), anyLong()))
                 .willReturn(updatedPortfolio);
 
         // expected
         mockMvc.perform(put("/portfolios/" + 1)
-                        .header("authorization", "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -371,7 +372,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         // expected
         mockMvc.perform(put("/portfolios/" + 1)
-                        .header("authorization", "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -395,7 +396,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         // expected
         mockMvc.perform(put("/portfolios/" + 1)
-                        .header("authorization", "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -418,7 +419,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         // expected
         mockMvc.perform(put("/portfolios/" + 1)
-                        .header("authorization", "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -441,7 +442,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         // expected
         mockMvc.perform(put("/portfolios/" + 1)
-                        .header("authorization", "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -464,7 +465,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         // expected
         mockMvc.perform(put("/portfolios/" + 1)
-                        .header("authorization", "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -479,7 +480,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
         // given
         // expected
         mockMvc.perform(delete("/portfolios/" + 1)
-                        .header("authorization", "token")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                 )
                 .andExpect(status().isOk());
