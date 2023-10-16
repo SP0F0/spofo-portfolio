@@ -1,5 +1,8 @@
 package spofo.auth.service;
 
+import static java.util.Optional.ofNullable;
+import static spofo.global.domain.enums.Server.AUTHSERVER;
+
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,14 +16,11 @@ public class AuthServerServiceImpl implements AuthServerService {
 
     @Override
     public Optional<Long> verify(String idToken) {
-        /*
-        todo 추후에 인증서버에서 id 가져와야 됨
-        restClient.get()
-                .uri(Server.AUTHSERVER.getUri("/auth/members/search"))
+        Long memberId = restClient.get()
+                .uri(AUTHSERVER.getUri("/auth/members/search"))
                 .retrieve()
-                .body(String.class);
-         */
-        System.out.println("restClient로 authserver에 idToken 검증~");
-        return Optional.ofNullable(1L);
+                .body(Long.class);
+
+        return ofNullable(memberId);
     }
 }
