@@ -28,8 +28,6 @@ import spofo.portfolio.domain.PortfolioStatistic;
 import spofo.portfolio.domain.PortfolioUpdate;
 import spofo.portfolio.domain.TotalPortofoliosStatistic;
 
-;
-
 @RestController
 @RequiredArgsConstructor
 public class PortfolioController {
