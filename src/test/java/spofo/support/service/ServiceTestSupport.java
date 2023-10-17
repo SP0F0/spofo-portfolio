@@ -3,10 +3,10 @@ package spofo.support.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import spofo.holdingstock.controller.port.HoldingStockService;
 import spofo.portfolio.controller.port.PortfolioService;
 import spofo.portfolio.service.port.PortfolioRepository;
 import spofo.stock.service.StockServerService;
-import spofo.stockhave.controller.port.StockHaveService;
 import spofo.support.annotation.CustomServiceTest;
 import spofo.tradelog.controller.port.TradeLogService;
 
@@ -20,7 +20,7 @@ public abstract class ServiceTestSupport {
     protected TradeLogService tradeLogService;
 
     @Autowired
-    protected StockHaveService stockHaveService;
+    protected HoldingStockService holdingStockService;
 
     @SpyBean
     protected PortfolioRepository portfolioRepository;

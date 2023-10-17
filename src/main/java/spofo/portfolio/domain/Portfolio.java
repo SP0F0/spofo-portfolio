@@ -5,10 +5,10 @@ import static spofo.portfolio.domain.enums.IncludeType.Y;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
+import spofo.holdingstock.domain.HoldingStock;
 import spofo.portfolio.domain.enums.Currency;
 import spofo.portfolio.domain.enums.IncludeType;
 import spofo.portfolio.domain.enums.PortfolioType;
-import spofo.stockhave.domain.StockHave;
 
 @Getter
 @Builder
@@ -21,7 +21,7 @@ public class Portfolio {
     private final Currency currency;
     private final IncludeType includeType;
     private final PortfolioType type;
-    private final List<StockHave> stockHaves;
+    private final List<HoldingStock> holdingStocks;
 
     public static Portfolio of(PortfolioCreate create, Long memberId) {
         return Portfolio.builder()

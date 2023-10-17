@@ -14,9 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import spofo.holdingstock.infrastructure.HoldingStockEntity;
+import spofo.holdingstock.infrastructure.HoldingStockJpaRepository;
 import spofo.portfolio.infrastructure.PortfolioEntity;
-import spofo.stockhave.infrastructure.StockHaveEntity;
-import spofo.stockhave.infrastructure.StockHaveJpaRepository;
 import spofo.tradelog.controller.response.TradeLogResponse;
 import spofo.tradelog.domain.CreateTradeLogRequest;
 import spofo.tradelog.domain.enums.TradeType;
@@ -35,7 +35,7 @@ class TradeLogServiceImplTest {
     private TradeLogJpaRepository tradeLogJpaRepository;
 
     @MockBean
-    private StockHaveJpaRepository stockHaveJpaRepository;
+    private HoldingStockJpaRepository holdingStockJpaRepository;
 
     private static Long STOCK_ID = 1L;
     private static Long PORTFOLIO_ID = 1L;
@@ -45,9 +45,9 @@ class TradeLogServiceImplTest {
 
         // given
         PortfolioEntity mockPortfolioEntity = getMockPortfolio();
-        StockHaveEntity mockStockHaveEntity = getMockStockHave(mockPortfolioEntity);
+        HoldingStockEntity mockHoldingStockEntity = getMockHoldingStock(mockPortfolioEntity);
         CreateTradeLogRequest mockCreateTradeLogRequest = CreateTradeLogRequest.builder()
-                .stockHaveEntity(mockStockHaveEntity)
+                .holdingStockEntity(mockHoldingStockEntity)
                 .type(TradeType.BUY)
                 .price(getBD(1000))
                 .tradeDate(LocalDateTime.now())
@@ -67,13 +67,14 @@ class TradeLogServiceImplTest {
 
         // given
         PortfolioEntity mockPortfolioEntity = getMockPortfolio();
-        StockHaveEntity mockStockHaveEntity = getMockStockHave(mockPortfolioEntity);
-        TradeLogEntity mockTradeLogEntity = getMockTradeLog(mockStockHaveEntity);
+        HoldingStockEntity mockHoldingStockEntity = getMockHoldingStock(mockPortfolioEntity);
+        TradeLogEntity mockTradeLogEntity = getMockTradeLog(mockHoldingStockEntity);
 
         List<TradeLogEntity> mockTradeLogEntityList = List.of(mockTradeLogEntity);
 
-        given(stockHaveJpaRepository.getReferenceById(STOCK_ID)).willReturn(mockStockHaveEntity);
-        given(tradeLogJpaRepository.findByStockHaveEntity(mockStockHaveEntity)).willReturn(
+        given(holdingStockJpaRepository.getReferenceById(STOCK_ID)).willReturn(
+                mockHoldingStockEntity);
+        given(tradeLogJpaRepository.findByHoldingStockEntity(mockHoldingStockEntity)).willReturn(
                 mockTradeLogEntityList);
         TradeLogResponse tradeLogResponse = TradeLogResponse.from(mockTradeLogEntity,
                 BigDecimal.ZERO,
@@ -90,11 +91,11 @@ class TradeLogServiceImplTest {
         return null;
     }
 
-    private StockHaveEntity getMockStockHave(PortfolioEntity portfolioEntity) {
+    private HoldingStockEntity getMockHoldingStock(PortfolioEntity portfolioEntity) {
         return null;
     }
 
-    private TradeLogEntity getMockTradeLog(StockHaveEntity stockHaveEntity) {
+    private TradeLogEntity getMockTradeLog(HoldingStockEntity holdingStockEntity) {
         return null;
     }
 }

@@ -1,11 +1,11 @@
-package spofo.stockhave.domain;
+package spofo.holdingstock.domain;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class StockHaveCreate {
+public class HoldingStockCreate {
 
     String stockCode;
 

@@ -11,8 +11,8 @@ import java.math.BigDecimal;
 import java.util.Map;
 import lombok.Builder;
 import lombok.Getter;
+import spofo.holdingstock.domain.HoldingStock;
 import spofo.stock.domain.Stock;
-import spofo.stockhave.domain.StockHave;
 import spofo.tradelog.domain.TradeLog;
 
 @Getter
@@ -31,12 +31,12 @@ public class PortfolioStatistic {
         BigDecimal totalGain = ZERO;
         BigDecimal gainRate = ZERO;
 
-        if (portfolio.getStockHaves() != null) {
-            for (StockHave stockHave : portfolio.getStockHaves()) {
-                Stock stock = stocks.get(stockHave.getStockCode());
+        if (portfolio.getHoldingStocks() != null) {
+            for (HoldingStock holdingStock : portfolio.getHoldingStocks()) {
+                Stock stock = stocks.get(holdingStock.getStockCode());
                 BigDecimal currentPrice = stock.getPrice();
 
-                for (TradeLog tradeLog : stockHave.getTradeLogs()) {
+                for (TradeLog tradeLog : holdingStock.getTradeLogs()) {
                     if (tradeLog.getType() == BUY) {
                         BigDecimal price = tradeLog.getPrice();
                         BigDecimal quantity = tradeLog.getQuantity();

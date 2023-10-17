@@ -18,6 +18,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import spofo.global.domain.exception.PortfolioNotFound;
+import spofo.holdingstock.domain.HoldingStock;
 import spofo.mock.FakePortfolioRepository;
 import spofo.mock.FakeStockServerService;
 import spofo.portfolio.controller.port.PortfolioService;
@@ -31,7 +32,6 @@ import spofo.portfolio.domain.enums.IncludeType;
 import spofo.portfolio.domain.enums.PortfolioType;
 import spofo.portfolio.service.PortfolioServiceImpl;
 import spofo.stock.domain.Stock;
-import spofo.stockhave.domain.StockHave;
 import spofo.tradelog.domain.TradeLog;
 
 public class PortfolioServiceTest {
@@ -64,12 +64,12 @@ public class PortfolioServiceTest {
         // given
         Long memberId = 1L;
         TradeLog tradeLog = getTradeLog();
-        StockHave stockHave = getStockHave(tradeLog);
+        HoldingStock holdingStock = getHoldingStock(tradeLog);
 
         Portfolio portfolio = Portfolio.builder()
                 .memberId(memberId)
                 .includeType(Y)
-                .stockHaves(List.of(stockHave))
+                .holdingStocks(List.of(holdingStock))
                 .build();
 
         fakePortfolioRepository.save(portfolio);
@@ -91,12 +91,12 @@ public class PortfolioServiceTest {
         // given
         Long memberId = 1L;
         TradeLog tradeLog = getTradeLog();
-        StockHave stockHave = getStockHave(tradeLog);
+        HoldingStock holdingStock = getHoldingStock(tradeLog);
 
         Portfolio portfolio = Portfolio.builder()
                 .memberId(memberId)
                 .includeType(N)
-                .stockHaves(List.of(stockHave))
+                .holdingStocks(List.of(holdingStock))
                 .build();
 
         fakePortfolioRepository.save(portfolio);
@@ -133,16 +133,16 @@ public class PortfolioServiceTest {
         // given
         Long memberId = 1L;
         TradeLog tradeLog = getTradeLog();
-        StockHave stockHave = getStockHave(tradeLog);
+        HoldingStock holdingStock = getHoldingStock(tradeLog);
 
         Portfolio portfolio1 = Portfolio.builder()
                 .memberId(memberId)
-                .stockHaves(List.of(stockHave))
+                .holdingStocks(List.of(holdingStock))
                 .build();
 
         Portfolio portfolio2 = Portfolio.builder()
                 .memberId(memberId)
-                .stockHaves(List.of(stockHave, stockHave))
+                .holdingStocks(List.of(holdingStock, holdingStock))
                 .build();
 
         fakePortfolioRepository.save(portfolio1);
@@ -226,7 +226,7 @@ public class PortfolioServiceTest {
         String name = "포트폴리오 이름";
         String description = "포트폴리오 설명";
         TradeLog tradeLog = getTradeLog();
-        StockHave stockHave = getStockHave(tradeLog);
+        HoldingStock holdingStock = getHoldingStock(tradeLog);
 
         Portfolio portfolio = Portfolio.builder()
                 .memberId(1L)
@@ -235,7 +235,7 @@ public class PortfolioServiceTest {
                 .currency(KRW)
                 .includeType(Y)
                 .type(REAL)
-                .stockHaves(List.of(stockHave))
+                .holdingStocks(List.of(holdingStock))
                 .build();
 
         fakePortfolioRepository.save(portfolio);
@@ -378,8 +378,8 @@ public class PortfolioServiceTest {
                 .hasMessage(PORTFOLIO_NOT_FOUND.getMessage());
     }
 
-    private StockHave getStockHave(TradeLog tradeLog) {
-        return StockHave.builder()
+    private HoldingStock getHoldingStock(TradeLog tradeLog) {
+        return HoldingStock.builder()
                 .stockCode(TEST_STOCK_CODE)
                 .tradeLogs(List.of(tradeLog))
                 .build();

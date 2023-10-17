@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Data;
-import spofo.stockhave.infrastructure.StockHaveEntity;
+import spofo.holdingstock.infrastructure.HoldingStockEntity;
 import spofo.tradelog.domain.enums.TradeType;
 import spofo.tradelog.infrastructure.TradeLogEntity;
 
@@ -12,7 +12,7 @@ import spofo.tradelog.infrastructure.TradeLogEntity;
 @Builder
 public class CreateTradeLogRequest {
 
-    private StockHaveEntity stockHaveEntity;
+    private HoldingStockEntity holdingStockEntity;
     private TradeType type;
     private BigDecimal price;
     private LocalDateTime tradeDate;
@@ -21,15 +21,5 @@ public class CreateTradeLogRequest {
 
     public TradeLogEntity toEntity() {
         return null;
-        /*
-        return TradeLogEntity.builder()
-                .stockHave(stockHaveEntity)
-                .tradeType(type)
-                .price(price)
-                .tradeDate(tradeDate)
-                .quantity(quantity)
-                .marketPrice(marketPrice)
-                .build();
-         */
     }
 }

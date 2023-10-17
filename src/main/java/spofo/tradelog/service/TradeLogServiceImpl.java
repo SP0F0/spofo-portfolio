@@ -6,12 +6,11 @@ import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import spofo.stockhave.domain.StockHave;
-import spofo.stockhave.infrastructure.StockHaveEntity;
-import spofo.stockhave.infrastructure.StockHaveJpaRepository;
+import spofo.holdingstock.domain.HoldingStock;
+import spofo.holdingstock.infrastructure.HoldingStockEntity;
+import spofo.holdingstock.infrastructure.HoldingStockJpaRepository;
 import spofo.tradelog.controller.port.TradeLogService;
 import spofo.tradelog.controller.response.TradeLogResponse;
-import spofo.tradelog.domain.CreateTradeLogRequest;
 import spofo.tradelog.domain.TradeLog;
 import spofo.tradelog.domain.TradeLogCreate;
 import spofo.tradelog.domain.enums.TradeType;
@@ -25,11 +24,11 @@ public class TradeLogServiceImpl implements TradeLogService {
 
     private final TradeLogRepository tradeLogRepository;
     private final TradeLogJpaRepository tradeLogJpaRepository;
-    private final StockHaveJpaRepository stockHaveJpaRepository;
+    private final HoldingStockJpaRepository holdingStockJpaRepository;
 
     @Override
-    public void createTradeLog(TradeLogCreate request, StockHave stockHave) {
-        TradeLog tradeLog = TradeLog.of(request, stockHave);
+    public void createTradeLog(TradeLogCreate request, HoldingStock holdingStock) {
+        TradeLog tradeLog = TradeLog.of(request, holdingStock);
         TradeLogEntity tradeLogEntity = TradeLogEntity.from(tradeLog);
         tradeLogJpaRepository.save(tradeLogEntity);
     }
@@ -39,9 +38,9 @@ public class TradeLogServiceImpl implements TradeLogService {
      **/
     @Override
     public List<TradeLogResponse> getTradeLogs(Long stockId) {
-        StockHaveEntity stockHaveEntity = stockHaveJpaRepository.getReferenceById(stockId);
-        List<TradeLogEntity> tradeLogEntities = tradeLogJpaRepository.findByStockHaveEntity(
-                stockHaveEntity);
+        HoldingStockEntity holdingStockEntity = holdingStockJpaRepository.getReferenceById(stockId);
+        List<TradeLogEntity> tradeLogEntities = tradeLogJpaRepository.findByHoldingStockEntity(
+                holdingStockEntity);
         return tradeLogEntities.stream()
                 .map(tradeLog -> TradeLogResponse.from(tradeLog, getProfit(tradeLog),
                         getTotalPrice(tradeLog)))
@@ -49,8 +48,8 @@ public class TradeLogServiceImpl implements TradeLogService {
     }
 
     @Override
-    public void deleteByStockHaveId(Long id) {
-        tradeLogRepository.deleteByStockHaveId(id);
+    public void deleteByHoldingStockId(Long id) {
+        tradeLogRepository.deleteByHoldingStockId(id);
     }
 
     /**

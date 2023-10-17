@@ -1,4 +1,4 @@
-package spofo.stockhave.infrastructure;
+package spofo.holdingstock.infrastructure;
 
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -7,10 +7,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface StockHaveJpaRepository extends JpaRepository<StockHaveEntity, Long> {
+public interface HoldingStockJpaRepository extends JpaRepository<HoldingStockEntity, Long> {
 
     @Query(value = "SELECT * FROM stock_have sh WHERE sh.portfolio_id = :portfolioId", nativeQuery = true)
-    List<StockHaveEntity> findByPortfolioId(@Param("portfolioId") Long portfolioId);
+    List<HoldingStockEntity> findByPortfolioId(@Param("portfolioId") Long portfolioId);
 
     void deleteByPortfolioEntityId(Long id);
 }

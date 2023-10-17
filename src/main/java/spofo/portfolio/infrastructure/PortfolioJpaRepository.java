@@ -12,14 +12,14 @@ public interface PortfolioJpaRepository extends JpaRepository<PortfolioEntity, L
 
     @Query("select distinct p "
             + "from PortfolioEntity p "
-            + "left join fetch p.stockHaveEntities s "
+            + "left join fetch p.holdingStockEntities s "
             + "left join fetch s.tradeLogEntities t "
             + "where p.id = :id")
     Optional<PortfolioEntity> findByIdWithTradeLogs(@Param("id") Long id);
 
     @Query("select p "
             + "from PortfolioEntity p "
-            + "left join fetch p.stockHaveEntities s "
+            + "left join fetch p.holdingStockEntities s "
             + "left join fetch s.tradeLogEntities t "
             + "where p.memberId = :id")
     List<PortfolioEntity> findByMemberIdWithTradeLogs(@Param("id") Long id);

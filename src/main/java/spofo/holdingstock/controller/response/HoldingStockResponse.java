@@ -1,13 +1,13 @@
-package spofo.stockhave.controller.response;
+package spofo.holdingstock.controller.response;
 
 import java.math.BigDecimal;
 import lombok.Builder;
 import lombok.Data;
-import spofo.stockhave.infrastructure.StockHaveEntity;
+import spofo.holdingstock.infrastructure.HoldingStockEntity;
 
 @Data
 @Builder
-public class StockHaveResponse {
+public class HoldingStockResponse {
 
     private Long id;
     private String stockCode;
@@ -23,10 +23,10 @@ public class StockHaveResponse {
     private BigDecimal quantity;
     private String imageUrl;
 
-    public static StockHaveResponse from(StockHaveEntity sh, String stockName, String sector,
+    public static HoldingStockResponse from(HoldingStockEntity sh, String stockName, String sector,
             BigDecimal totalAsset, BigDecimal gain, BigDecimal gainRate, BigDecimal avgPrice,
             BigDecimal currentPrice, BigDecimal quantity, String imageUrl) {
-        return StockHaveResponse.builder()
+        return HoldingStockResponse.builder()
                 .id(sh.getId())
                 .stockCode(sh.getStockCode())
                 .portfolioId(sh.getPortfolioEntity().getId())

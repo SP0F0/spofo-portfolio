@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import spofo.holdingstock.domain.HoldingStock;
 import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioStatistic;
 import spofo.stock.domain.Stock;
-import spofo.stockhave.domain.StockHave;
 import spofo.tradelog.domain.TradeLog;
 
 public class PortfolioStatisticTest {
@@ -26,13 +26,13 @@ public class PortfolioStatisticTest {
         // given
         Long memberId = 1L;
         TradeLog tradeLog = getTradeLog();
-        StockHave stockHave = getStockHave(tradeLog);
+        HoldingStock holdingStock = getHoldingStock(tradeLog);
 
         Portfolio portfolio = Portfolio.builder()
                 .id(1L)
                 .memberId(memberId)
                 .includeType(Y)
-                .stockHaves(List.of(stockHave))
+                .holdingStocks(List.of(holdingStock))
                 .build();
 
         // when
@@ -48,7 +48,7 @@ public class PortfolioStatisticTest {
 
     @Test
     @DisplayName("보유종목이 없을 때 포트폴리오 통계의 모든 값들은 0이다.")
-    void PortfolioStatisticWithoutStockHave() {
+    void PortfolioStatisticWithoutHoldingStock() {
         // given
         Portfolio portfolio = Portfolio.builder()
                 .includeType(Y)
@@ -64,8 +64,8 @@ public class PortfolioStatisticTest {
         assertThat(portfolioStatistic.getTotalAsset()).isEqualTo(ZERO);
     }
 
-    private StockHave getStockHave(TradeLog tradeLog) {
-        return StockHave.builder()
+    private HoldingStock getHoldingStock(TradeLog tradeLog) {
+        return HoldingStock.builder()
                 .stockCode(TEST_STOCK_CODE)
                 .tradeLogs(List.of(tradeLog))
                 .build();

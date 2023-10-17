@@ -1,4 +1,4 @@
-package spofo.stockhave.domain;
+package spofo.holdingstock.domain;
 
 import java.util.List;
 import lombok.Builder;
@@ -8,16 +8,16 @@ import spofo.tradelog.domain.TradeLog;
 
 @Getter
 @Builder
-public class StockHave {
+public class HoldingStock {
 
     private Long id;
     private String stockCode;
     private Portfolio portfolio;
     private List<TradeLog> tradeLogs;
 
-    public static StockHave of(StockHaveCreate stockHaveCreate, Portfolio portfolio) {
-        return StockHave.builder()
-                .stockCode(stockHaveCreate.getStockCode())
+    public static HoldingStock of(HoldingStockCreate holdingStockCreate, Portfolio portfolio) {
+        return HoldingStock.builder()
+                .stockCode(holdingStockCreate.getStockCode())
                 .portfolio(portfolio)
                 .build();
     }

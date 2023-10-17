@@ -1,15 +1,10 @@
 package spofo.tradelog.domain;
 
-import static spofo.portfolio.domain.enums.IncludeType.Y;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
-import spofo.portfolio.domain.Portfolio;
-import spofo.portfolio.domain.PortfolioCreate;
-import spofo.portfolio.domain.PortfolioUpdate;
-import spofo.stockhave.domain.StockHave;
+import spofo.holdingstock.domain.HoldingStock;
 import spofo.tradelog.domain.enums.TradeType;
 
 @Getter
@@ -23,16 +18,16 @@ public class TradeLog {
     private final BigDecimal quantity;
     private final BigDecimal marketPrice;
     private final LocalDateTime createdAt;
-    private final StockHave stockHave;
+    private final HoldingStock holdingStock;
 
-    public static TradeLog of(TradeLogCreate create, StockHave stockHave) {
+    public static TradeLog of(TradeLogCreate create, HoldingStock holdingStock) {
         return TradeLog.builder()
                 .type(create.getType())
                 .price(create.getPrice())
                 .tradeDate(create.getTradeDate())
                 .quantity(create.getQuantity())
                 .marketPrice(create.getMarketPrice())
-                .stockHave(stockHave)
+                .holdingStock(holdingStock)
                 .build();
     }
 

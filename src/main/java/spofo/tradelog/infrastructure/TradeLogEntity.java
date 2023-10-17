@@ -16,7 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import spofo.global.component.converter.TradeTypeConverter;
-import spofo.stockhave.infrastructure.StockHaveEntity;
+import spofo.holdingstock.infrastructure.HoldingStockEntity;
 import spofo.tradelog.domain.TradeLog;
 import spofo.tradelog.domain.enums.TradeType;
 
@@ -51,8 +51,8 @@ public class TradeLogEntity {
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "stockHave_id")
-    private StockHaveEntity stockHaveEntity;
+    @JoinColumn(name = "holding_stock_id")
+    private HoldingStockEntity holdingStockEntity;
 
     public static TradeLogEntity from(TradeLog tradeLog) {
         TradeLogEntity entity = new TradeLogEntity();
@@ -64,7 +64,7 @@ public class TradeLogEntity {
         entity.quantity = tradeLog.getQuantity();
         entity.marketPrice = tradeLog.getMarketPrice();
         entity.createdAt = tradeLog.getCreatedAt();
-        entity.stockHaveEntity = StockHaveEntity.from(tradeLog.getStockHave());
+        entity.holdingStockEntity = HoldingStockEntity.from(tradeLog.getHoldingStock());
 
         return entity;
     }

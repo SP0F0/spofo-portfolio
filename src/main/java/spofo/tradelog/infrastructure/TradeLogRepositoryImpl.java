@@ -17,7 +17,7 @@ public class TradeLogRepositoryImpl implements TradeLogRepository {
     }
 
     @Override
-    public void deleteByStockHaveId(Long id) {
-        tradeLogJpaRepository.findByStockHaveEntityId(id);
+    public void deleteByHoldingStockId(Long id) {
+        tradeLogJpaRepository.findByHoldingStockEntityId(id);
     }
 }

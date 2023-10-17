@@ -19,7 +19,7 @@ public class TradeLogServiceTest extends ServiceTestSupport {
                 .quantity(getBD(100))
                 .type(BUY)
                 .price(getBD(10000))
-                .stockHaveEntity(null)
+                .holdingStockEntity(null)
                 .build();
         // when
 

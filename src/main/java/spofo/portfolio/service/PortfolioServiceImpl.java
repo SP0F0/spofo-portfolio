@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import spofo.global.domain.exception.PortfolioNotFound;
+import spofo.holdingstock.domain.HoldingStock;
 import spofo.portfolio.controller.port.PortfolioService;
 import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioCreate;
@@ -16,7 +17,6 @@ import spofo.portfolio.domain.TotalPortofoliosStatistic;
 import spofo.portfolio.service.port.PortfolioRepository;
 import spofo.stock.domain.Stock;
 import spofo.stock.service.StockServerService;
-import spofo.stockhave.domain.StockHave;
 
 @Service
 @Transactional(readOnly = true)
@@ -90,8 +90,8 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     private List<String> getStockCodes(List<Portfolio> portfolios) {
         return portfolios.stream()
-                .flatMap(portfolio -> portfolio.getStockHaves().stream()
-                        .map(StockHave::getStockCode))
+                .flatMap(portfolio -> portfolio.getHoldingStocks().stream()
+                        .map(HoldingStock::getStockCode))
                 .distinct()
                 .toList();
     }
