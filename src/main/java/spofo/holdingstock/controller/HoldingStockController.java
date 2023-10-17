@@ -37,9 +37,9 @@ public class HoldingStockController {
             @RequestBody @Validated AddStockRequest addStockRequest,
             @PathVariable("portfolioId") Long portfolioId) {
         // TODO : 종목 매수
-        AddStockResponse addStockResponse = holdingStockService.addStock(
-                addStockRequest, portfolioId);
-        return ok(addStockResponse);
+        /*AddStockResponse addStockResponse = holdingStockService.addStock(
+                addStockRequest, portfolioId);*/
+        return ok(null);
     }
 
 //    @PostMapping("/portfolios/{portfolioId}/stocks/{stockId}")

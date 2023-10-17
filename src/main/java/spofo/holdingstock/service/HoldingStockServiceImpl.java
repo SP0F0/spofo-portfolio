@@ -1,43 +1,69 @@
 package spofo.holdingstock.service;
 
-import static spofo.global.component.utils.CommonUtils.getBD;
-import static spofo.tradelog.domain.enums.TradeType.BUY;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestClient;
-import spofo.holdingstock.controller.response.AddStockResponse;
-import spofo.holdingstock.controller.response.HoldingStockResponse;
-import spofo.holdingstock.domain.AddStockRequest;
+import spofo.global.domain.exception.HoldingStockNotFound;
+import spofo.holdingstock.controller.port.HoldingStockService;
 import spofo.holdingstock.domain.HoldingStock;
 import spofo.holdingstock.domain.HoldingStockCreate;
-import spofo.holdingstock.infrastructure.HoldingStockEntity;
-import spofo.holdingstock.infrastructure.HoldingStockJpaRepository;
 import spofo.holdingstock.service.port.HoldingStockRepository;
 import spofo.portfolio.domain.Portfolio;
-import spofo.portfolio.infrastructure.PortfolioEntity;
-import spofo.portfolio.infrastructure.PortfolioJpaRepository;
-import spofo.tradelog.domain.CreateTradeLogRequest;
-import spofo.tradelog.infrastructure.TradeLogEntity;
-import spofo.tradelog.infrastructure.TradeLogJpaRepository;
-import spofo.tradelog.service.TradeLogServiceImpl;
-import spofo.tradelog.service.port.TradeLogRepository;
+import spofo.tradelog.controller.port.TradeLogService;
+import spofo.tradelog.domain.TradeLogCreate;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class HoldingStockService implements spofo.holdingstock.controller.port.HoldingStockService {
+public class HoldingStockServiceImpl implements HoldingStockService {
+
+    private final TradeLogService tradeLogService;
+    private final HoldingStockRepository holdingStockRepository;
+
+    @Override
+    public List<HoldingStock> getByPortfolioId(Long portfolioId) {
+        return holdingStockRepository.findByPortfolioId(portfolioId);
+    }
+
+    @Override
+    public HoldingStock get(Long id) {
+        return findById(id);
+    }
+
+    @Override
+    @Transactional
+    public HoldingStock create(HoldingStockCreate holdingStockCreate, TradeLogCreate tradeLogCreate,
+            Portfolio portfolio) {
+        HoldingStock holdingStock = HoldingStock.of(holdingStockCreate, portfolio);
+        HoldingStock savedHoldingStock = holdingStockRepository.save(holdingStock);
+
+        tradeLogService.create(tradeLogCreate, savedHoldingStock);
+
+        return savedHoldingStock;
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        HoldingStock savedHoldingStock = findById(id);
+        holdingStockRepository.delete(savedHoldingStock);
+    }
+
+    @Override
+    public void deleteByPortfolioId(Long portfolioId) {
+        holdingStockRepository.deleteByPortfolioId(portfolioId);
+    }
+
+    private HoldingStock findById(Long id) {
+        return getFrom(holdingStockRepository.findById(id));
+    }
+
+    private HoldingStock getFrom(Optional<HoldingStock> holdingStockOptional) {
+        return holdingStockOptional.orElseThrow(() -> new HoldingStockNotFound());
+    }
+    /*
 
     private final HoldingStockRepository holdingStockRepository;
     private final HoldingStockJpaRepository holdingStockJpaRepository;
@@ -46,6 +72,7 @@ public class HoldingStockService implements spofo.holdingstock.controller.port.H
     private final PortfolioJpaRepository portfolioJpaRepository;
     private final TradeLogServiceImpl tradeLogServiceImpl;
     private final RestClient restClient = RestClient.builder().build();
+
 
     // API - 008
     // 모든 보유 종목 불러오기
@@ -96,13 +123,13 @@ public class HoldingStockService implements spofo.holdingstock.controller.port.H
 
     @Override
     @Transactional
-    public HoldingStock addStock(HoldingStockCreate request, Portfolio portfolio) {
+    public HoldingStock addStock(HoldingStockRequest request, Portfolio portfolio) {
         // stockhave 만들기
         // tradeLog 만들기
 
         // 쌍방 연관관계 만들기
 
-        HoldingStock holdingStock = HoldingStock.of(request, portfolio);
+        HoldingStock holdingStock = null;
         HoldingStock savedHoldingStock = holdingStockRepository.save(holdingStock);
 
 //        TradeLog tradeLog = TradeLog.builder()
@@ -135,7 +162,7 @@ public class HoldingStockService implements spofo.holdingstock.controller.port.H
     // 종목 삭제하기
     @Transactional
     @Override
-    public void deleteStock(Long stockId) {
+    public void delete(Long stockId) {
         HoldingStockEntity holdingStockEntity = holdingStockJpaRepository.getReferenceById(stockId);
         holdingStockJpaRepository.delete(holdingStockEntity);
     }
@@ -315,4 +342,5 @@ public class HoldingStockService implements spofo.holdingstock.controller.port.H
         }
         return imageUrl;
     }
+     */
 }

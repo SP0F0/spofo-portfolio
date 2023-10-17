@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import spofo.holdingstock.domain.HoldingStock;
 import spofo.tradelog.domain.enums.TradeType;
 
 @Data
@@ -20,6 +19,4 @@ public class TradeLogCreate {
     private LocalDateTime tradeDate;
     private BigDecimal quantity;
     private BigDecimal marketPrice;
-    private HoldingStock holdingStock;
-
 }

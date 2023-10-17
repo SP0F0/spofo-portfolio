@@ -12,7 +12,7 @@ public interface HoldingStockRepository {
 
     HoldingStock save(HoldingStock holdingStock);
 
-    void deleteById(Long id);
+    void delete(HoldingStock holdingStock);
 
     void deleteByPortfolioId(Long id);
 }

@@ -1,5 +1,7 @@
 package spofo.holdingstock.controller.request;
 
+import static spofo.tradelog.domain.enums.TradeType.BUY;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -9,6 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import spofo.holdingstock.domain.HoldingStockCreate;
+import spofo.tradelog.domain.TradeLogCreate;
 
 @Data
 @Builder
@@ -29,4 +33,20 @@ public class HoldingStockRequest {
     @Positive
     @NotNull(message = "평균단가는 필수 입력입니다.")
     private BigDecimal avgPrice;
+
+    public HoldingStockCreate toHoldingStockCreate() {
+        return HoldingStockCreate.builder()
+                .stockCode(code)
+                .build();
+    }
+
+    public TradeLogCreate toTradeLogCreate() {
+        return TradeLogCreate.builder()
+                .type(BUY)
+                .price(avgPrice)
+                .tradeDate(tradeDate)
+                .quantity(quantity)
+                //.marketPrice(avgPrice)
+                .build();
+    }
 }

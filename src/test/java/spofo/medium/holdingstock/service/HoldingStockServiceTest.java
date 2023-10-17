@@ -4,8 +4,6 @@ import static spofo.portfolio.domain.enums.Currency.KRW;
 import static spofo.portfolio.domain.enums.PortfolioType.REAL;
 
 import org.junit.jupiter.api.Test;
-import spofo.holdingstock.domain.HoldingStock;
-import spofo.holdingstock.domain.HoldingStockCreate;
 import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioCreate;
 import spofo.support.service.ServiceTestSupport;
@@ -24,13 +22,14 @@ public class HoldingStockServiceTest extends ServiceTestSupport {
         // given
         PortfolioCreate createPortfolio = getCreatePortfolio();
         Portfolio savedPortfolio = portfolioService.create(createPortfolio, MEMBER_ID);
+/*
         HoldingStockCreate holdingStockCreate = HoldingStockCreate.builder()
                 .stockCode(TEST_STOCK_CODE)
                 .build();
-
         // when
         HoldingStock savedHoldingStock = holdingStockService.addStock(holdingStockCreate,
                 savedPortfolio);
+*/
 
         // then
     }

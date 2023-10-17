@@ -27,6 +27,11 @@ public class TradeLogServiceImpl implements TradeLogService {
     private final HoldingStockJpaRepository holdingStockJpaRepository;
 
     @Override
+    public TradeLog create(TradeLogCreate request, HoldingStock holdingStock) {
+        return null;
+    }
+
+    @Override
     public void createTradeLog(TradeLogCreate request, HoldingStock holdingStock) {
         TradeLog tradeLog = TradeLog.of(request, holdingStock);
         TradeLogEntity tradeLogEntity = TradeLogEntity.from(tradeLog);

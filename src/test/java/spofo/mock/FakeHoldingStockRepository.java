@@ -29,13 +29,13 @@ public class FakeHoldingStockRepository implements HoldingStockRepository {
     @Override
     public HoldingStock save(HoldingStock holdingStock) {
         if (holdingStock.getId() == null || holdingStock.getId() == 0) {
-            HoldingStock newholdingStock = holdingStock.builder()
+            HoldingStock newHoldingStock = holdingStock.builder()
                     .id(++autoIncrement)
                     .stockCode(holdingStock.getStockCode())
                     .portfolio(holdingStock.getPortfolio())
                     .build();
-            data.add(newholdingStock);
-            return newholdingStock;
+            data.add(newHoldingStock);
+            return newHoldingStock;
         } else {
             data.removeIf(item -> Objects.equals(item.getId(), holdingStock.getId()));
             data.add(holdingStock);
