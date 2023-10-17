@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 import spofo.holdingstock.controller.response.AddStockResponse;
 import spofo.holdingstock.controller.response.HoldingStockResponse;
 import spofo.holdingstock.domain.AddStockRequest;
-import spofo.holdingstock.service.HoldingStockService;
+import spofo.holdingstock.service.HoldingStockServiceImpl;
 
 @RestController
 @RequiredArgsConstructor
 public class HoldingStockController {
 
-    private final HoldingStockService holdingStockService;
+    private final HoldingStockServiceImpl holdingStockService;
 
     @GetMapping("/portfolios/{portfolioId}/stocks")
     public ResponseEntity<List<HoldingStockResponse>> getStocks(
@@ -57,7 +57,7 @@ public class HoldingStockController {
             @PathVariable("portfolioId") Long portfolioId,
             @PathVariable("stockId") Long stockId) {
         // TODO : 종목 삭제
-        holdingStockService.deleteStock(stockId);
+        holdingStockService.delete(stockId);
         return ok().body(null);
     }
 
@@ -66,9 +66,7 @@ public class HoldingStockController {
             @PathVariable("portfolioId") Long portfolioId,
             @PathVariable("stockCode") String stockCode) {
         // TODO : 전체 보유 종목 조회
-        List<HoldingStockResponse> result = holdingStockService.getStocksByCode(portfolioId,
-                stockCode);
-        return ResponseEntity.ok().body(result);
+        //List<HoldingStockResponse> result = holdingStockService.getStocksByCode(portfolioId,stockCode);
+        return ResponseEntity.ok().body(null);
     }
-
 }
