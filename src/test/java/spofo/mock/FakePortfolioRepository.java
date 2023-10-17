@@ -50,7 +50,7 @@ public class FakePortfolioRepository implements PortfolioRepository {
                     .description(portfolio.getDescription())
                     .currency(portfolio.getCurrency())
                     .includeType(portfolio.getIncludeType())
-                    .stockHaves(portfolio.getStockHaves())
+                    .holdingStocks(portfolio.getHoldingStocks())
                     .type(portfolio.getType())
                     .build();
             data.add(newPortfolio);

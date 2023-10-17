@@ -1,4 +1,4 @@
-package spofo.stockhave.infrastructure;
+package spofo.holdingstock.infrastructure;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,16 +15,16 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import spofo.global.infrastructure.BaseEntity;
+import spofo.holdingstock.domain.HoldingStock;
 import spofo.portfolio.infrastructure.PortfolioEntity;
-import spofo.stockhave.domain.StockHave;
 import spofo.tradelog.domain.TradeLog;
 import spofo.tradelog.infrastructure.TradeLogEntity;
 
 @Entity
 @Getter
-@Table(name = "stock_have")
+@Table(name = "holding_stock")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class StockHaveEntity extends BaseEntity {
+public class HoldingStockEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,25 +36,25 @@ public class StockHaveEntity extends BaseEntity {
     @JoinColumn(name = "portfolio_id")
     private PortfolioEntity portfolioEntity;
 
-    @OneToMany(mappedBy = "stockHaveEntity")
+    @OneToMany(mappedBy = "holdingStockEntity")
     private Set<TradeLogEntity> tradeLogEntities = new LinkedHashSet<>();
 
-    public static StockHaveEntity from(StockHave stockHave) {
-        StockHaveEntity entity = new StockHaveEntity();
+    public static HoldingStockEntity from(HoldingStock holdingStock) {
+        HoldingStockEntity entity = new HoldingStockEntity();
 
-        entity.id = stockHave.getId();
-        entity.stockCode = stockHave.getStockCode();
-        entity.portfolioEntity = PortfolioEntity.from(stockHave.getPortfolio());
+        entity.id = holdingStock.getId();
+        entity.stockCode = holdingStock.getStockCode();
+        entity.portfolioEntity = PortfolioEntity.from(holdingStock.getPortfolio());
 
         return entity;
     }
 
-    public StockHave toModel() {
+    public HoldingStock toModel() {
         List<TradeLog> tradeLogs = tradeLogEntities.stream()
                 .map(TradeLogEntity::toModel)
                 .toList();
 
-        return StockHave.builder()
+        return HoldingStock.builder()
                 .id(id)
                 .stockCode(stockCode)
                 //.portfolio(portfolioEntity.toModel())

@@ -9,10 +9,10 @@ import static spofo.portfolio.domain.enums.PortfolioType.FAKE;
 import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import spofo.holdingstock.domain.HoldingStock;
+import spofo.holdingstock.infrastructure.HoldingStockEntity;
 import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.infrastructure.PortfolioEntity;
-import spofo.stockhave.domain.StockHave;
-import spofo.stockhave.infrastructure.StockHaveEntity;
 
 public class PortfolioEntityTest {
 
@@ -37,16 +37,17 @@ public class PortfolioEntityTest {
 
     @Test
     @DisplayName("포트폴리오 엔티티로 포트폴리오를 만든다.")
-    void PortfolioEntityToPortfolioWithStockHaves() {
+    void PortfolioEntityToPortfolioWithHoldingStocks() {
         // given
         Portfolio portfolio = createPortfolio();
         PortfolioEntity portfolioEntity = PortfolioEntity.from(portfolio);
 
-        StockHave stockHave = StockHave.builder()
+        HoldingStock holdingStock = HoldingStock.builder()
                 .portfolio(portfolio)
                 .build();
 
-        setField(portfolioEntity, "stockHaveEntities", Set.of(StockHaveEntity.from(stockHave)));
+        setField(portfolioEntity, "holdingStockEntities",
+                Set.of(HoldingStockEntity.from(holdingStock)));
 
         // when
         Portfolio model = portfolioEntity.toModel();
@@ -59,12 +60,12 @@ public class PortfolioEntityTest {
         assertThat(model.getCurrency()).isEqualTo(KRW);
         assertThat(model.getIncludeType()).isEqualTo(Y);
         assertThat(model.getType()).isEqualTo(FAKE);
-        assertThat(model.getStockHaves()).hasSize(1);
+        assertThat(model.getHoldingStocks()).hasSize(1);
     }
 
     @Test
-    @DisplayName("StockHave가 없을 때 포트폴리오 엔티티로 포트폴리오를 만든다.")
-    void PortfolioEntityToPortfolioWithoutStockHaves() {
+    @DisplayName("HoldingStock가 없을 때 포트폴리오 엔티티로 포트폴리오를 만든다.")
+    void PortfolioEntityToPortfolioWithoutHoldingStocks() {
         // given
         Portfolio portfolio = createPortfolio();
         PortfolioEntity portfolioEntity = PortfolioEntity.from(portfolio);
@@ -80,7 +81,7 @@ public class PortfolioEntityTest {
         assertThat(model.getCurrency()).isEqualTo(KRW);
         assertThat(model.getIncludeType()).isEqualTo(Y);
         assertThat(model.getType()).isEqualTo(FAKE);
-        assertThat(model.getStockHaves()).hasSize(0);
+        assertThat(model.getHoldingStocks()).hasSize(0);
     }
 
     private Portfolio createPortfolio() {

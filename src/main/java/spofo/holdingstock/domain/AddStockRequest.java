@@ -1,12 +1,12 @@
-package spofo.stockhave.domain;
+package spofo.holdingstock.domain;
 
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import spofo.holdingstock.infrastructure.HoldingStockEntity;
 import spofo.portfolio.infrastructure.PortfolioEntity;
-import spofo.stockhave.infrastructure.StockHaveEntity;
 
 @Getter
 @Builder
@@ -19,7 +19,7 @@ public class AddStockRequest {
     private BigDecimal quantity;
     private BigDecimal avgPrice;
 
-    public StockHaveEntity toEntity(PortfolioEntity portfolioEntity) {
+    public HoldingStockEntity toEntity(PortfolioEntity portfolioEntity) {
 
         return null;
     }

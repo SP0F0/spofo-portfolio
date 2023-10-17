@@ -1,8 +1,8 @@
-package spofo.stockhave.controller;
+package spofo.holdingstock.controller;
 
 import org.junit.jupiter.api.Test;
 
-class StockControllerTest {
+class HoldingStockControllerTest {
 
     @Test
     void getStocks() {

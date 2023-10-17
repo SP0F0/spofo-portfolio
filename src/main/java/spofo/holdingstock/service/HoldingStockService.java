@@ -1,4 +1,4 @@
-package spofo.stockhave.service;
+package spofo.holdingstock.service;
 
 import static spofo.global.component.utils.CommonUtils.getBD;
 import static spofo.tradelog.domain.enums.TradeType.BUY;
@@ -17,18 +17,17 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
+import spofo.holdingstock.controller.response.AddStockResponse;
+import spofo.holdingstock.controller.response.HoldingStockResponse;
+import spofo.holdingstock.domain.AddStockRequest;
+import spofo.holdingstock.domain.HoldingStock;
+import spofo.holdingstock.domain.HoldingStockCreate;
+import spofo.holdingstock.infrastructure.HoldingStockEntity;
+import spofo.holdingstock.infrastructure.HoldingStockJpaRepository;
+import spofo.holdingstock.service.port.HoldingStockRepository;
 import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.infrastructure.PortfolioEntity;
 import spofo.portfolio.infrastructure.PortfolioJpaRepository;
-import spofo.stockhave.controller.port.StockHaveService;
-import spofo.stockhave.controller.response.AddStockResponse;
-import spofo.stockhave.controller.response.StockHaveResponse;
-import spofo.stockhave.domain.AddStockRequest;
-import spofo.stockhave.domain.StockHave;
-import spofo.stockhave.domain.StockHaveCreate;
-import spofo.stockhave.infrastructure.StockHaveEntity;
-import spofo.stockhave.infrastructure.StockHaveJpaRepository;
-import spofo.stockhave.service.port.StockHaveRepository;
 import spofo.tradelog.domain.CreateTradeLogRequest;
 import spofo.tradelog.infrastructure.TradeLogEntity;
 import spofo.tradelog.infrastructure.TradeLogJpaRepository;
@@ -38,10 +37,10 @@ import spofo.tradelog.service.port.TradeLogRepository;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class StockHaveServiceImpl implements StockHaveService {
+public class HoldingStockService implements spofo.holdingstock.controller.port.HoldingStockService {
 
-    private final StockHaveRepository stockHaveRepository;
-    private final StockHaveJpaRepository stockHaveJpaRepository;
+    private final HoldingStockRepository holdingStockRepository;
+    private final HoldingStockJpaRepository holdingStockJpaRepository;
     private final TradeLogRepository tradeLogRepository;
     private final TradeLogJpaRepository tradeLogJpaRepository;
     private final PortfolioJpaRepository portfolioJpaRepository;
@@ -51,16 +50,16 @@ public class StockHaveServiceImpl implements StockHaveService {
     // API - 008
     // 모든 보유 종목 불러오기
     @Override
-    public List<StockHave> getStocks(Long portfolioId) {
-        return stockHaveRepository.findByPortfolioId(portfolioId);
+    public List<HoldingStock> getStocks(Long portfolioId) {
+        return holdingStockRepository.findByPortfolioId(portfolioId);
     }
 
-    private StockHaveResponse stockHaveResponse(StockHaveEntity stockHaveEntity) {
-        String stockCode = stockHaveEntity.getStockCode();
-        Long stockId = stockHaveEntity.getId();
+    private HoldingStockResponse holdingStockResponse(HoldingStockEntity holdingStockEntity) {
+        String stockCode = holdingStockEntity.getStockCode();
+        Long stockId = holdingStockEntity.getId();
 
-        return StockHaveResponse.from(
-                stockHaveEntity,
+        return HoldingStockResponse.from(
+                holdingStockEntity,
                 getStockName(stockCode),
                 getSector(stockCode),
                 getStockAsset(stockCode, stockId),
@@ -78,11 +77,11 @@ public class StockHaveServiceImpl implements StockHaveService {
     @Override
     public AddStockResponse addStock(AddStockRequest addStockRequest, Long portfolioId) {
         PortfolioEntity portfolioEntity = portfolioJpaRepository.getReferenceById(portfolioId);
-        StockHaveEntity stockHaveEntity = addStockRequest.toEntity(portfolioEntity);
-        StockHaveEntity sh = stockHaveJpaRepository.save(stockHaveEntity);
+        HoldingStockEntity holdingStockEntity = addStockRequest.toEntity(portfolioEntity);
+        HoldingStockEntity sh = holdingStockJpaRepository.save(holdingStockEntity);
         CreateTradeLogRequest createTradeLogRequest =
                 CreateTradeLogRequest.builder()
-                        .stockHaveEntity(sh)
+                        .holdingStockEntity(sh)
                         .type(BUY) // 매도 추가 시 수정
                         .price(addStockRequest.getAvgPrice())
                         .tradeDate(LocalDateTime.parse(addStockRequest.getTradeDate()))
@@ -97,14 +96,14 @@ public class StockHaveServiceImpl implements StockHaveService {
 
     @Override
     @Transactional
-    public StockHave addStock(StockHaveCreate request, Portfolio portfolio) {
+    public HoldingStock addStock(HoldingStockCreate request, Portfolio portfolio) {
         // stockhave 만들기
         // tradeLog 만들기
 
         // 쌍방 연관관계 만들기
 
-        StockHave stockHave = StockHave.of(request, portfolio);
-        StockHave savedStockHave = stockHaveRepository.save(stockHave);
+        HoldingStock holdingStock = HoldingStock.of(request, portfolio);
+        HoldingStock savedHoldingStock = holdingStockRepository.save(holdingStock);
 
 //        TradeLog tradeLog = TradeLog.builder()
 //                .marketPrice(getBD(10000))
@@ -117,7 +116,7 @@ public class StockHaveServiceImpl implements StockHaveService {
 //        // savedStockHave.addTradeLog(tradeLog);
 //        //TradeLog tradeLog1 = tradeLog.addStockHave(savedStockHave);
 //        TradeLog savedTradeLogs = tradeLogRepository.save(tradeLog);
-        return savedStockHave;
+        return savedHoldingStock;
     }
 
     // API - 010
@@ -126,10 +125,10 @@ public class StockHaveServiceImpl implements StockHaveService {
     public AddStockResponse addMoreStock(AddStockRequest addStockRequest,
             Long portfolioId, Long stockId) {
         PortfolioEntity portfolioEntity = portfolioJpaRepository.getReferenceById(portfolioId);
-        StockHaveEntity stockHaveEntity = addStockRequest.toEntity(portfolioEntity);
-        stockHaveJpaRepository.save(stockHaveEntity);
+        HoldingStockEntity holdingStockEntity = addStockRequest.toEntity(portfolioEntity);
+        holdingStockJpaRepository.save(holdingStockEntity);
 
-        return AddStockResponse.from(stockHaveEntity);
+        return AddStockResponse.from(holdingStockEntity);
     }
 
     // API - 011
@@ -137,25 +136,25 @@ public class StockHaveServiceImpl implements StockHaveService {
     @Transactional
     @Override
     public void deleteStock(Long stockId) {
-        StockHaveEntity stockHaveEntity = stockHaveJpaRepository.getReferenceById(stockId);
-        stockHaveJpaRepository.delete(stockHaveEntity);
+        HoldingStockEntity holdingStockEntity = holdingStockJpaRepository.getReferenceById(stockId);
+        holdingStockJpaRepository.delete(holdingStockEntity);
     }
 
     // API - 014
     // 종목 단건 조회하기
     @Override
-    public List<StockHaveResponse> getStocksByCode(Long portfolioId, String stockCode) {
-        return stockHaveJpaRepository
+    public List<HoldingStockResponse> getStocksByCode(Long portfolioId, String stockCode) {
+        return holdingStockJpaRepository
                 .findByPortfolioId(portfolioId)
                 .stream()
-                .map(this::stockHaveResponse)
+                .map(this::holdingStockResponse)
                 .filter(stock -> stockCode.equals(stock.getStockCode()))
                 .toList();
     }
 
     @Override
     public void deleteByPortfolioId(Long id) {
-        stockHaveRepository.deleteByPortfolioId(id);
+        holdingStockRepository.deleteByPortfolioId(id);
     }
 
     // TODO : 종목명 불러오기
@@ -235,12 +234,12 @@ public class StockHaveServiceImpl implements StockHaveService {
     // TradeLog 매수가의 합 / 수량의 합
     // From TradeLog
     private BigDecimal getAvgPrice(Long stockId) {
-        StockHaveEntity stockHaveEntity = stockHaveJpaRepository.getReferenceById(stockId);
+        HoldingStockEntity holdingStockEntity = holdingStockJpaRepository.getReferenceById(stockId);
         BigDecimal totalPrice;
         BigDecimal totalQuantity = getQuantity(stockId);
         BigDecimal avgPrice = BigDecimal.ZERO;
 
-        totalPrice = tradeLogJpaRepository.findByStockHaveEntity(stockHaveEntity)
+        totalPrice = tradeLogJpaRepository.findByHoldingStockEntity(holdingStockEntity)
                 .stream()
                 .map(TradeLogEntity::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
@@ -280,9 +279,9 @@ public class StockHaveServiceImpl implements StockHaveService {
     // TODO : 보유 종목의 수량
     // From TradeLog
     private BigDecimal getQuantity(Long stockId) {
-        StockHaveEntity stockHaveEntity = stockHaveJpaRepository.getReferenceById(stockId);
+        HoldingStockEntity holdingStockEntity = holdingStockJpaRepository.getReferenceById(stockId);
 
-        return tradeLogJpaRepository.findByStockHaveEntity(stockHaveEntity)
+        return tradeLogJpaRepository.findByHoldingStockEntity(holdingStockEntity)
                 .stream()
                 .map(TradeLogEntity::getQuantity)
                 .reduce(BigDecimal.ZERO, BigDecimal::add)

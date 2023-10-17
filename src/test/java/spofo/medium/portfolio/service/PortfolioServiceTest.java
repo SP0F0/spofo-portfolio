@@ -23,13 +23,13 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import spofo.global.domain.exception.PortfolioNotFound;
+import spofo.holdingstock.domain.HoldingStock;
 import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioCreate;
 import spofo.portfolio.domain.PortfolioStatistic;
 import spofo.portfolio.domain.PortfolioUpdate;
 import spofo.portfolio.domain.TotalPortofoliosStatistic;
 import spofo.stock.domain.Stock;
-import spofo.stockhave.domain.StockHave;
 import spofo.support.service.ServiceTestSupport;
 import spofo.tradelog.domain.TradeLog;
 
@@ -47,16 +47,16 @@ public class PortfolioServiceTest extends ServiceTestSupport {
     void getPortfoliosStatistic() {
         // given
         TradeLog tradeLog = getTradeLog();
-        StockHave stockHave = getStockHave(tradeLog);
+        HoldingStock holdingStock = getHoldingStock(tradeLog);
 
         Portfolio portfolio1 = Portfolio.builder()
                 .includeType(Y)
-                .stockHaves(List.of(stockHave))
+                .holdingStocks(List.of(holdingStock))
                 .build();
 
         Portfolio portfolio2 = Portfolio.builder()
                 .includeType(Y)
-                .stockHaves(List.of(stockHave))
+                .holdingStocks(List.of(holdingStock))
                 .build();
 
         given(portfolioRepository.findByMemberIdWithTradeLogs(MEMBER_ID))
@@ -80,11 +80,11 @@ public class PortfolioServiceTest extends ServiceTestSupport {
     void getPortfoliosStatisticWithNoInclude() {
         // given
         TradeLog tradeLog = getTradeLog();
-        StockHave stockHave = getStockHave(tradeLog);
+        HoldingStock holdingStock = getHoldingStock(tradeLog);
 
         Portfolio portfolio = Portfolio.builder()
                 .includeType(N)
-                .stockHaves(List.of(stockHave))
+                .holdingStocks(List.of(holdingStock))
                 .build();
 
         given(portfolioRepository.findByMemberIdWithTradeLogs(MEMBER_ID))
@@ -125,18 +125,18 @@ public class PortfolioServiceTest extends ServiceTestSupport {
     void getPortfolios() {
         // given
         TradeLog tradeLog = getTradeLog();
-        StockHave stockHave = getStockHave(tradeLog);
+        HoldingStock holdingStock = getHoldingStock(tradeLog);
 
         Portfolio portfolio1 = Portfolio.builder()
                 .id(1L)
                 .includeType(Y)
-                .stockHaves(List.of(stockHave))
+                .holdingStocks(List.of(holdingStock))
                 .build();
 
         Portfolio portfolio2 = Portfolio.builder()
                 .id(2L)
                 .includeType(Y)
-                .stockHaves(List.of(stockHave, stockHave))
+                .holdingStocks(List.of(holdingStock, holdingStock))
                 .build();
 
         given(portfolioRepository.findByMemberIdWithTradeLogs(MEMBER_ID))
@@ -216,10 +216,10 @@ public class PortfolioServiceTest extends ServiceTestSupport {
     void getPortfolioStatistic() {
         // given
         TradeLog tradeLog = getTradeLog();
-        StockHave stockHave = getStockHave(tradeLog);
+        HoldingStock holdingStock = getHoldingStock(tradeLog);
 
         Portfolio portfolio = Portfolio.builder()
-                .stockHaves(List.of(stockHave))
+                .holdingStocks(List.of(holdingStock))
                 .build();
 
         given(portfolioRepository.findByIdWithTradeLogs(anyLong()))
@@ -331,8 +331,8 @@ public class PortfolioServiceTest extends ServiceTestSupport {
                 .build();
     }
 
-    private StockHave getStockHave(TradeLog tradeLog) {
-        return StockHave.builder()
+    private HoldingStock getHoldingStock(TradeLog tradeLog) {
+        return HoldingStock.builder()
                 .stockCode(TEST_STOCK_CODE)
                 .tradeLogs(List.of(tradeLog))
                 .build();

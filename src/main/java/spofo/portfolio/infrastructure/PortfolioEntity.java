@@ -16,12 +16,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import spofo.global.infrastructure.BaseEntity;
+import spofo.holdingstock.domain.HoldingStock;
+import spofo.holdingstock.infrastructure.HoldingStockEntity;
 import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.enums.Currency;
 import spofo.portfolio.domain.enums.IncludeType;
 import spofo.portfolio.domain.enums.PortfolioType;
-import spofo.stockhave.domain.StockHave;
-import spofo.stockhave.infrastructure.StockHaveEntity;
 
 @Entity
 @Getter
@@ -50,7 +50,7 @@ public class PortfolioEntity extends BaseEntity {
     private PortfolioType type;
 
     @OneToMany(mappedBy = "portfolioEntity")
-    private Set<StockHaveEntity> stockHaveEntities = new LinkedHashSet<>();
+    private Set<HoldingStockEntity> holdingStockEntities = new LinkedHashSet<>();
 
     public static PortfolioEntity from(Portfolio portfolio) {
         PortfolioEntity entity = new PortfolioEntity();
@@ -67,8 +67,8 @@ public class PortfolioEntity extends BaseEntity {
     }
 
     public Portfolio toModel() {
-        List<StockHave> stockHaves = stockHaveEntities.stream()
-                .map(StockHaveEntity::toModel)
+        List<HoldingStock> holdingStocks = holdingStockEntities.stream()
+                .map(HoldingStockEntity::toModel)
                 .toList();
 
         return Portfolio.builder()
@@ -79,7 +79,7 @@ public class PortfolioEntity extends BaseEntity {
                 .currency(currency)
                 .includeType(includeType)
                 .type(type)
-                .stockHaves(stockHaves)
+                .holdingStocks(holdingStocks)
                 .build();
     }
 }
