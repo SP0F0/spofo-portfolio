@@ -15,7 +15,7 @@ public class PortfolioTest {
 
     @Test
     @DisplayName("PortfolioCreate로 포트폴리오 도메인을 생성한다.")
-    void createPortfolioToPortfolio() {
+    void portfolioCreateToPortfolio() {
         //given
         PortfolioCreate portfolioCreate = PortfolioCreate.builder()
                 .name("모의포트폴리오")
