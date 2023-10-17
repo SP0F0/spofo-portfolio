@@ -10,7 +10,7 @@ import spofo.portfolio.service.port.PortfolioRepository;
 public class FakePortfolioRepository implements PortfolioRepository {
 
     private long autoIncrement = 0;
-    List<Portfolio> data = new ArrayList<>();
+    private List<Portfolio> data = new ArrayList<>();
 
     @Override
     public List<Portfolio> findByMemberId(Long id) {
