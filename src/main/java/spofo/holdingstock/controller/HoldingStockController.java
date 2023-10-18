@@ -12,16 +12,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import spofo.holdingstock.controller.port.HoldingStockService;
 import spofo.holdingstock.controller.response.AddStockResponse;
 import spofo.holdingstock.controller.response.HoldingStockResponse;
 import spofo.holdingstock.domain.AddStockRequest;
-import spofo.holdingstock.service.HoldingStockServiceImpl;
 
 @RestController
 @RequiredArgsConstructor
 public class HoldingStockController {
 
-    private final HoldingStockServiceImpl holdingStockService;
+    private final HoldingStockService holdingStockService;
 
     @GetMapping("/portfolios/{portfolioId}/stocks")
     public ResponseEntity<List<HoldingStockResponse>> getStocks(
