@@ -16,7 +16,7 @@ public class FakeHoldingStockRepository implements HoldingStockRepository {
     @Override
     public List<HoldingStock> findByPortfolioId(Long id) {
         return data.stream()
-                .filter(item -> item.toModel().getPortfolio().getId().equals(id))
+                .filter(item -> item.getPortfolioEntity().getId().equals(id))
                 .map(HoldingStockEntity::toModel)
                 .toList();
     }
@@ -53,6 +53,6 @@ public class FakeHoldingStockRepository implements HoldingStockRepository {
 
     @Override
     public void deleteByPortfolioId(Long id) {
-        data.removeIf(item -> Objects.equals(item.toModel().getPortfolio().getId(), id));
+        data.removeIf(item -> Objects.equals(item.getPortfolioEntity().getId(), id));
     }
 }
