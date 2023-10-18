@@ -30,7 +30,7 @@ public class HoldingStockEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String stockCode; // 종목 코드 (FK)
+    private String stockCode;
 
     @ManyToOne
     @JoinColumn(name = "portfolio_id")
@@ -49,6 +49,10 @@ public class HoldingStockEntity extends BaseEntity {
         return entity;
     }
 
+    /**
+     * 엔티티를 도메인으로 변환할 때, 부모의 정보를 넣지 않도록 하여 순환 참조를 방지한다.
+     * @return
+     */
     public HoldingStock toModel() {
         List<TradeLog> tradeLogs = tradeLogEntities.stream()
                 .map(TradeLogEntity::toModel)
@@ -57,7 +61,6 @@ public class HoldingStockEntity extends BaseEntity {
         return HoldingStock.builder()
                 .id(id)
                 .stockCode(stockCode)
-                //.portfolio(portfolioEntity.toModel())
                 .tradeLogs(tradeLogs)
                 .build();
     }
