@@ -52,9 +52,9 @@ public class HoldingStockServiceTest {
 
         // then
         assertThat(holdingStocks)
-                .extracting("id", "stockCode", "portfolio.id")
+                .extracting("id", "stockCode", "portfolio")
                 .contains(
-                        tuple(1L, STOCK_CODE, PORTFOLIO_ID)
+                        tuple(1L, STOCK_CODE, null)
                 );
     }
 
