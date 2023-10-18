@@ -40,6 +40,10 @@ public class HoldingStockEntity extends BaseEntity {
     private Set<TradeLogEntity> tradeLogEntities = new LinkedHashSet<>();
 
     public static HoldingStockEntity from(HoldingStock holdingStock) {
+        if (holdingStock == null) {
+            return new HoldingStockEntity();
+        }
+
         HoldingStockEntity entity = new HoldingStockEntity();
 
         entity.id = holdingStock.getId();

@@ -53,6 +53,10 @@ public class PortfolioEntity extends BaseEntity {
     private Set<HoldingStockEntity> holdingStockEntities = new LinkedHashSet<>();
 
     public static PortfolioEntity from(Portfolio portfolio) {
+        if (portfolio == null) {
+            return new PortfolioEntity();
+        }
+
         PortfolioEntity entity = new PortfolioEntity();
 
         entity.id = portfolio.getId();
