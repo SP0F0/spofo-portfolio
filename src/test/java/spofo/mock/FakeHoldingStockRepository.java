@@ -5,17 +5,19 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import spofo.holdingstock.domain.HoldingStock;
+import spofo.holdingstock.infrastructure.HoldingStockEntity;
 import spofo.holdingstock.service.port.HoldingStockRepository;
 
 public class FakeHoldingStockRepository implements HoldingStockRepository {
 
     private long autoIncrement = 0;
-    List<HoldingStock> data = new ArrayList<>();
+    List<HoldingStockEntity> data = new ArrayList<>();
 
     @Override
     public List<HoldingStock> findByPortfolioId(Long id) {
         return data.stream()
-                .filter(item -> item.getPortfolio().getId().equals(id))
+                .filter(item -> item.toModel().getPortfolio().getId().equals(id))
+                .map(HoldingStockEntity::toModel)
                 .toList();
     }
 
@@ -23,6 +25,7 @@ public class FakeHoldingStockRepository implements HoldingStockRepository {
     public Optional<HoldingStock> findById(Long id) {
         return data.stream()
                 .filter(item -> item.getId().equals(id))
+                .map(HoldingStockEntity::toModel)
                 .findAny();
     }
 
@@ -34,11 +37,11 @@ public class FakeHoldingStockRepository implements HoldingStockRepository {
                     .stockCode(holdingStock.getStockCode())
                     .portfolio(holdingStock.getPortfolio())
                     .build();
-            data.add(newHoldingStock);
+            data.add(HoldingStockEntity.from(newHoldingStock));
             return newHoldingStock;
         } else {
             data.removeIf(item -> Objects.equals(item.getId(), holdingStock.getId()));
-            data.add(holdingStock);
+            data.add(HoldingStockEntity.from(holdingStock));
             return holdingStock;
         }
     }
@@ -50,6 +53,6 @@ public class FakeHoldingStockRepository implements HoldingStockRepository {
 
     @Override
     public void deleteByPortfolioId(Long id) {
-        data.removeIf(item -> Objects.equals(item.getPortfolio().getId(), id));
+        data.removeIf(item -> Objects.equals(item.toModel().getPortfolio().getId(), id));
     }
 }
