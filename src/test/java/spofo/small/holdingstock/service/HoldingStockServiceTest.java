@@ -86,8 +86,8 @@ public class HoldingStockServiceTest {
     void getHoldingStock() {
         // given
         Long holdingStockId = 1L;
-
-        HoldingStock holdingStock = createHoldingStock(STOCK_CODE, null);
+        Portfolio portfolio = createPortfolio(PORTFOLIO_ID);
+        HoldingStock holdingStock = createHoldingStock(STOCK_CODE, portfolio);
 
         fakeHoldingStockRepository.save(holdingStock);
 
@@ -136,7 +136,8 @@ public class HoldingStockServiceTest {
     void deleteHoldingStock() {
         // given
         Long holdingStockId = 1L;
-        HoldingStock holdingStock = createHoldingStock(null, null);
+        Portfolio portfolio = createPortfolio(PORTFOLIO_ID);
+        HoldingStock holdingStock = createHoldingStock(STOCK_CODE, portfolio);
 
         fakeHoldingStockRepository.save(holdingStock);
 
