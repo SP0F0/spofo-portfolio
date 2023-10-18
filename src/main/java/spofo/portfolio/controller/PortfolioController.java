@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import spofo.auth.domain.MemberInfo;
 import spofo.auth.domain.annotation.LoginMember;
 import spofo.portfolio.controller.port.PortfolioService;
+import spofo.portfolio.controller.request.PortfolioRequest;
 import spofo.portfolio.controller.response.PortfolioResponse;
 import spofo.portfolio.controller.response.PortfolioStatisticResponse;
 import spofo.portfolio.controller.response.PortfoliosStatisticResponse;
@@ -72,9 +73,9 @@ public class PortfolioController {
     }
 
     @PostMapping("/portfolios")
-    public ResponseEntity<Map<String, Long>> create(
-            @RequestBody @Valid PortfolioCreate portfolioCreate,
+    public ResponseEntity<Map<String, Long>> create(@RequestBody @Valid PortfolioRequest request,
             @LoginMember MemberInfo memberInfo) {
+        PortfolioCreate portfolioCreate = request.toPortfolioCreate();
         Portfolio portfolio = portfolioService.create(portfolioCreate, memberInfo.getId());
         Long portfolioId = portfolio.getId();
 
