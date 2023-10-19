@@ -32,7 +32,7 @@ public class HoldingStockRepositoryImpl implements HoldingStockRepository {
 
     @Override
     public void delete(HoldingStock holdingStock) {
-        //holdingStockJpaRepository.delete(holdingStock);
+        holdingStockJpaRepository.delete(HoldingStockEntity.from(holdingStock));
     }
 
     @Override
