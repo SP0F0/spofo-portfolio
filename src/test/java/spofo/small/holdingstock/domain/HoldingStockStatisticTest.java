@@ -19,6 +19,9 @@ import spofo.tradelog.domain.TradeLog;
 public class HoldingStockStatisticTest {
 
     private final String TEST_STOCK_CODE = "000660";
+    private final String TEST_STOCK_NAME = "SK하이닉스";
+    private final String TEST_STOCK_SECTOR = "반도체";
+    private final BigDecimal TEST_STOCK_PRICE = getBD(66000);
 
     @Test
     @DisplayName("2건의 매매이력으로 보유종목 통계를 만든다.")
@@ -33,6 +36,10 @@ public class HoldingStockStatisticTest {
         HoldingStockStatistic statistic = HoldingStockStatistic.of(holdingStock, getStockMap());
 
         // then
+        assertThat(statistic.getHoldingStockInfo().getCode()).isEqualTo(TEST_STOCK_CODE);
+        assertThat(statistic.getHoldingStockInfo().getName()).isEqualTo(TEST_STOCK_NAME);
+        assertThat(statistic.getHoldingStockInfo().getPrice()).isEqualTo(TEST_STOCK_PRICE);
+        assertThat(statistic.getHoldingStockInfo().getSector()).isEqualTo(TEST_STOCK_SECTOR);
         assertThat(statistic.getTotalAsset()).isEqualTo(getBD(132_000));
         assertThat(statistic.getGain()).isEqualTo(getBD(70_400));
         assertThat(statistic.getGainRate()).isEqualTo(getBD(114.29));
@@ -55,6 +62,10 @@ public class HoldingStockStatisticTest {
         HoldingStockStatistic statistic = HoldingStockStatistic.of(holdingStock, getStockMap());
 
         // then
+        assertThat(statistic.getHoldingStockInfo().getCode()).isEqualTo(TEST_STOCK_CODE);
+        assertThat(statistic.getHoldingStockInfo().getName()).isEqualTo(TEST_STOCK_NAME);
+        assertThat(statistic.getHoldingStockInfo().getPrice()).isEqualTo(TEST_STOCK_PRICE);
+        assertThat(statistic.getHoldingStockInfo().getSector()).isEqualTo(TEST_STOCK_SECTOR);
         assertThat(statistic.getTotalAsset()).isEqualTo(getBD(264_000));
         assertThat(statistic.getGain()).isEqualTo(getBD(47_160));
         assertThat(statistic.getGainRate()).isEqualTo(getBD(21.75));
@@ -81,9 +92,9 @@ public class HoldingStockStatisticTest {
     private Map<String, Stock> getStockMap() {
         Stock stock = Stock.builder()
                 .code(TEST_STOCK_CODE)
-                .name("SK하이닉스")
-                .price(getBD(66000))
-                .sector("반도체")
+                .name(TEST_STOCK_NAME)
+                .price(TEST_STOCK_PRICE)
+                .sector(TEST_STOCK_SECTOR)
                 .build();
 
         return Map.of(TEST_STOCK_CODE, stock);

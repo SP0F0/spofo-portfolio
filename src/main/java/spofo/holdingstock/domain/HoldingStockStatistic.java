@@ -9,7 +9,6 @@ import static spofo.tradelog.domain.enums.TradeType.BUY;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
 import java.util.Map;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +19,7 @@ import spofo.tradelog.domain.TradeLog;
 @Builder
 public class HoldingStockStatistic {
 
-    private HoldingStock holdingStock;
+    private HoldingStockInfo holdingStockInfo;
     private BigDecimal totalAsset;
     private BigDecimal gain;
     private BigDecimal gainRate;
@@ -43,8 +42,10 @@ public class HoldingStockStatistic {
             for (TradeLog tradeLog : holdingStock.getTradeLogs()) {
                 if (tradeLog.getType() == BUY) {
                     quantity = quantity.add(tradeLog.getQuantity()); // 보유 종목 수량 = 매매 이력 총 수량 다 더한 것
-                    totalAsset = totalAsset.add(currentPrice.multiply(tradeLog.getQuantity())); // 총 자산가치 = 매매이력의 수량 * 현재가 를 다 더한 것
-                    totalPrice = totalPrice.add(tradeLog.getPrice().multiply(tradeLog.getQuantity())); // 총 구매가
+                    totalAsset = totalAsset.add(currentPrice.multiply(
+                            tradeLog.getQuantity())); // 총 자산가치 = 매매이력의 수량 * 현재가 를 다 더한 것
+                    totalPrice = totalPrice.add(
+                            tradeLog.getPrice().multiply(tradeLog.getQuantity())); // 총 구매가
                 }
             }
 
@@ -52,12 +53,13 @@ public class HoldingStockStatistic {
             gain = totalAsset.subtract(totalPrice); // 수익 = 자산 가치 - 총 구매가
 
             if (!isZero(totalPrice)) {
-                gainRate = toPercent(gain.divide(totalPrice, 5, RoundingMode.FLOOR)).setScale(getGlobalScale(), HALF_UP); // 수익률 = 수익/평균단가 * 100
+                gainRate = toPercent(gain.divide(totalPrice, 5, RoundingMode.FLOOR)).setScale(
+                        getGlobalScale(), HALF_UP); // 수익률 = 수익/평균단가 * 100
             }
         }
 
         return HoldingStockStatistic.builder()
-                .holdingStock(holdingStock)
+                .holdingStockInfo(HoldingStockInfo.of(holdingStock, stock))
                 .totalAsset(totalAsset)
                 .gain(gain)
                 .gainRate(gainRate)
