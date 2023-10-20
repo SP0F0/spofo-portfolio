@@ -55,6 +55,10 @@ public class TradeLogEntity {
     private HoldingStockEntity holdingStockEntity;
 
     public static TradeLogEntity from(TradeLog tradeLog) {
+        if (tradeLog == null) {
+            return new TradeLogEntity();
+        }
+        
         TradeLogEntity entity = new TradeLogEntity();
 
         entity.id = tradeLog.getId();

@@ -15,9 +15,9 @@ public class HoldingStock {
     private Portfolio portfolio;
     private List<TradeLog> tradeLogs;
 
-    public static HoldingStock of(HoldingStockCreate holdingStockCreate, Portfolio portfolio) {
+    public static HoldingStock of(HoldingStockCreate request, Portfolio portfolio) {
         return HoldingStock.builder()
-                .stockCode(holdingStockCreate.getStockCode())
+                .stockCode(request.getStockCode())
                 .portfolio(portfolio)
                 .build();
     }

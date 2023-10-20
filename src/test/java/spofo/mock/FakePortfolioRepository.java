@@ -7,10 +7,13 @@ import java.util.Optional;
 import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.service.port.PortfolioRepository;
 
+/**
+ * FakeRepository는 Entity가 아닌 Domain을 관리한다.
+ */
 public class FakePortfolioRepository implements PortfolioRepository {
 
     private long autoIncrement = 0;
-    List<Portfolio> data = new ArrayList<>();
+    private List<Portfolio> data = new ArrayList<>();
 
     @Override
     public List<Portfolio> findByMemberId(Long id) {

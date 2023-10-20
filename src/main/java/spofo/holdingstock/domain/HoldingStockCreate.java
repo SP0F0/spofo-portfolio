@@ -7,6 +7,5 @@ import lombok.Getter;
 @Builder
 public class HoldingStockCreate {
 
-    String stockCode;
-
+    private String stockCode;
 }

@@ -1,26 +1,25 @@
 package spofo.holdingstock.controller.port;
 
 import java.util.List;
-import spofo.holdingstock.controller.response.AddStockResponse;
-import spofo.holdingstock.controller.response.HoldingStockResponse;
-import spofo.holdingstock.domain.AddStockRequest;
 import spofo.holdingstock.domain.HoldingStock;
 import spofo.holdingstock.domain.HoldingStockCreate;
-import spofo.portfolio.domain.Portfolio;
+import spofo.holdingstock.domain.HoldingStockStatistic;
+import spofo.tradelog.domain.TradeLogCreate;
 
 public interface HoldingStockService {
 
-    List<HoldingStock> getStocks(Long portfolioId);
+    List<HoldingStock> getByPortfolioId(Long portfolioId);
 
-    AddStockResponse addStock(AddStockRequest addStockRequest, Long portfolioId);
+    HoldingStockStatistic getStatistic(Long id);
 
-    AddStockResponse addMoreStock(AddStockRequest addStockRequest, Long portfolioId, Long stockId);
+    HoldingStock get(Long id);
 
-    void deleteStock(Long stockId);
+    HoldingStock create(HoldingStockCreate holdingStockCreate, TradeLogCreate tradeLogCreate,
+            Long portfolioId);
 
-    List<HoldingStockResponse> getStocksByCode(Long portfolioId, String stockCode);
-
-    HoldingStock addStock(HoldingStockCreate request, Portfolio portfolio);
+    void delete(Long id);
 
     void deleteByPortfolioId(Long id);
+
+    List<HoldingStockStatistic> getHoldingStockStatistics(Long portfolioId);
 }

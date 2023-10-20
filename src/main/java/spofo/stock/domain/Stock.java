@@ -17,5 +17,6 @@ public class Stock {
     private BigDecimal price;
     private String market;
     private String sector;
+    private String imageUrl;
 
 }

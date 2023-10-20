@@ -14,7 +14,7 @@ import spofo.global.domain.exception.PortfolioException;
 import spofo.global.domain.exception.dto.ErrorResult;
 
 @RestControllerAdvice
-public class GlobalControllerAdvice {
+public class GlobalExceptionAdvice {
 
     @ExceptionHandler
     public ResponseEntity<ErrorResult> portfolioExHandler(PortfolioException e) {

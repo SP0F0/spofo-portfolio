@@ -9,7 +9,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface HoldingStockJpaRepository extends JpaRepository<HoldingStockEntity, Long> {
 
-    @Query(value = "SELECT * FROM stock_have sh WHERE sh.portfolio_id = :portfolioId", nativeQuery = true)
+    @Query("select distinct h "
+            + "from HoldingStockEntity h "
+            + "left join fetch h.tradeLogEntities s "
+            + "where h.portfolioEntity.id = :portfolioId")
     List<HoldingStockEntity> findByPortfolioId(@Param("portfolioId") Long portfolioId);
 
     void deleteByPortfolioEntityId(Long id);

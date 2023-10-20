@@ -69,16 +69,10 @@ public class PortfolioControllerTest extends ControllerTestSupport {
     @DisplayName("포트폴리오 생성 시 이름은 필수 입력이다.")
     void createPortfolioWithNoName() throws Exception {
         // given
-        Long memberId = 1L;
         String name = "   ";
         String description = "portfolio description";
 
         Map<String, String> params = createParams(name, description, KRW, REAL);
-        PortfolioCreate portfolioCreate = create(name, description, KRW, REAL);
-        Portfolio portfolio = Portfolio.of(portfolioCreate, memberId);
-
-        given(portfolioService.create(any(PortfolioCreate.class), anyLong()))
-                .willReturn(portfolio);
 
         // expected
         mockMvc.perform(post("/portfolios")
@@ -121,16 +115,10 @@ public class PortfolioControllerTest extends ControllerTestSupport {
     @DisplayName("포트폴리오 생성 시 통화는 필수 입력이다.")
     void createPortfolioWithNoCurrency() throws Exception {
         // given
-        Long memberId = 1L;
         String name = "portfolio name";
         String description = "portfolio description";
 
         Map<String, String> params = createParams(name, description, null, REAL);
-        PortfolioCreate portfolioCreate = create(name, description, null, REAL);
-        Portfolio portfolio = Portfolio.of(portfolioCreate, memberId);
-
-        given(portfolioService.create(any(PortfolioCreate.class), anyLong()))
-                .willReturn(portfolio);
 
         // expected
         mockMvc.perform(post("/portfolios")
@@ -147,16 +135,10 @@ public class PortfolioControllerTest extends ControllerTestSupport {
     @DisplayName("포트폴리오 생성 시 타입는 필수 입력이다.")
     void createPortfolioWithNoType() throws Exception {
         // given
-        Long memberId = 1L;
         String name = "portfolio name";
         String description = "portfolio description";
 
         Map<String, String> params = createParams(name, description, KRW, null);
-        PortfolioCreate portfolioCreate = create(name, description, KRW, null);
-        Portfolio portfolio = Portfolio.of(portfolioCreate, memberId);
-
-        given(portfolioService.create(any(PortfolioCreate.class), anyLong()))
-                .willReturn(portfolio);
 
         // expected
         mockMvc.perform(post("/portfolios")

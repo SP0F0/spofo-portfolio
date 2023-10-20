@@ -1,74 +1,89 @@
 package spofo.holdingstock.controller;
 
+import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
+import jakarta.validation.Valid;
+import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import spofo.holdingstock.controller.response.AddStockResponse;
+import spofo.holdingstock.controller.port.HoldingStockService;
+import spofo.holdingstock.controller.request.HoldingStockRequest;
 import spofo.holdingstock.controller.response.HoldingStockResponse;
-import spofo.holdingstock.domain.AddStockRequest;
-import spofo.holdingstock.service.HoldingStockService;
+import spofo.holdingstock.domain.HoldingStock;
+import spofo.holdingstock.domain.HoldingStockCreate;
+import spofo.holdingstock.domain.HoldingStockStatistic;
+import spofo.tradelog.controller.port.TradeLogService;
+import spofo.tradelog.domain.TradeLogCreate;
 
 @RestController
 @RequiredArgsConstructor
 public class HoldingStockController {
 
     private final HoldingStockService holdingStockService;
+    private final TradeLogService tradeLogService;
 
     @GetMapping("/portfolios/{portfolioId}/stocks")
-    public ResponseEntity<List<HoldingStockResponse>> getStocks(
-            @PathVariable("portfolioId") Long portfolioId) {
-        // TODO : 전체 보유 종목 조회
-        //List<StockHaveResponse> result = stockHaveService.getStocks(portfolioId);
-        List<HoldingStockResponse> result = null;
-        return ResponseEntity.ok().body(result);
+    public ResponseEntity<List<HoldingStockResponse>> getHoldingStocks(
+            @PathVariable Long portfolioId) {
+        List<HoldingStockResponse> response =
+                holdingStockService.getHoldingStockStatistics(portfolioId).stream()
+                        .map(HoldingStockResponse::from)
+                        .toList();
+
+        return ok(response);
+    }
+
+    @GetMapping("/portfolios/{portfolioId}/stocks/{stockId}")
+    public ResponseEntity<HoldingStockResponse> getStatistic(
+            @PathVariable("portfolioId") Long portfolioId,
+            @PathVariable("stockId") Long stockId) {
+        HoldingStockStatistic statistic = holdingStockService.getStatistic(stockId);
+        return ok(HoldingStockResponse.from(statistic));
     }
 
     @PostMapping("/portfolios/{portfolioId}/stocks")
-    public ResponseEntity<AddStockResponse> addStock(
-            @RequestBody @Validated AddStockRequest addStockRequest,
-            @PathVariable("portfolioId") Long portfolioId) {
-        // TODO : 종목 매수
-        AddStockResponse addStockResponse = holdingStockService.addStock(
-                addStockRequest, portfolioId);
-        return ok(addStockResponse);
+    public ResponseEntity<Map<String, Long>> create(
+            @RequestBody @Valid HoldingStockRequest request, @PathVariable Long portfolioId) {
+        HoldingStockCreate holdingStockCreate = request.toHoldingStockCreate();
+        TradeLogCreate tradeLogCreate = request.toTradeLogCreate();
+        HoldingStock holdingStock =
+                holdingStockService.create(holdingStockCreate, tradeLogCreate, portfolioId);
+
+        Map<String, Long> response = Map.of("id", portfolioId);
+
+        return created(URI.create("/portfolios/" + portfolioId))
+                .body(response);
     }
 
-//    @PostMapping("/portfolios/{portfolioId}/stocks/{stockId}")
-//    public ResponseEntity<AddStockResponse> addMoreStock(
-//            @RequestBody @Validated AddStockRequest addStockRequest,
-//            @PathVariable("portfolioId") Long portfolioId,
-//            @PathVariable("stockId") Long stockId) {
-//        // TODO : 종목 추가 매수
-//        AddStockResponse addStockResponse = stockHaveService.addMoreStock(addStockRequest);
-//        return ok(addStockResponse);
-//    }
+    @PostMapping("/portfolios/{portfolioId}/stocks/{stockId}")
+    public ResponseEntity<Map<String, Long>> addTradeLog(
+            @RequestBody @Valid HoldingStockRequest request,
+            @PathVariable Long portfolioId,
+            @PathVariable Long stockId) {
+        HoldingStock holdingStock = holdingStockService.get(stockId);
+        TradeLogCreate tradeLogCreate = request.toTradeLogCreate();
+        tradeLogService.create(tradeLogCreate, holdingStock);
+
+        Map<String, Long> response = Map.of("id", stockId);
+
+        return created(URI.create("/portfolios/" + portfolioId + "/stocks/" + stockId))
+                .body(response);
+    }
 
     @DeleteMapping("/portfolios/{portfolioId}/stocks/{stockId}")
-    public ResponseEntity<Void> deleteStock(
+    public ResponseEntity<Void> delete(
             @PathVariable("portfolioId") Long portfolioId,
             @PathVariable("stockId") Long stockId) {
-        // TODO : 종목 삭제
-        holdingStockService.deleteStock(stockId);
-        return ok().body(null);
+        holdingStockService.delete(stockId);
+        return ok().build();
     }
-
-    @GetMapping("/portfolios/{portfolioId}/stocks/{stockCode}")
-    public ResponseEntity<List<HoldingStockResponse>> getStocksByCode(
-            @PathVariable("portfolioId") Long portfolioId,
-            @PathVariable("stockCode") String stockCode) {
-        // TODO : 전체 보유 종목 조회
-        List<HoldingStockResponse> result = holdingStockService.getStocksByCode(portfolioId,
-                stockCode);
-        return ResponseEntity.ok().body(result);
-    }
-
 }
