@@ -58,7 +58,7 @@ public class PortfolioController {
 
     @GetMapping("/portfolios/{portfolioId}")
     public ResponseEntity<PortfolioResponse> getPortfolio(
-            @PathVariable(name = "portfolioId") Long portfolioId) {
+            @PathVariable Long portfolioId) {
         Portfolio portfolio = portfolioService.getPortfolio(portfolioId);
 
         return ok(PortfolioResponse.from(portfolio));
@@ -66,7 +66,7 @@ public class PortfolioController {
 
     @GetMapping("/portfolios/{portfolioId}/total")
     public ResponseEntity<PortfolioStatisticResponse> getPortfolioStatistic(
-            @PathVariable(name = "portfolioId") Long portfolioId) {
+            @PathVariable Long portfolioId) {
         PortfolioStatistic portfolio = portfolioService.getPortfolioStatistic(portfolioId);
 
         return ok(PortfolioStatisticResponse.from(portfolio));
@@ -87,7 +87,7 @@ public class PortfolioController {
 
     @PutMapping("/portfolios/{portfolioId}")
     public ResponseEntity<Void> update(
-            @PathVariable(name = "portfolioId") Long portfolioId,
+            @PathVariable Long portfolioId,
             @RequestBody @Valid PortfolioUpdate request,
             @LoginMember MemberInfo memberInfo) {
         portfolioService.update(request, portfolioId, memberInfo.getId());
@@ -96,7 +96,7 @@ public class PortfolioController {
 
     @DeleteMapping("/portfolios/{portfolioId}")
     public ResponseEntity<Void> delete(
-            @PathVariable(name = "portfolioId") Long portfolioId) {
+            @PathVariable Long portfolioId) {
         portfolioService.delete(portfolioId);
         return ok().build();
     }
