@@ -4,7 +4,6 @@ import java.util.List;
 import spofo.holdingstock.domain.HoldingStock;
 import spofo.holdingstock.domain.HoldingStockCreate;
 import spofo.holdingstock.domain.HoldingStockStatistic;
-import spofo.portfolio.domain.Portfolio;
 import spofo.tradelog.domain.TradeLogCreate;
 
 public interface HoldingStockService {
@@ -14,7 +13,7 @@ public interface HoldingStockService {
     HoldingStock get(Long id);
 
     HoldingStock create(HoldingStockCreate holdingStockCreate, TradeLogCreate tradeLogCreate,
-            Portfolio portfolio);
+            Long portfolioId);
 
     void delete(Long id);
 

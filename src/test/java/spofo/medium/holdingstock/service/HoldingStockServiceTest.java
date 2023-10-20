@@ -112,14 +112,15 @@ public class HoldingStockServiceTest extends ServiceTestSupport {
     @DisplayName("보유 종목 1건을 생성한다.")
     void holdingStockCreate() {
         // given
-        Portfolio portfolio = getPortfolio();
+        Portfolio savedPortfolio = portfolioRepository.save(getPortfolio());
         TradeLogCreate tradeLogCreate = TradeLogCreate.builder().build();
 
         HoldingStockCreate holdingStockCreate = getHoldingStockCreate();
 
         // when
         HoldingStock savedHoldingStock =
-                holdingStockService.create(holdingStockCreate, tradeLogCreate, portfolio);
+                holdingStockService.create(holdingStockCreate, tradeLogCreate,
+                        savedPortfolio.getId());
 
         // then
         assertThat(savedHoldingStock.getId()).isNotNull();

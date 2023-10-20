@@ -11,8 +11,6 @@ import static spofo.tradelog.domain.enums.TradeType.BUY;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,20 +21,23 @@ import spofo.holdingstock.domain.HoldingStockCreate;
 import spofo.holdingstock.domain.HoldingStockStatistic;
 import spofo.holdingstock.service.HoldingStockServiceImpl;
 import spofo.mock.FakeHoldingStockRepository;
+import spofo.mock.FakePortfolioRepository;
+import spofo.mock.FakePortfolioService;
 import spofo.mock.FakeStockServerService;
 import spofo.mock.FakeTradeLogService;
 import spofo.portfolio.domain.Portfolio;
 import spofo.stock.domain.Stock;
-import spofo.tradelog.controller.port.TradeLogService;
 import spofo.tradelog.domain.TradeLog;
 import spofo.tradelog.domain.TradeLogCreate;
 
 public class HoldingStockServiceTest {
 
     private HoldingStockService holdingStockService;
+    private FakePortfolioService fakePortfolioService;
     private FakeTradeLogService fakeTradeLogService;
     private FakeHoldingStockRepository fakeHoldingStockRepository;
     private FakeStockServerService fakeStockServerService;
+    private FakePortfolioRepository fakePortfolioRepository;
 
     private static final Long PORTFOLIO_ID = 1L;
     private static final String TEST_STOCK_CODE = "101010";
@@ -46,8 +47,14 @@ public class HoldingStockServiceTest {
         fakeTradeLogService = new FakeTradeLogService();
         fakeHoldingStockRepository = new FakeHoldingStockRepository();
         fakeStockServerService = new FakeStockServerService();
+        fakePortfolioRepository = new FakePortfolioRepository();
+        fakePortfolioService
+                = new FakePortfolioService(fakePortfolioRepository, fakeStockServerService);
         holdingStockService =
-                new HoldingStockServiceImpl(fakeTradeLogService, fakeHoldingStockRepository, fakeStockServerService);
+                new HoldingStockServiceImpl(
+                        fakePortfolioService, fakeTradeLogService,
+                        fakeHoldingStockRepository, fakeStockServerService
+                );
 
         Stock stock = Stock.builder()
                 .code(TEST_STOCK_CODE)
@@ -144,9 +151,11 @@ public class HoldingStockServiceTest {
                 .stockCode(TEST_STOCK_CODE)
                 .build();
 
+        fakePortfolioRepository.save(portfolio);
+
         // when
         HoldingStock savedHoldingStock =
-                holdingStockService.create(holdingStockCreate, tradeLogCreate, portfolio);
+                holdingStockService.create(holdingStockCreate, tradeLogCreate, portfolio.getId());
 
         // then
         assertThat(savedHoldingStock.getId()).isEqualTo(1L);
@@ -215,12 +224,14 @@ public class HoldingStockServiceTest {
         TradeLog log1 = getTradeLog(getBD(33000), ONE);
         TradeLog log2 = getTradeLog(getBD(28600), ONE);
 
-        HoldingStock holdingStock = getHoldingStock(TEST_STOCK_CODE, portfolio, List.of(log1, log2));
+        HoldingStock holdingStock = getHoldingStock(TEST_STOCK_CODE, portfolio,
+                List.of(log1, log2));
 
         fakeHoldingStockRepository.save(holdingStock);
 
         // when
-        List<HoldingStockStatistic> statistics = holdingStockService.getHoldingStockStatistics(PORTFOLIO_ID);
+        List<HoldingStockStatistic> statistics = holdingStockService.getHoldingStockStatistics(
+                PORTFOLIO_ID);
 
         // then
         assertThat(statistics)
@@ -243,12 +254,14 @@ public class HoldingStockServiceTest {
         TradeLog log2 = getTradeLog(getBD(28600), ONE);
         TradeLog log3 = getTradeLog(getBD(77620), getBD(2));
 
-        HoldingStock holdingStock = getHoldingStock(TEST_STOCK_CODE, portfolio, List.of(log1, log2, log3));
+        HoldingStock holdingStock = getHoldingStock(TEST_STOCK_CODE, portfolio,
+                List.of(log1, log2, log3));
 
         fakeHoldingStockRepository.save(holdingStock);
 
         // when
-        List<HoldingStockStatistic> statistics = holdingStockService.getHoldingStockStatistics(PORTFOLIO_ID);
+        List<HoldingStockStatistic> statistics = holdingStockService.getHoldingStockStatistics(
+                PORTFOLIO_ID);
 
         // then
         assertThat(statistics)
@@ -275,7 +288,8 @@ public class HoldingStockServiceTest {
                 .build();
     }
 
-    private HoldingStock getHoldingStock(String stockCode, Portfolio portfolio, List<TradeLog> tradeLog) {
+    private HoldingStock getHoldingStock(String stockCode, Portfolio portfolio,
+            List<TradeLog> tradeLog) {
         return HoldingStock.builder()
                 .id(1L)
                 .stockCode(stockCode)
