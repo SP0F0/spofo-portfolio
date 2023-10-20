@@ -8,16 +8,18 @@ import spofo.holdingstock.domain.HoldingStock;
 import spofo.holdingstock.infrastructure.HoldingStockEntity;
 import spofo.holdingstock.service.port.HoldingStockRepository;
 
+/**
+ * FakeRepository는 Entity가 아닌 Domain을 관리한다.
+ */
 public class FakeHoldingStockRepository implements HoldingStockRepository {
 
     private long autoIncrement = 0;
-    List<HoldingStockEntity> data = new ArrayList<>();
+    List<HoldingStock> data = new ArrayList<>();
 
     @Override
     public List<HoldingStock> findByPortfolioId(Long id) {
         return data.stream()
-                .filter(item -> item.getPortfolioEntity().getId().equals(id))
-                .map(HoldingStockEntity::toModel)
+                .filter(item -> item.getPortfolio().getId().equals(id))
                 .toList();
     }
 
@@ -25,7 +27,6 @@ public class FakeHoldingStockRepository implements HoldingStockRepository {
     public Optional<HoldingStock> findById(Long id) {
         return data.stream()
                 .filter(item -> item.getId().equals(id))
-                .map(HoldingStockEntity::toModel)
                 .findAny();
     }
 
@@ -37,11 +38,11 @@ public class FakeHoldingStockRepository implements HoldingStockRepository {
                     .stockCode(holdingStock.getStockCode())
                     .portfolio(holdingStock.getPortfolio())
                     .build();
-            data.add(HoldingStockEntity.from(newHoldingStock));
+            data.add(newHoldingStock);
             return newHoldingStock;
         } else {
             data.removeIf(item -> Objects.equals(item.getId(), holdingStock.getId()));
-            data.add(HoldingStockEntity.from(holdingStock));
+            data.add(holdingStock);
             return holdingStock;
         }
     }
@@ -53,6 +54,6 @@ public class FakeHoldingStockRepository implements HoldingStockRepository {
 
     @Override
     public void deleteByPortfolioId(Long id) {
-        data.removeIf(item -> Objects.equals(item.getPortfolioEntity().getId(), id));
+        data.removeIf(item -> Objects.equals(item.getPortfolio().getId(), id));
     }
 }

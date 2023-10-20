@@ -9,6 +9,7 @@ import static spofo.tradelog.domain.enums.TradeType.BUY;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 import java.util.Map;
 import lombok.Builder;
 import lombok.Getter;

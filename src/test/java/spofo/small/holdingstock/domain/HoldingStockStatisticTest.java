@@ -21,7 +21,7 @@ public class HoldingStockStatisticTest {
     private final String TEST_STOCK_CODE = "000660";
 
     @Test
-    @DisplayName("보유종목으로 보유종목 통계를 만든다.")
+    @DisplayName("2건의 매매이력으로 보유종목 통계를 만든다.")
     void createHoldingStockStatisticFromHoldingStock() {
         // given
         TradeLog log1 = getTradeLog(getBD(33000), ONE);
@@ -42,7 +42,7 @@ public class HoldingStockStatisticTest {
     }
 
     @Test
-    @DisplayName("보유종목으로 보유종목 통계를 만든다.")
+    @DisplayName("3건의 매매이력으로 보유종목 통계를 만든다.")
     void createHoldingStockStatisticFromHoldingStock2() {
         // given
         TradeLog log1 = getTradeLog(getBD(33000), ONE);

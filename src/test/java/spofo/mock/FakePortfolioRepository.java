@@ -7,6 +7,9 @@ import java.util.Optional;
 import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.service.port.PortfolioRepository;
 
+/**
+ * FakeRepository는 Entity가 아닌 Domain을 관리한다.
+ */
 public class FakePortfolioRepository implements PortfolioRepository {
 
     private long autoIncrement = 0;

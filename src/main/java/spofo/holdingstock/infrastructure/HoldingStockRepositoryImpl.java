@@ -15,7 +15,7 @@ public class HoldingStockRepositoryImpl implements HoldingStockRepository {
 
     @Override
     public List<HoldingStock> findByPortfolioId(Long id) {
-        return holdingStockJpaRepository.findByPortfolioEntityId(id).stream()
+        return holdingStockJpaRepository.findByPortfolioId(id).stream()
                 .map(HoldingStockEntity::toModel)
                 .toList();
     }

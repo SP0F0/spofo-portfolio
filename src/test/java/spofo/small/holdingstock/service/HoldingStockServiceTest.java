@@ -1,11 +1,18 @@
 package spofo.small.holdingstock.service;
 
+import static java.math.BigDecimal.ONE;
+import static java.math.RoundingMode.HALF_UP;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
+import static spofo.global.component.utils.CommonUtils.getBD;
 import static spofo.global.domain.exception.ErrorCode.HOLDING_STOCK_NOT_FOUND;
+import static spofo.tradelog.domain.enums.TradeType.BUY;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,37 +20,52 @@ import spofo.global.domain.exception.HoldingStockNotFound;
 import spofo.holdingstock.controller.port.HoldingStockService;
 import spofo.holdingstock.domain.HoldingStock;
 import spofo.holdingstock.domain.HoldingStockCreate;
+import spofo.holdingstock.domain.HoldingStockStatistic;
 import spofo.holdingstock.service.HoldingStockServiceImpl;
 import spofo.mock.FakeHoldingStockRepository;
+import spofo.mock.FakeStockServerService;
 import spofo.mock.FakeTradeLogService;
 import spofo.portfolio.domain.Portfolio;
+import spofo.stock.domain.Stock;
 import spofo.tradelog.controller.port.TradeLogService;
+import spofo.tradelog.domain.TradeLog;
 import spofo.tradelog.domain.TradeLogCreate;
 
 public class HoldingStockServiceTest {
 
     private HoldingStockService holdingStockService;
-    private TradeLogService fakeTradeLogService;
+    private FakeTradeLogService fakeTradeLogService;
     private FakeHoldingStockRepository fakeHoldingStockRepository;
+    private FakeStockServerService fakeStockServerService;
 
     private static final Long PORTFOLIO_ID = 1L;
-    private static final String STOCK_CODE = "101010";
+    private static final String TEST_STOCK_CODE = "101010";
 
     @BeforeEach
     void setup() {
         fakeTradeLogService = new FakeTradeLogService();
         fakeHoldingStockRepository = new FakeHoldingStockRepository();
+        fakeStockServerService = new FakeStockServerService();
         holdingStockService =
-                new HoldingStockServiceImpl(fakeTradeLogService, fakeHoldingStockRepository);
+                new HoldingStockServiceImpl(fakeTradeLogService, fakeHoldingStockRepository, fakeStockServerService);
+
+        Stock stock = Stock.builder()
+                .code(TEST_STOCK_CODE)
+                .name("삼성전자")
+                .price(getBD(66000))
+                .sector("반도체")
+                .build();
+
+        fakeStockServerService.save(stock);
     }
 
     @Test
     @DisplayName("포트폴리오 1개에 속한 보유종목을 조회한다.")
     void getByPortfolioId() {
         // given
-        Portfolio portfolio = createPortfolio(PORTFOLIO_ID);
+        Portfolio portfolio = getPortfolio(PORTFOLIO_ID);
 
-        HoldingStock holdingStock = createHoldingStock(STOCK_CODE, portfolio);
+        HoldingStock holdingStock = getHoldingStock(TEST_STOCK_CODE, portfolio);
 
         fakeHoldingStockRepository.save(holdingStock);
 
@@ -52,9 +74,9 @@ public class HoldingStockServiceTest {
 
         // then
         assertThat(holdingStocks)
-                .extracting("id", "stockCode", "portfolio")
+                .extracting("id", "stockCode")
                 .contains(
-                        tuple(1L, STOCK_CODE, null)
+                        tuple(1L, TEST_STOCK_CODE)
                 );
     }
 
@@ -86,8 +108,8 @@ public class HoldingStockServiceTest {
     void getHoldingStock() {
         // given
         Long holdingStockId = 1L;
-        Portfolio portfolio = createPortfolio(PORTFOLIO_ID);
-        HoldingStock holdingStock = createHoldingStock(STOCK_CODE, portfolio);
+        Portfolio portfolio = getPortfolio(PORTFOLIO_ID);
+        HoldingStock holdingStock = getHoldingStock(TEST_STOCK_CODE, portfolio);
 
         fakeHoldingStockRepository.save(holdingStock);
 
@@ -96,7 +118,7 @@ public class HoldingStockServiceTest {
 
         // then
         assertThat(savedHoldingStock.getId()).isEqualTo(holdingStockId);
-        assertThat(savedHoldingStock.getStockCode()).isEqualTo(STOCK_CODE);
+        assertThat(savedHoldingStock.getStockCode()).isEqualTo(TEST_STOCK_CODE);
     }
 
     @Test
@@ -115,11 +137,11 @@ public class HoldingStockServiceTest {
     @DisplayName("보유 종목 1건을 생성한다.")
     void holdingStockCreate() {
         // given
-        Portfolio portfolio = createPortfolio(PORTFOLIO_ID);
+        Portfolio portfolio = getPortfolio(PORTFOLIO_ID);
         TradeLogCreate tradeLogCreate = TradeLogCreate.builder().build();
 
         HoldingStockCreate holdingStockCreate = HoldingStockCreate.builder()
-                .stockCode(STOCK_CODE)
+                .stockCode(TEST_STOCK_CODE)
                 .build();
 
         // when
@@ -128,7 +150,7 @@ public class HoldingStockServiceTest {
 
         // then
         assertThat(savedHoldingStock.getId()).isEqualTo(1L);
-        assertThat(savedHoldingStock.getStockCode()).isEqualTo(STOCK_CODE);
+        assertThat(savedHoldingStock.getStockCode()).isEqualTo(TEST_STOCK_CODE);
     }
 
     @Test
@@ -136,8 +158,8 @@ public class HoldingStockServiceTest {
     void deleteHoldingStock() {
         // given
         Long holdingStockId = 1L;
-        Portfolio portfolio = createPortfolio(PORTFOLIO_ID);
-        HoldingStock holdingStock = createHoldingStock(STOCK_CODE, portfolio);
+        Portfolio portfolio = getPortfolio(PORTFOLIO_ID);
+        HoldingStock holdingStock = getHoldingStock(TEST_STOCK_CODE, portfolio);
 
         fakeHoldingStockRepository.save(holdingStock);
 
@@ -162,15 +184,13 @@ public class HoldingStockServiceTest {
                 .hasMessage(HOLDING_STOCK_NOT_FOUND.getMessage());
     }
 
-    // 포폴, 보유종목 2개 -> 성공
-
     @Test
     @DisplayName("포트폴리오 아이디로 보유종목을 삭제한다.")
     void deleteHoldingStockByPortfolioId() {
         // given
-        Portfolio portfolio = createPortfolio(PORTFOLIO_ID);
+        Portfolio portfolio = getPortfolio(PORTFOLIO_ID);
         HoldingStockCreate create = HoldingStockCreate.builder()
-                .stockCode(STOCK_CODE)
+                .stockCode(TEST_STOCK_CODE)
                 .build();
 
         HoldingStock holdingStock = HoldingStock.of(create, portfolio);
@@ -186,17 +206,89 @@ public class HoldingStockServiceTest {
         assertThat(holdingStocks).isEmpty();
     }
 
-    private Portfolio createPortfolio(Long id) {
+    @Test
+    @DisplayName("2건의 매매이력으로 보유종목 통계를 만든다.")
+    void getHoldingStockStatistics() {
+        // given
+        Portfolio portfolio = getPortfolio(PORTFOLIO_ID);
+
+        TradeLog log1 = getTradeLog(getBD(33000), ONE);
+        TradeLog log2 = getTradeLog(getBD(28600), ONE);
+
+        HoldingStock holdingStock = getHoldingStock(TEST_STOCK_CODE, portfolio, List.of(log1, log2));
+
+        fakeHoldingStockRepository.save(holdingStock);
+
+        // when
+        List<HoldingStockStatistic> statistics = holdingStockService.getHoldingStockStatistics(PORTFOLIO_ID);
+
+        // then
+        assertThat(statistics)
+                .hasSize(1)
+                .extracting("totalAsset", "gain", "gainRate",
+                        "avgPrice", "currentPrice", "quantity")
+                .contains(
+                        tuple(getBD(132_000), getBD(70_400), getBD(114.29),
+                                getBD(30_800).setScale(2, HALF_UP), getBD(66_000), getBD(2))
+                );
+    }
+
+    @Test
+    @DisplayName("3건의 매매이력으로 보유종목 통계를 만든다.")
+    void getHoldingStockStatistics2() {
+        // given
+        Portfolio portfolio = getPortfolio(PORTFOLIO_ID);
+
+        TradeLog log1 = getTradeLog(getBD(33000), ONE);
+        TradeLog log2 = getTradeLog(getBD(28600), ONE);
+        TradeLog log3 = getTradeLog(getBD(77620), getBD(2));
+
+        HoldingStock holdingStock = getHoldingStock(TEST_STOCK_CODE, portfolio, List.of(log1, log2, log3));
+
+        fakeHoldingStockRepository.save(holdingStock);
+
+        // when
+        List<HoldingStockStatistic> statistics = holdingStockService.getHoldingStockStatistics(PORTFOLIO_ID);
+
+        // then
+        assertThat(statistics)
+                .hasSize(1)
+                .extracting("totalAsset", "gain", "gainRate",
+                        "avgPrice", "currentPrice", "quantity")
+                .contains(
+                        tuple(getBD(264_000), getBD(47_160), getBD(21.75),
+                                getBD(54_210).setScale(2, HALF_UP), getBD(66_000), getBD(4))
+                );
+    }
+
+    private Portfolio getPortfolio(Long id) {
         return Portfolio.builder()
                 .id(id)
                 .build();
     }
 
-    private HoldingStock createHoldingStock(String stockCode, Portfolio portfolio) {
+    private HoldingStock getHoldingStock(String stockCode, Portfolio portfolio) {
         return HoldingStock.builder()
                 .id(1L)
                 .stockCode(stockCode)
                 .portfolio(portfolio)
+                .build();
+    }
+
+    private HoldingStock getHoldingStock(String stockCode, Portfolio portfolio, List<TradeLog> tradeLog) {
+        return HoldingStock.builder()
+                .id(1L)
+                .stockCode(stockCode)
+                .portfolio(portfolio)
+                .tradeLogs(tradeLog)
+                .build();
+    }
+
+    private TradeLog getTradeLog(BigDecimal price, BigDecimal quantity) {
+        return TradeLog.builder()
+                .type(BUY)
+                .price(price)
+                .quantity(quantity)
                 .build();
     }
 }

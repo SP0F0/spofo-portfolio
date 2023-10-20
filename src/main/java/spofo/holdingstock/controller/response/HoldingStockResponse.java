@@ -3,7 +3,9 @@ package spofo.holdingstock.controller.response;
 import java.math.BigDecimal;
 import lombok.Builder;
 import lombok.Data;
+import spofo.holdingstock.domain.HoldingStockStatistic;
 import spofo.holdingstock.infrastructure.HoldingStockEntity;
+import spofo.stock.domain.Stock;
 
 @Data
 @Builder
@@ -11,8 +13,6 @@ public class HoldingStockResponse {
 
     private Long id;
     private String stockCode;
-    private Long portfolioId;
-
     private String stockName;
     private String sector;
     private BigDecimal totalAsset;
@@ -23,21 +23,19 @@ public class HoldingStockResponse {
     private BigDecimal quantity;
     private String imageUrl;
 
-    public static HoldingStockResponse from(HoldingStockEntity sh, String stockName, String sector,
-            BigDecimal totalAsset, BigDecimal gain, BigDecimal gainRate, BigDecimal avgPrice,
-            BigDecimal currentPrice, BigDecimal quantity, String imageUrl) {
+    public static HoldingStockResponse from(HoldingStockStatistic holdingStockStatistic, Stock stock) {
         return HoldingStockResponse.builder()
-                .id(sh.getId())
-                .stockCode(sh.getStockCode())
-                .portfolioId(sh.getPortfolioEntity().getId())
-                .stockName(stockName)
-                .sector(sector)
-                .totalAsset(totalAsset)
-                .gain(gain)
-                .gainRate(gainRate)
-                .avgPrice(avgPrice)
-                .currentPrice(currentPrice)
-                .quantity(quantity)
-                .imageUrl(imageUrl).build();
+                .id(holdingStockStatistic.getHoldingStock().getId())
+                .stockCode(stock.getCode())
+                .stockName(stock.getName())
+                .sector(stock.getSector())
+                .totalAsset(holdingStockStatistic.getTotalAsset())
+                .gain(holdingStockStatistic.getGain())
+                .gainRate(holdingStockStatistic.getGainRate())
+                .avgPrice(holdingStockStatistic.getAvgPrice())
+                .currentPrice(holdingStockStatistic.getCurrentPrice())
+                .quantity(holdingStockStatistic.getQuantity())
+                .imageUrl(stock.getImageUrl())
+                .build();
     }
 }
