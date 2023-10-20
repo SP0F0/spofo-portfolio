@@ -26,11 +26,11 @@ public class HoldingStockRequest {
     @NotNull(message = "매수날짜 필수 입력입니다.")
     private LocalDateTime tradeDate;
 
-    @Positive
+    @Positive(message = "수량은 0보다 커야 합니다.")
     @NotNull(message = "수량은 필수 입력입니다.")
     private BigDecimal quantity;
 
-    @Positive
+    @Positive(message = "평균단가는 0보다 커야 합니다.")
     @NotNull(message = "평균단가는 필수 입력입니다.")
     private BigDecimal avgPrice;
 
@@ -46,7 +46,8 @@ public class HoldingStockRequest {
                 .price(avgPrice)
                 .tradeDate(tradeDate)
                 .quantity(quantity)
-                //.marketPrice(avgPrice)
                 .build();
     }
+
+
 }

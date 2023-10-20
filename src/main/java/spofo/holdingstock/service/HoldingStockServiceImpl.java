@@ -29,10 +29,18 @@ public class HoldingStockServiceImpl implements HoldingStockService {
     private final HoldingStockRepository holdingStockRepository;
     private final StockServerService stockServerService;
 
-
     @Override
     public List<HoldingStock> getByPortfolioId(Long portfolioId) {
         return holdingStockRepository.findByPortfolioId(portfolioId);
+    }
+
+    @Override
+    public HoldingStockStatistic getStatistic(Long id) {
+        HoldingStock holdingStock = findById(id);
+        String stockCode = holdingStock.getStockCode();
+        Stock stock = stockServerService.getStock(stockCode);
+
+        return HoldingStockStatistic.of(holdingStock, Map.of(stockCode, stock));
     }
 
     @Override

@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import spofo.global.config.restclient.RestClientConfig;
+import spofo.holdingstock.controller.HoldingStockController;
 import spofo.mock.FakeAuthServerService;
 import spofo.portfolio.controller.PortfolioController;
 
@@ -14,7 +15,7 @@ import spofo.portfolio.controller.PortfolioController;
  * @see ControllerTestMockBeanSupport
  */
 @ActiveProfiles("test")
-@WebMvcTest(controllers = {PortfolioController.class})
+@WebMvcTest(controllers = {PortfolioController.class, HoldingStockController.class})
 @Import({FakeAuthServerService.class, RestClientConfig.class})
 public abstract class ControllerTestSupport extends ControllerTestMockBeanSupport {
 

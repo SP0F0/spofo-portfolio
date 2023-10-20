@@ -10,6 +10,8 @@ public interface HoldingStockService {
 
     List<HoldingStock> getByPortfolioId(Long portfolioId);
 
+    HoldingStockStatistic getStatistic(Long id);
+
     HoldingStock get(Long id);
 
     HoldingStock create(HoldingStockCreate holdingStockCreate, TradeLogCreate tradeLogCreate,
