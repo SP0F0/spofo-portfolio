@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import spofo.holdingstock.domain.HoldingStock;
+import spofo.stock.domain.Stock;
 import spofo.tradelog.domain.enums.TradeType;
 
 @Getter
@@ -20,26 +21,14 @@ public class TradeLog {
     private final LocalDateTime createdAt;
     private final HoldingStock holdingStock;
 
-    public static TradeLog of(TradeLogCreate create, HoldingStock holdingStock) {
+    public static TradeLog of(TradeLogCreate create, HoldingStock holdingStock, Stock stock) {
         return TradeLog.builder()
                 .type(create.getType())
                 .price(create.getPrice())
                 .tradeDate(create.getTradeDate())
                 .quantity(create.getQuantity())
-                .marketPrice(create.getMarketPrice())
+                .marketPrice(stock.getPrice())
                 .holdingStock(holdingStock)
                 .build();
     }
-
-//    public TradeLog update(TradeLogUpdate update, Long memberId) {
-//        return Portfolio.builder()
-//                .id(update.getId())
-//                .name(update.getName())
-//                .description(update.getDescription())
-//                .currency(update.getCurrency())
-//                .includeYn(update.getIncludeYn())
-//                .type(update.getType())
-//                .memberId(memberId)
-//                .build();
-//    }
 }

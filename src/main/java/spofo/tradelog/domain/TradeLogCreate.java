@@ -18,5 +18,4 @@ public class TradeLogCreate {
     private BigDecimal price;
     private LocalDateTime tradeDate;
     private BigDecimal quantity;
-    private BigDecimal marketPrice;
 }
