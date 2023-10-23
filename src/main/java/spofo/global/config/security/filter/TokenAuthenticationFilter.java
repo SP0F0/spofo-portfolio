@@ -1,8 +1,9 @@
-package spofo.global.component.filter;
+package spofo.global.config.security.filter;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.security.core.context.SecurityContextHolder.getContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -13,8 +14,9 @@ import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import spofo.auth.domain.MemberInfoHolder;
+import spofo.auth.domain.MemberInfo;
 import spofo.auth.service.AuthServerService;
+import spofo.global.config.security.token.AuthenticationToken;
 import spofo.global.domain.exception.ErrorCode;
 import spofo.global.domain.exception.TokenNotValid;
 import spofo.global.domain.exception.dto.ErrorResult;
@@ -32,16 +34,23 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             String idToken = request.getHeader(AUTHORIZATION);
+
             Long memberId = authServerService.verify(idToken)
                     .orElseThrow(() -> new TokenNotValid());
 
-            MemberInfoHolder.set(memberId);
+            MemberInfo memberInfo = MemberInfo.builder()
+                    .id(memberId)
+                    .build();
+
+            AuthenticationToken authenticationToken = AuthenticationToken.builder()
+                    .principal(memberInfo)
+                    .build();
+
+            getContext().setAuthentication(authenticationToken);
 
             filterChain.doFilter(request, response);
         } catch (TokenNotValid ex) {
             handleTokenNotValidException(response, ex);
-        } finally {
-            MemberInfoHolder.clear();
         }
     }
 
@@ -59,5 +68,4 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         response.setCharacterEncoding(UTF_8.name());
         response.getWriter().write(objectMapper.writeValueAsString(errorResult));
     }
-
 }
