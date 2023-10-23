@@ -19,8 +19,8 @@ public class TradeLogController {
 
     @GetMapping("/portfolios/{portfolioId}/stocks/{stockId}/trade-log")
     public ResponseEntity<List<TradeLogResponse>> getTradeLogs(
-            @PathVariable("stockId") Long stockId,
-            @PathVariable("portfolioId") Long portfolioId) {
+            @PathVariable Long stockId,
+            @PathVariable Long portfolioId) {
         List<TradeLogResponse> statistics = tradeLogService.getStatistics(stockId)
                 .stream()
                 .map(TradeLogResponse::from)

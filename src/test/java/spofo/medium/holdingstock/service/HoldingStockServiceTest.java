@@ -124,7 +124,8 @@ public class HoldingStockServiceTest extends ServiceTestSupport {
                 .build();
 
         HoldingStockCreate holdingStockCreate = getHoldingStockCreate();
-        given(mockStockServerService.getStock(TEST_STOCK_CODE)).willReturn(Stock.builder()
+        given(mockStockServerService.getStock(TEST_STOCK_CODE))
+                .willReturn(Stock.builder()
                 .code(TEST_STOCK_CODE)
                 .price(TEN).build());
 
