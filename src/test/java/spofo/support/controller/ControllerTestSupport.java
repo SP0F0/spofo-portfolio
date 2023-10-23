@@ -10,12 +10,14 @@ import spofo.global.config.restclient.RestClientConfig;
 import spofo.holdingstock.controller.HoldingStockController;
 import spofo.mock.FakeAuthServerService;
 import spofo.portfolio.controller.PortfolioController;
+import spofo.tradelog.controller.TradeLogController;
 
 /**
  * @see ControllerTestMockBeanSupport
  */
 @ActiveProfiles("test")
-@WebMvcTest(controllers = {PortfolioController.class, HoldingStockController.class})
+@WebMvcTest(controllers = {PortfolioController.class, HoldingStockController.class,
+        TradeLogController.class})
 @Import({FakeAuthServerService.class, RestClientConfig.class})
 public abstract class ControllerTestSupport extends ControllerTestMockBeanSupport {
 
