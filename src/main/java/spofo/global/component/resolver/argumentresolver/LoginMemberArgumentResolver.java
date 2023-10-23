@@ -1,5 +1,7 @@
 package spofo.global.component.resolver.argumentresolver;
 
+import static org.springframework.security.core.context.SecurityContextHolder.getContext;
+
 import org.springframework.core.MethodParameter;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -7,7 +9,6 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import spofo.auth.domain.MemberInfo;
-import spofo.auth.domain.MemberInfoHolder;
 import spofo.auth.domain.annotation.LoginMember;
 
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
@@ -27,6 +28,6 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
             ModelAndViewContainer mavContainer,
             @NonNull NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 
-        return MemberInfoHolder.get();
+        return getContext().getAuthentication().getPrincipal();
     }
 }
