@@ -49,7 +49,9 @@ public class HoldingStockStatistic {
                 }
             }
 
-            avgPrice = totalPrice.divide(quantity, getGlobalScale(), HALF_UP); // 평균 구매 단가
+            if (!isZero(quantity)) {
+                avgPrice = totalPrice.divide(quantity, getGlobalScale(), HALF_UP); // 평균 구매 단가
+            }
             gain = totalAsset.subtract(totalPrice); // 수익 = 자산 가치 - 총 구매가
 
             if (!isZero(totalPrice)) {

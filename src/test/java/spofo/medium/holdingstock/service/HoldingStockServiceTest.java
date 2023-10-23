@@ -1,13 +1,16 @@
 package spofo.medium.holdingstock.service;
 
 import static java.math.BigDecimal.ONE;
+import static java.math.BigDecimal.TEN;
 import static java.math.RoundingMode.HALF_UP;
+import static java.time.LocalDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static spofo.global.component.utils.CommonUtils.getBD;
 import static spofo.global.domain.exception.ErrorCode.HOLDING_STOCK_NOT_FOUND;
 import static spofo.tradelog.domain.enums.TradeType.BUY;
@@ -112,9 +115,18 @@ public class HoldingStockServiceTest extends ServiceTestSupport {
     void holdingStockCreate() {
         // given
         Portfolio savedPortfolio = portfolioRepository.save(getPortfolio());
-        TradeLogCreate tradeLogCreate = TradeLogCreate.builder().price(ONE).build();
+        TradeLogCreate tradeLogCreate = TradeLogCreate.builder()
+                .type(BUY)
+                .price(TEN)
+                .tradeDate(now())
+                .quantity(ONE)
+                .build();
 
         HoldingStockCreate holdingStockCreate = getHoldingStockCreate();
+        given(mockStockServerService.getStock(TEST_STOCK_CODE))
+                .willReturn(Stock.builder()
+                .code(TEST_STOCK_CODE)
+                .price(TEN).build());
 
         // when
         HoldingStock savedHoldingStock =
@@ -134,6 +146,10 @@ public class HoldingStockServiceTest extends ServiceTestSupport {
         HoldingStock holdingStock = getHoldingStock(portfolio);
 
         HoldingStock savedHoldingStock = holdingStockRepository.save(holdingStock);
+
+        willDoNothing()
+                .given(tradeLogRepository)
+                .deleteByHoldingStockId(anyLong());
 
         // when
         holdingStockService.delete(savedHoldingStock.getId());

@@ -3,10 +3,12 @@ package spofo.mock;
 import java.util.ArrayList;
 import java.util.List;
 import spofo.holdingstock.domain.HoldingStock;
+import spofo.stock.domain.Stock;
 import spofo.tradelog.controller.port.TradeLogService;
 import spofo.tradelog.controller.response.TradeLogResponse;
 import spofo.tradelog.domain.TradeLog;
 import spofo.tradelog.domain.TradeLogCreate;
+import spofo.tradelog.domain.TradeLogStatistic;
 
 public class FakeTradeLogService implements TradeLogService {
 
@@ -14,18 +16,16 @@ public class FakeTradeLogService implements TradeLogService {
 
     @Override
     public TradeLog create(TradeLogCreate request, HoldingStock holdingStock) {
-        TradeLog tradeLog = TradeLog.of(request, holdingStock);
+        Stock stock = Stock.builder()
+                .code(holdingStock.getStockCode())
+                .build();
+        TradeLog tradeLog = TradeLog.of(request, holdingStock, stock);
         data.add(tradeLog);
         return tradeLog;
     }
 
     @Override
-    public void createTradeLog(TradeLogCreate request, HoldingStock holdingStock) {
-
-    }
-
-    @Override
-    public List<TradeLogResponse> getTradeLogs(Long stockId) {
+    public List<TradeLogStatistic> getStatistics(Long stockId) {
         return null;
     }
 

@@ -27,7 +27,7 @@ public class PortfolioUpdate {
     @NotNull(message = "포트폴리오 통화는 필수 입력입니다.")
     private Currency currency;
 
-    @NotNull(message = "포트폴리오 포합여부는 필수 입력입니다.")
+    @NotNull(message = "포트폴리오 포함여부는 필수 입력입니다.")
     private IncludeType includeType;
 
     @NotNull(message = "포트폴리오 타입은 필수 입력입니다.")

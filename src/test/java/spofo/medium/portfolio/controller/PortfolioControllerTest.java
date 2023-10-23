@@ -430,7 +430,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("fieldErrors[0].field").value("includeType"))
-                .andExpect(jsonPath("fieldErrors[0].errorMessage").value("포트폴리오 포합여부는 필수 입력입니다."));
+                .andExpect(jsonPath("fieldErrors[0].errorMessage").value("포트폴리오 포함여부는 필수 입력입니다."));
     }
 
     @Test

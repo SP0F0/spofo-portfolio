@@ -1,5 +1,6 @@
 package spofo.tradelog.infrastructure;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import spofo.tradelog.domain.TradeLog;
@@ -17,7 +18,14 @@ public class TradeLogRepositoryImpl implements TradeLogRepository {
     }
 
     @Override
+    public List<TradeLog> findByHoldingStockEntityId(Long id) {
+        return tradeLogJpaRepository.findByHoldingStockEntityId(id).stream()
+                .map(TradeLogEntity::toModel)
+                .toList();
+    }
+
+    @Override
     public void deleteByHoldingStockId(Long id) {
-        tradeLogJpaRepository.findByHoldingStockEntityId(id);
+        tradeLogJpaRepository.deleteByHoldingStockEntityId(id);
     }
 }
