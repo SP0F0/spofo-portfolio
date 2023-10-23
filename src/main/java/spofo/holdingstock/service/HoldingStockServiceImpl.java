@@ -65,6 +65,7 @@ public class HoldingStockServiceImpl implements HoldingStockService {
     @Transactional
     public void delete(Long id) {
         HoldingStock savedHoldingStock = findById(id);
+        tradeLogService.deleteByHoldingStockId(id);
         holdingStockRepository.delete(savedHoldingStock);
     }
 

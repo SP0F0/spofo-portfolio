@@ -8,6 +8,7 @@ import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static spofo.global.component.utils.CommonUtils.getBD;
 import static spofo.global.domain.exception.ErrorCode.HOLDING_STOCK_NOT_FOUND;
 import static spofo.tradelog.domain.enums.TradeType.BUY;
@@ -135,6 +136,10 @@ public class HoldingStockServiceTest extends ServiceTestSupport {
         HoldingStock holdingStock = getHoldingStock(portfolio);
 
         HoldingStock savedHoldingStock = holdingStockRepository.save(holdingStock);
+
+        willDoNothing()
+                .given(tradeLogRepository)
+                .deleteByHoldingStockId(anyLong());
 
         // when
         holdingStockService.delete(savedHoldingStock.getId());
