@@ -1,7 +1,9 @@
 package spofo.medium.holdingstock.service;
 
 import static java.math.BigDecimal.ONE;
+import static java.math.BigDecimal.TEN;
 import static java.math.RoundingMode.HALF_UP;
+import static java.time.LocalDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
@@ -114,9 +116,17 @@ public class HoldingStockServiceTest extends ServiceTestSupport {
     void holdingStockCreate() {
         // given
         Portfolio savedPortfolio = portfolioRepository.save(getPortfolio());
-        TradeLogCreate tradeLogCreate = TradeLogCreate.builder().build();
+        TradeLogCreate tradeLogCreate = TradeLogCreate.builder()
+                .type(BUY)
+                .price(TEN)
+                .tradeDate(now())
+                .quantity(ONE)
+                .build();
 
         HoldingStockCreate holdingStockCreate = getHoldingStockCreate();
+        given(mockStockServerService.getStock(TEST_STOCK_CODE)).willReturn(Stock.builder()
+                .code(TEST_STOCK_CODE)
+                .price(TEN).build());
 
         // when
         HoldingStock savedHoldingStock =

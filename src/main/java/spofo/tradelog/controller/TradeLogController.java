@@ -22,8 +22,10 @@ public class TradeLogController {
     public ResponseEntity<List<TradeLogResponse>> viewTradeLogs(
             @PathVariable("stockId") Long stockId,
             @PathVariable("portfolioId") Long portfolioId) {
-        List<TradeLogResponse> tradeLogResponseList = tradeLogServiceImpl.getTradeLogs(stockId);
-        return ok().body(tradeLogResponseList);
+//        List<TradeLogResponse> tradeLogResponseList = tradeLogServiceImpl.get(stockId);
+//        return ok().body(tradeLogResponseList);
+
+        return null;
     }
 
 }
