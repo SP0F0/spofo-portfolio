@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import spofo.holdingstock.domain.HoldingStock;
-import spofo.portfolio.domain.Portfolio;
 import spofo.stock.domain.Stock;
 import spofo.tradelog.domain.TradeLog;
 import spofo.tradelog.domain.TradeLogCreate;

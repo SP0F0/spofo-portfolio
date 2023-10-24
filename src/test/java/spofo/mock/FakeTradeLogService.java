@@ -5,7 +5,6 @@ import java.util.List;
 import spofo.holdingstock.domain.HoldingStock;
 import spofo.stock.domain.Stock;
 import spofo.tradelog.controller.port.TradeLogService;
-import spofo.tradelog.controller.response.TradeLogResponse;
 import spofo.tradelog.domain.TradeLog;
 import spofo.tradelog.domain.TradeLogCreate;
 import spofo.tradelog.domain.TradeLogStatistic;

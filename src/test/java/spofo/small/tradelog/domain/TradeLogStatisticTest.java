@@ -1,6 +1,5 @@
 package spofo.small.tradelog.domain;
 
-import static java.math.BigDecimal.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static spofo.global.component.utils.CommonUtils.getBD;
 import static spofo.tradelog.domain.enums.TradeType.BUY;

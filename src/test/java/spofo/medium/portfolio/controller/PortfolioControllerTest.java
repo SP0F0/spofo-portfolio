@@ -28,7 +28,7 @@ import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioCreate;
 import spofo.portfolio.domain.PortfolioStatistic;
 import spofo.portfolio.domain.PortfolioUpdate;
-import spofo.portfolio.domain.TotalPortofoliosStatistic;
+import spofo.portfolio.domain.TotalPortfoliosStatistic;
 import spofo.portfolio.domain.enums.Currency;
 import spofo.portfolio.domain.enums.IncludeType;
 import spofo.portfolio.domain.enums.PortfolioType;
@@ -185,7 +185,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
     @DisplayName("전체 포트폴리오에 대한 개요를 조회한다.")
     void getPortfoliosStatistic() throws Exception {
         // given
-        TotalPortofoliosStatistic statistic = TotalPortofoliosStatistic.builder()
+        TotalPortfoliosStatistic statistic = TotalPortfoliosStatistic.builder()
                 .totalAsset(getBD(1000))
                 .gain(getBD(100))
                 .gainRate(getBD(10))

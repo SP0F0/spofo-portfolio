@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import spofo.holdingstock.domain.HoldingStock;
 import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioStatistic;
-import spofo.portfolio.domain.TotalPortofoliosStatistic;
+import spofo.portfolio.domain.TotalPortfoliosStatistic;
 import spofo.stock.domain.Stock;
 import spofo.tradelog.domain.TradeLog;
 
@@ -44,7 +44,7 @@ public class TotalPortofoliosStatisticTest {
         PortfolioStatistic statistic2 = PortfolioStatistic.of(portfolio2, getStockMap());
 
         // when
-        TotalPortofoliosStatistic statistic = TotalPortofoliosStatistic.of(
+        TotalPortfoliosStatistic statistic = TotalPortfoliosStatistic.of(
                 List.of(statistic1, statistic2));
 
         // then
@@ -68,13 +68,13 @@ public class TotalPortofoliosStatisticTest {
         PortfolioStatistic statistic = PortfolioStatistic.of(portfolio, getStockMap());
 
         // when
-        TotalPortofoliosStatistic totalPortofoliosStatistic = TotalPortofoliosStatistic.of(
+        TotalPortfoliosStatistic totalPortfoliosStatistic = TotalPortfoliosStatistic.of(
                 List.of(statistic));
 
         // then
-        assertThat(totalPortofoliosStatistic.getTotalAsset()).isEqualTo(getBD(66000));
-        assertThat(totalPortofoliosStatistic.getGain()).isEqualTo(getBD(33000));
-        assertThat(totalPortofoliosStatistic.getGainRate()).isEqualTo(round(getBD(100)));
+        assertThat(totalPortfoliosStatistic.getTotalAsset()).isEqualTo(getBD(66000));
+        assertThat(totalPortfoliosStatistic.getGain()).isEqualTo(getBD(33000));
+        assertThat(totalPortfoliosStatistic.getGainRate()).isEqualTo(round(getBD(100)));
     }
 
     @Test
@@ -92,13 +92,13 @@ public class TotalPortofoliosStatisticTest {
         PortfolioStatistic statistic = PortfolioStatistic.of(portfolio, getStockMap());
 
         // when
-        TotalPortofoliosStatistic totalPortofoliosStatistic = TotalPortofoliosStatistic.of(
+        TotalPortfoliosStatistic totalPortfoliosStatistic = TotalPortfoliosStatistic.of(
                 List.of(statistic));
 
         // then
-        assertThat(totalPortofoliosStatistic.getTotalAsset()).isEqualTo(ZERO);
-        assertThat(totalPortofoliosStatistic.getGain()).isEqualTo(ZERO);
-        assertThat(totalPortofoliosStatistic.getGainRate()).isEqualTo(ZERO);
+        assertThat(totalPortfoliosStatistic.getTotalAsset()).isEqualTo(ZERO);
+        assertThat(totalPortfoliosStatistic.getGain()).isEqualTo(ZERO);
+        assertThat(totalPortfoliosStatistic.getGainRate()).isEqualTo(ZERO);
     }
 
     @Test
@@ -113,7 +113,7 @@ public class TotalPortofoliosStatisticTest {
         PortfolioStatistic statistic1 = PortfolioStatistic.of(portfolio1, getStockMap());
 
         // when
-        TotalPortofoliosStatistic statistic = TotalPortofoliosStatistic.of(List.of(statistic1));
+        TotalPortfoliosStatistic statistic = TotalPortfoliosStatistic.of(List.of(statistic1));
 
         // then
         assertThat(statistic.getTotalAsset()).isEqualTo(ZERO);

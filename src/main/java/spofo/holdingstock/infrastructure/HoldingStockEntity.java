@@ -55,7 +55,6 @@ public class HoldingStockEntity extends BaseEntity {
 
     /**
      * 엔티티를 도메인으로 변환할 때, 부모의 정보를 넣지 않도록 하여 순환 참조를 방지한다.
-     * @return
      */
     public HoldingStock toModel() {
         List<TradeLog> tradeLogs = tradeLogEntities.stream()

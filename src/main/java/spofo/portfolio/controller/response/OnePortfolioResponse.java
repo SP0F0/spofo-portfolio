@@ -31,5 +31,4 @@ public class OnePortfolioResponse {
                 .type(portfolio.getType())
                 .build();
     }
-
 }

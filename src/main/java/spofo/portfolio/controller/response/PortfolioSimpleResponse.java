@@ -9,7 +9,6 @@ import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.enums.IncludeType;
 import spofo.portfolio.domain.enums.PortfolioType;
 
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

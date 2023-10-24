@@ -13,7 +13,7 @@ import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioCreate;
 import spofo.portfolio.domain.PortfolioStatistic;
 import spofo.portfolio.domain.PortfolioUpdate;
-import spofo.portfolio.domain.TotalPortofoliosStatistic;
+import spofo.portfolio.domain.TotalPortfoliosStatistic;
 import spofo.portfolio.service.port.PortfolioRepository;
 import spofo.stock.domain.Stock;
 import spofo.stock.service.StockServerService;
@@ -27,10 +27,10 @@ public class PortfolioServiceImpl implements PortfolioService {
     private final StockServerService stockServerService;
 
     @Override
-    public TotalPortofoliosStatistic getPortfoliosStatistic(Long memberId) {
+    public TotalPortfoliosStatistic getPortfoliosStatistic(Long memberId) {
         List<Portfolio> portfolios = portfolioRepository.findByMemberIdWithTradeLogs(memberId);
         List<PortfolioStatistic> portfolioStatistics = getPortfolioStatistics(portfolios);
-        return TotalPortofoliosStatistic.of(portfolioStatistics);
+        return TotalPortfoliosStatistic.of(portfolioStatistics);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     private Portfolio getPortfolioFrom(Optional<Portfolio> portfolioOptional) {
-        return portfolioOptional.orElseThrow(() -> new PortfolioNotFound());
+        return portfolioOptional.orElseThrow(PortfolioNotFound::new);
     }
 
     private List<PortfolioStatistic> getPortfolioStatistics(List<Portfolio> portfolios) {
