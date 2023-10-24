@@ -1,9 +1,9 @@
 package spofo.global.config.security;
 
+import static java.util.Arrays.asList;
 import static org.springframework.security.config.Customizer.withDefaults;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
-import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,7 +37,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-
     /**
      * https://docs.spring.io/spring-security/reference/servlet/integrations/cors.html
      * @return
@@ -45,9 +44,9 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(
-                Arrays.asList("http://spofo.net", "http://localhost:5173/"));
-        configuration.setAllowedMethods(Arrays.asList("*"));
+        configuration.setAllowedOrigins(asList("http://spofo.net", "http://localhost:5173/"));
+        configuration.addAllowedHeader("*");
+        configuration.setAllowedMethods(asList("*"));
         configuration.setAllowCredentials(false);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
