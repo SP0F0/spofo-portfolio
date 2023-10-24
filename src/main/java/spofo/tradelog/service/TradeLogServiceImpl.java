@@ -1,8 +1,5 @@
 package spofo.tradelog.service;
 
-import static java.math.BigDecimal.ZERO;
-
-import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,12 +7,9 @@ import spofo.holdingstock.domain.HoldingStock;
 import spofo.stock.domain.Stock;
 import spofo.stock.service.StockServerService;
 import spofo.tradelog.controller.port.TradeLogService;
-import spofo.tradelog.controller.response.TradeLogResponse;
 import spofo.tradelog.domain.TradeLog;
 import spofo.tradelog.domain.TradeLogCreate;
 import spofo.tradelog.domain.TradeLogStatistic;
-import spofo.tradelog.domain.enums.TradeType;
-import spofo.tradelog.infrastructure.TradeLogEntity;
 import spofo.tradelog.service.port.TradeLogRepository;
 
 @Service

@@ -1,19 +1,15 @@
 package spofo.stock.service;
 
 import static java.util.stream.Collectors.toMap;
-import static org.springframework.http.HttpMethod.*;
+import static org.springframework.http.HttpMethod.GET;
 import static spofo.global.domain.enums.Server.STOCKSERVER;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.client.RestTemplate;
-import spofo.global.domain.enums.Server;
 import spofo.stock.domain.Stock;
 
 @Service
@@ -38,7 +34,8 @@ public class StockServerServiceImpl implements StockServerService {
                 .uri(uri)
                 .body(Map.of("stockCodeList", stockCodes))
                 .retrieve()
-                .body(new ParameterizedTypeReference<>() {});
+                .body(new ParameterizedTypeReference<>() {
+                });
 
         return stocks.stream()
                 .collect(toMap(Stock::getCode, stock -> stock, (s1, s2) -> s1));

@@ -48,6 +48,4 @@ public class HoldingStockRequest {
                 .quantity(quantity)
                 .build();
     }
-
-
 }

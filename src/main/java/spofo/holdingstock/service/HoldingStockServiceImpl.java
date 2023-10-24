@@ -90,7 +90,7 @@ public class HoldingStockServiceImpl implements HoldingStockService {
     }
 
     private HoldingStock getFrom(Optional<HoldingStock> holdingStockOptional) {
-        return holdingStockOptional.orElseThrow(() -> new HoldingStockNotFound());
+        return holdingStockOptional.orElseThrow(HoldingStockNotFound::new);
     }
 
     private List<String> getStockCodes(List<HoldingStock> holdingStocks) {

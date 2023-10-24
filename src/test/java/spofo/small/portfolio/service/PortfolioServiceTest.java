@@ -26,7 +26,7 @@ import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioCreate;
 import spofo.portfolio.domain.PortfolioStatistic;
 import spofo.portfolio.domain.PortfolioUpdate;
-import spofo.portfolio.domain.TotalPortofoliosStatistic;
+import spofo.portfolio.domain.TotalPortfoliosStatistic;
 import spofo.portfolio.domain.enums.Currency;
 import spofo.portfolio.domain.enums.IncludeType;
 import spofo.portfolio.domain.enums.PortfolioType;
@@ -75,13 +75,13 @@ public class PortfolioServiceTest {
         fakePortfolioRepository.save(portfolio);
 
         // when
-        TotalPortofoliosStatistic totalPortofoliosStatistic = portfolioService.getPortfoliosStatistic(
+        TotalPortfoliosStatistic totalPortfoliosStatistic = portfolioService.getPortfoliosStatistic(
                 memberId);
 
         // then
-        assertThat(totalPortofoliosStatistic.getTotalAsset()).isEqualTo(getBD(66000));
-        assertThat(totalPortofoliosStatistic.getGain()).isEqualTo(getBD(33000));
-        assertThat(totalPortofoliosStatistic.getGainRate()).isEqualTo(
+        assertThat(totalPortfoliosStatistic.getTotalAsset()).isEqualTo(getBD(66000));
+        assertThat(totalPortfoliosStatistic.getGain()).isEqualTo(getBD(33000));
+        assertThat(totalPortfoliosStatistic.getGainRate()).isEqualTo(
                 getBD(100).setScale(2));
     }
 
@@ -102,13 +102,13 @@ public class PortfolioServiceTest {
         fakePortfolioRepository.save(portfolio);
 
         // when
-        TotalPortofoliosStatistic totalPortofoliosStatistic = portfolioService.getPortfoliosStatistic(
+        TotalPortfoliosStatistic totalPortfoliosStatistic = portfolioService.getPortfoliosStatistic(
                 memberId);
 
         // then
-        assertThat(totalPortofoliosStatistic.getTotalAsset()).isEqualTo(getBD(0));
-        assertThat(totalPortofoliosStatistic.getGain()).isEqualTo(getBD(0));
-        assertThat(totalPortofoliosStatistic.getGainRate()).isEqualTo(ZERO);
+        assertThat(totalPortfoliosStatistic.getTotalAsset()).isEqualTo(getBD(0));
+        assertThat(totalPortfoliosStatistic.getGain()).isEqualTo(getBD(0));
+        assertThat(totalPortfoliosStatistic.getGainRate()).isEqualTo(ZERO);
     }
 
     @Test
@@ -118,13 +118,13 @@ public class PortfolioServiceTest {
         Long memberId = 1L;
 
         // when
-        TotalPortofoliosStatistic totalPortofoliosStatistic = portfolioService.getPortfoliosStatistic(
+        TotalPortfoliosStatistic totalPortfoliosStatistic = portfolioService.getPortfoliosStatistic(
                 memberId);
 
         // then
-        assertThat(totalPortofoliosStatistic.getTotalAsset()).isEqualTo(getBD(0));
-        assertThat(totalPortofoliosStatistic.getGain()).isEqualTo(getBD(0));
-        assertThat(totalPortofoliosStatistic.getGainRate()).isEqualTo(ZERO);
+        assertThat(totalPortfoliosStatistic.getTotalAsset()).isEqualTo(getBD(0));
+        assertThat(totalPortfoliosStatistic.getGain()).isEqualTo(getBD(0));
+        assertThat(totalPortfoliosStatistic.getGainRate()).isEqualTo(ZERO);
     }
 
     @Test

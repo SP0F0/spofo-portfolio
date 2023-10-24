@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import spofo.holdingstock.domain.HoldingStock;
-import spofo.holdingstock.infrastructure.HoldingStockEntity;
 import spofo.holdingstock.service.port.HoldingStockRepository;
 
 /**
