@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import spofo.global.domain.exception.PortfolioNotFound;
+import spofo.holdingstock.controller.port.HoldingStockService;
 import spofo.holdingstock.domain.HoldingStock;
 import spofo.portfolio.controller.port.PortfolioService;
 import spofo.portfolio.domain.Portfolio;
@@ -24,6 +25,7 @@ import spofo.stock.service.StockServerService;
 public class PortfolioServiceImpl implements PortfolioService {
 
     private final PortfolioRepository portfolioRepository;
+    private final HoldingStockService holdingStockService;
     private final StockServerService stockServerService;
 
     @Override
@@ -69,6 +71,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Transactional
     public void delete(Long id) {
         Portfolio portfolio = findById(id);
+        holdingStockService.deleteByPortfolioId(id);
         portfolioRepository.delete(portfolio);
     }
 

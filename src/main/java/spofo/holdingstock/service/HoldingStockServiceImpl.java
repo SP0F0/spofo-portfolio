@@ -12,7 +12,6 @@ import spofo.holdingstock.domain.HoldingStock;
 import spofo.holdingstock.domain.HoldingStockCreate;
 import spofo.holdingstock.domain.HoldingStockStatistic;
 import spofo.holdingstock.service.port.HoldingStockRepository;
-import spofo.portfolio.controller.port.PortfolioService;
 import spofo.portfolio.domain.Portfolio;
 import spofo.stock.domain.Stock;
 import spofo.stock.service.StockServerService;
@@ -24,7 +23,6 @@ import spofo.tradelog.domain.TradeLogCreate;
 @RequiredArgsConstructor
 public class HoldingStockServiceImpl implements HoldingStockService {
 
-    private final PortfolioService portfolioService;
     private final TradeLogService tradeLogService;
     private final HoldingStockRepository holdingStockRepository;
     private final StockServerService stockServerService;
@@ -51,8 +49,7 @@ public class HoldingStockServiceImpl implements HoldingStockService {
     @Override
     @Transactional
     public HoldingStock create(HoldingStockCreate holdingStockCreate, TradeLogCreate tradeLogCreate,
-            Long portfolioId) {
-        Portfolio portfolio = portfolioService.getPortfolio(portfolioId);
+            Portfolio portfolio) {
         HoldingStock holdingStock = HoldingStock.of(holdingStockCreate, portfolio);
         HoldingStock savedHoldingStock = holdingStockRepository.save(holdingStock);
 

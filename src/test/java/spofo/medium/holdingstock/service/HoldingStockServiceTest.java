@@ -126,13 +126,13 @@ public class HoldingStockServiceTest extends ServiceTestSupport {
         HoldingStockCreate holdingStockCreate = getHoldingStockCreate();
         given(mockStockServerService.getStock(TEST_STOCK_CODE))
                 .willReturn(Stock.builder()
-                .code(TEST_STOCK_CODE)
-                .price(TEN).build());
+                        .code(TEST_STOCK_CODE)
+                        .price(TEN).build());
 
         // when
         HoldingStock savedHoldingStock =
                 holdingStockService.create(holdingStockCreate, tradeLogCreate,
-                        savedPortfolio.getId());
+                        savedPortfolio);
 
         // then
         assertThat(savedHoldingStock.getId()).isNotNull();
