@@ -69,6 +69,10 @@ public class HoldingStockServiceImpl implements HoldingStockService {
     @Override
     @Transactional
     public void deleteByPortfolioId(Long portfolioId) {
+        List<HoldingStock> holdingStocks = holdingStockRepository.findByPortfolioId(portfolioId);
+        List<Long> holdingStockIds = getHoldingStockIds(holdingStocks);
+
+        tradeLogService.deleteByHoldingStockIds(holdingStockIds);
         holdingStockRepository.deleteByPortfolioId(portfolioId);
     }
 
@@ -94,6 +98,12 @@ public class HoldingStockServiceImpl implements HoldingStockService {
         return holdingStocks.stream()
                 .map(HoldingStock::getStockCode)
                 .distinct()
+                .toList();
+    }
+
+    private List<Long> getHoldingStockIds(List<HoldingStock> holdingStocks) {
+        return holdingStocks.stream()
+                .map(HoldingStock::getId)
                 .toList();
     }
 }

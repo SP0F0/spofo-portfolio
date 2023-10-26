@@ -10,4 +10,6 @@ public interface TradeLogRepository {
     List<TradeLog> findByHoldingStockEntityId(Long id);
 
     void deleteByHoldingStockId(Long id);
+
+    void deleteByHoldingStockEntityIdIn(List<Long> ids);
 }

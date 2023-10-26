@@ -8,4 +8,6 @@ public interface TradeLogJpaRepository extends JpaRepository<TradeLogEntity, Lon
     List<TradeLogEntity> findByHoldingStockEntityId(Long id);
 
     void deleteByHoldingStockEntityId(Long id);
+
+    void deleteByHoldingStockEntityIdIn(List<Long> ids);
 }

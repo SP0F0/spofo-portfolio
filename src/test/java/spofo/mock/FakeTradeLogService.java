@@ -32,4 +32,9 @@ public class FakeTradeLogService implements TradeLogService {
     public void deleteByHoldingStockId(Long id) {
 
     }
+
+    @Override
+    public void deleteByHoldingStockIds(List<Long> ids) {
+
+    }
 }
