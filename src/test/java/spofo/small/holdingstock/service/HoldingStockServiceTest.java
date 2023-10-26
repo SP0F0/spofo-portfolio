@@ -52,8 +52,7 @@ public class HoldingStockServiceTest {
                 = new FakePortfolioService(fakePortfolioRepository, fakeStockServerService);
         holdingStockService =
                 new HoldingStockServiceImpl(
-                        fakePortfolioService, fakeTradeLogService,
-                        fakeHoldingStockRepository, fakeStockServerService
+                        fakeTradeLogService, fakeHoldingStockRepository, fakeStockServerService
                 );
 
         Stock stock = Stock.builder()
@@ -155,7 +154,7 @@ public class HoldingStockServiceTest {
 
         // when
         HoldingStock savedHoldingStock =
-                holdingStockService.create(holdingStockCreate, tradeLogCreate, portfolio.getId());
+                holdingStockService.create(holdingStockCreate, tradeLogCreate, portfolio);
 
         // then
         assertThat(savedHoldingStock.getId()).isEqualTo(1L);

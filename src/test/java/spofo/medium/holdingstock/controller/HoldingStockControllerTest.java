@@ -132,7 +132,7 @@ public class HoldingStockControllerTest extends ControllerTestSupport {
                 .build();
 
         given(holdingStockService.create(any(HoldingStockCreate.class), any(TradeLogCreate.class),
-                anyLong()))
+                any(Portfolio.class)))
                 .willReturn(holdingStock);
 
         // expected

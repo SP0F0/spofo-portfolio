@@ -286,7 +286,7 @@ public class PortfolioServiceTest extends ServiceTestSupport {
     }
 
     @Test
-    @DisplayName("포트폴리오 1건을 삭제한다.")
+    @DisplayName("보유종목이 없을 때 포트폴리오 1건을 삭제한다.")
     void deletePortfolio() {
         // given
         Portfolio savedPortfolio = portfolioService.create(getCreatePortfolio(), MEMBER_ID);
@@ -298,6 +298,26 @@ public class PortfolioServiceTest extends ServiceTestSupport {
         assertThatThrownBy(() -> portfolioService.getPortfolio(savedPortfolio.getId()))
                 .isInstanceOf(PortfolioNotFound.class)
                 .hasMessage(PORTFOLIO_NOT_FOUND.getMessage());
+    }
+
+    @Test
+    @DisplayName("보유종목이 있을 때 포트폴리오 1건을 삭제한다.")
+    void deletePortfolioWithHoldingStock() {
+        // given
+        Portfolio savedPortfolio = portfolioService.create(getCreatePortfolio(), MEMBER_ID);
+        HoldingStock holdingStock = HoldingStock.builder()
+                .portfolio(savedPortfolio)
+                .id(1L).build();
+        holdingStockRepository.save(holdingStock);
+
+        // when
+        portfolioService.delete(savedPortfolio.getId());
+
+        // then
+        assertThatThrownBy(() -> portfolioService.getPortfolio(savedPortfolio.getId()))
+                .isInstanceOf(PortfolioNotFound.class)
+                .hasMessage(PORTFOLIO_NOT_FOUND.getMessage());
+        assertThat(holdingStockService.getByPortfolioId(1L)).hasSize(0);
     }
 
     @Test

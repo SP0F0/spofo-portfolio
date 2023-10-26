@@ -19,6 +19,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import spofo.global.domain.exception.PortfolioNotFound;
 import spofo.holdingstock.domain.HoldingStock;
+import spofo.mock.FakeHoldingStockRepository;
+import spofo.mock.FakeHoldingStockService;
 import spofo.mock.FakePortfolioRepository;
 import spofo.mock.FakeStockServerService;
 import spofo.portfolio.controller.port.PortfolioService;
@@ -38,15 +40,19 @@ public class PortfolioServiceTest {
 
     private PortfolioService portfolioService;
     private FakeStockServerService fakeStockServerService;
+    private FakeHoldingStockService fakeHoldingStockService;
     private FakePortfolioRepository fakePortfolioRepository;
+    private FakeHoldingStockRepository fakeHoldingStockRepository;
     private final String TEST_STOCK_CODE = "101001";
 
     @BeforeEach
     void setup() {
+        fakeHoldingStockRepository = new FakeHoldingStockRepository();
         fakePortfolioRepository = new FakePortfolioRepository();
         fakeStockServerService = new FakeStockServerService();
+        fakeHoldingStockService = new FakeHoldingStockService(fakeHoldingStockRepository);
         portfolioService = new PortfolioServiceImpl(fakePortfolioRepository,
-                fakeStockServerService);
+                fakeHoldingStockService, fakeStockServerService);
 
         Stock stock = Stock.builder()
                 .code(TEST_STOCK_CODE)
@@ -349,7 +355,7 @@ public class PortfolioServiceTest {
     }
 
     @Test
-    @DisplayName("포트폴리오 1건을 삭제한다.")
+    @DisplayName("보유종목이 없을 때 포트폴리오 1건을 삭제한다.")
     void deletePortfolio() {
         // given
         Long portfolioId = 1L;
@@ -364,6 +370,29 @@ public class PortfolioServiceTest {
         assertThatThrownBy(() -> portfolioService.getPortfolio(portfolioId))
                 .isInstanceOf(PortfolioNotFound.class)
                 .hasMessage(PORTFOLIO_NOT_FOUND.getMessage());
+    }
+
+    @Test
+    @DisplayName("보유종목이 있을 때 포트폴리오 1건을 삭제한다.")
+    void deletePortfolioWithHoldingStock() {
+        // given
+        Long portfolioId = 1L;
+        Portfolio portfolio = Portfolio.builder().id(portfolioId).build();
+        HoldingStock holdingStock = HoldingStock.builder()
+                .id(1L)
+                .portfolio(portfolio).build();
+
+        fakePortfolioRepository.save(portfolio);
+        fakeHoldingStockRepository.save(holdingStock);
+
+        // when
+        portfolioService.delete(portfolioId);
+
+        // then
+        assertThatThrownBy(() -> portfolioService.getPortfolio(portfolioId))
+                .isInstanceOf(PortfolioNotFound.class)
+                .hasMessage(PORTFOLIO_NOT_FOUND.getMessage());
+        assertThat(fakeHoldingStockService.getByPortfolioId(portfolioId)).hasSize(0);
     }
 
     @Test

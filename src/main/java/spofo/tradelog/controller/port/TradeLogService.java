@@ -13,4 +13,6 @@ public interface TradeLogService {
     List<TradeLogStatistic> getStatistics(Long stockId);
 
     void deleteByHoldingStockId(Long id);
+
+    void deleteByHoldingStockIds(List<Long> ids);
 }

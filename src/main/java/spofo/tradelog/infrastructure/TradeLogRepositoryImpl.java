@@ -28,4 +28,9 @@ public class TradeLogRepositoryImpl implements TradeLogRepository {
     public void deleteByHoldingStockId(Long id) {
         tradeLogJpaRepository.deleteByHoldingStockEntityId(id);
     }
+
+    @Override
+    public void deleteByHoldingStockEntityIdIn(List<Long> ids) {
+        tradeLogJpaRepository.deleteByHoldingStockEntityIdIn(ids);
+    }
 }

@@ -21,6 +21,8 @@ import spofo.holdingstock.controller.response.HoldingStockResponse;
 import spofo.holdingstock.domain.HoldingStock;
 import spofo.holdingstock.domain.HoldingStockCreate;
 import spofo.holdingstock.domain.HoldingStockStatistic;
+import spofo.portfolio.controller.port.PortfolioService;
+import spofo.portfolio.domain.Portfolio;
 import spofo.tradelog.controller.port.TradeLogService;
 import spofo.tradelog.domain.TradeLogCreate;
 
@@ -29,6 +31,7 @@ import spofo.tradelog.domain.TradeLogCreate;
 public class HoldingStockController {
 
     private final HoldingStockService holdingStockService;
+    private final PortfolioService portfolioService;
     private final TradeLogService tradeLogService;
 
     @GetMapping("/portfolios/{portfolioId}/stocks")
@@ -55,8 +58,9 @@ public class HoldingStockController {
             @RequestBody @Valid HoldingStockRequest request, @PathVariable Long portfolioId) {
         HoldingStockCreate holdingStockCreate = request.toHoldingStockCreate();
         TradeLogCreate tradeLogCreate = request.toTradeLogCreate();
+        Portfolio portfolio = portfolioService.getPortfolio(portfolioId);
         HoldingStock holdingStock =
-                holdingStockService.create(holdingStockCreate, tradeLogCreate, portfolioId);
+                holdingStockService.create(holdingStockCreate, tradeLogCreate, portfolio);
 
         Map<String, Long> response = Map.of("id", portfolioId);
 
