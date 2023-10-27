@@ -50,4 +50,9 @@ public class FakeTradeLogRepository implements TradeLogRepository {
         ids.forEach(
                 id -> data.removeIf(item -> Objects.equals(item.getHoldingStock().getId(), id)));
     }
+
+    @Override
+    public void deleteAll() {
+        data.clear();
+    }
 }

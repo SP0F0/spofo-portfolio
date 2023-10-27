@@ -69,4 +69,9 @@ public class FakePortfolioRepository implements PortfolioRepository {
     public void delete(Portfolio portfolio) {
         data.removeIf(item -> Objects.equals(item.getId(), portfolio.getId()));
     }
+
+    @Override
+    public void deleteAll() {
+        data.clear();
+    }
 }

@@ -17,4 +17,6 @@ public interface PortfolioRepository {
     Portfolio save(Portfolio portfolio);
 
     void delete(Portfolio portfolio);
+
+    void deleteAll();
 }

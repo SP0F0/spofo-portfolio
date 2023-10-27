@@ -39,4 +39,9 @@ public class HoldingStockRepositoryImpl implements HoldingStockRepository {
     public void deleteByPortfolioId(Long id) {
         holdingStockJpaRepository.deleteByPortfolioEntityId(id);
     }
+
+    @Override
+    public void deleteAll() {
+        holdingStockJpaRepository.deleteAll();
+    }
 }
