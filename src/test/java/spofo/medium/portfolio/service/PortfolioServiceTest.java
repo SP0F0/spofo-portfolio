@@ -230,6 +230,7 @@ public class PortfolioServiceTest extends ServiceTestSupport {
         // when
         PortfolioStatistic statistic = portfolioService.getPortfolioStatistic(MEMBER_ID);
 
+        // then
         assertThat(statistic.getTotalAsset()).isEqualTo(getBD(66000));
         assertThat(statistic.getTotalBuy()).isEqualTo(getBD(33000));
         assertThat(statistic.getTotalGain()).isEqualTo(getBD(33000));
