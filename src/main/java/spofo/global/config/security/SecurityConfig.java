@@ -23,7 +23,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // 어떤 요청이던 access 클래스로 전달한다.
         http.httpBasic(config -> config.disable())
                 .csrf(config -> config.disable())
                 .sessionManagement(config -> config.sessionCreationPolicy(STATELESS))
