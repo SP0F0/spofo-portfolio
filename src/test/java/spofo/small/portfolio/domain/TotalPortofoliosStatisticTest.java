@@ -3,7 +3,6 @@ package spofo.small.portfolio.domain;
 import static java.math.BigDecimal.ZERO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static spofo.global.component.utils.CommonUtils.getBD;
-import static spofo.global.component.utils.CommonUtils.round;
 import static spofo.portfolio.domain.enums.IncludeType.N;
 import static spofo.portfolio.domain.enums.IncludeType.Y;
 import static spofo.tradelog.domain.enums.TradeType.BUY;
@@ -50,7 +49,7 @@ public class TotalPortofoliosStatisticTest {
         // then
         assertThat(statistic.getTotalAsset()).isEqualTo(getBD(198000));
         assertThat(statistic.getGain()).isEqualTo(getBD(99000));
-        assertThat(statistic.getGainRate()).isEqualTo(round(getBD(100)));
+        assertThat(statistic.getGainRate()).isEqualTo(getBD(100));
     }
 
     @Test
@@ -74,7 +73,7 @@ public class TotalPortofoliosStatisticTest {
         // then
         assertThat(totalPortfoliosStatistic.getTotalAsset()).isEqualTo(getBD(66000));
         assertThat(totalPortfoliosStatistic.getGain()).isEqualTo(getBD(33000));
-        assertThat(totalPortfoliosStatistic.getGainRate()).isEqualTo(round(getBD(100)));
+        assertThat(totalPortfoliosStatistic.getGainRate()).isEqualTo(getBD(100));
     }
 
     @Test

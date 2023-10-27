@@ -43,7 +43,7 @@ public class PortfolioStatisticTest {
         assertThat(statistic.getTotalAsset()).isEqualTo(getBD(66000));
         assertThat(statistic.getTotalBuy()).isEqualTo(getBD(33000));
         assertThat(statistic.getTotalGain()).isEqualTo(getBD(33000));
-        assertThat(statistic.getGainRate()).isEqualTo(getBD(100).setScale(2));
+        assertThat(statistic.getGainRate()).isEqualTo(getBD(100));
     }
 
     @Test

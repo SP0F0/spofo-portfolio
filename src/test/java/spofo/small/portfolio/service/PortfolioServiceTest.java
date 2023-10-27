@@ -87,8 +87,7 @@ public class PortfolioServiceTest {
         // then
         assertThat(totalPortfoliosStatistic.getTotalAsset()).isEqualTo(getBD(66000));
         assertThat(totalPortfoliosStatistic.getGain()).isEqualTo(getBD(33000));
-        assertThat(totalPortfoliosStatistic.getGainRate()).isEqualTo(
-                getBD(100).setScale(2));
+        assertThat(totalPortfoliosStatistic.getGainRate()).isEqualTo(getBD(100));
     }
 
     @Test
@@ -162,10 +161,10 @@ public class PortfolioServiceTest {
                 .extracting("portfolio.id", "totalAsset", "totalBuy", "totalGain", "gainRate")
                 .containsExactlyInAnyOrder(
                         tuple(1L, getBD(66000), getBD(33000),
-                                getBD(33000), getBD(100).setScale(2)),
+                                getBD(33000), getBD(100)),
 
                         tuple(2L, getBD(132000), getBD(66000),
-                                getBD(66000), getBD(100).setScale(2))
+                                getBD(66000), getBD(100))
                 );
     }
 
@@ -262,7 +261,7 @@ public class PortfolioServiceTest {
         assertThat(statistic.getTotalAsset()).isEqualTo(getBD(66000));
         assertThat(statistic.getTotalBuy()).isEqualTo(getBD(33000));
         assertThat(statistic.getTotalGain()).isEqualTo(getBD(33000));
-        assertThat(statistic.getGainRate()).isEqualTo(getBD(100).setScale(2));
+        assertThat(statistic.getGainRate()).isEqualTo(getBD(100));
     }
 
     @Test

@@ -9,7 +9,6 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static spofo.global.component.utils.CommonUtils.getBD;
-import static spofo.global.component.utils.CommonUtils.round;
 import static spofo.global.domain.exception.ErrorCode.PORTFOLIO_NOT_FOUND;
 import static spofo.portfolio.domain.enums.Currency.KRW;
 import static spofo.portfolio.domain.enums.IncludeType.N;
@@ -72,7 +71,7 @@ public class PortfolioServiceTest extends ServiceTestSupport {
         // then
         assertThat(totalPortfoliosStatistic.getTotalAsset()).isEqualTo(getBD(132000));
         assertThat(totalPortfoliosStatistic.getGain()).isEqualTo(getBD(66000));
-        assertThat(totalPortfoliosStatistic.getGainRate()).isEqualTo(round(getBD(100)));
+        assertThat(totalPortfoliosStatistic.getGainRate()).isEqualTo(getBD(100));
     }
 
     @Test
@@ -153,10 +152,10 @@ public class PortfolioServiceTest extends ServiceTestSupport {
                 .extracting("portfolio.id", "totalAsset", "totalBuy", "totalGain", "gainRate")
                 .containsExactlyInAnyOrder(
                         tuple(1L, getBD(66000), getBD(33000),
-                                getBD(33000), round(getBD(100))),
+                                getBD(33000), getBD(100)),
 
                         tuple(2L, getBD(132000), getBD(66000),
-                                getBD(66000), round(getBD(100)))
+                                getBD(66000), getBD(100))
                 );
     }
 
@@ -234,7 +233,7 @@ public class PortfolioServiceTest extends ServiceTestSupport {
         assertThat(statistic.getTotalAsset()).isEqualTo(getBD(66000));
         assertThat(statistic.getTotalBuy()).isEqualTo(getBD(33000));
         assertThat(statistic.getTotalGain()).isEqualTo(getBD(33000));
-        assertThat(statistic.getGainRate()).isEqualTo(round(getBD(100)));
+        assertThat(statistic.getGainRate()).isEqualTo(getBD(100));
     }
 
     @Test
