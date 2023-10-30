@@ -2,6 +2,7 @@ package spofo.portfolio.domain;
 
 import static java.math.BigDecimal.ZERO;
 import static java.math.RoundingMode.HALF_UP;
+import static spofo.global.component.utils.CommonUtils.format;
 import static spofo.global.component.utils.CommonUtils.getGlobalScale;
 import static spofo.global.component.utils.CommonUtils.isZero;
 import static spofo.global.component.utils.CommonUtils.toPercent;
@@ -56,10 +57,10 @@ public class PortfolioStatistic {
 
         return PortfolioStatistic.builder()
                 .portfolio(portfolio)
-                .totalAsset(totalAsset)
-                .totalBuy(totalBuy)
-                .totalGain(totalGain)
-                .gainRate(gainRate)
+                .totalAsset(format(totalAsset))
+                .totalBuy(format(totalBuy))
+                .totalGain(format(totalGain))
+                .gainRate(format(gainRate))
                 .build();
     }
 

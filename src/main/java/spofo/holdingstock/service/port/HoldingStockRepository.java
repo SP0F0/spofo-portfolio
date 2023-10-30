@@ -15,4 +15,6 @@ public interface HoldingStockRepository {
     void delete(HoldingStock holdingStock);
 
     void deleteByPortfolioId(Long id);
+
+    void deleteAll();
 }

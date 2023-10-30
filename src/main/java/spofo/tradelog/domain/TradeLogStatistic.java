@@ -1,6 +1,7 @@
 package spofo.tradelog.domain;
 
 import static java.math.BigDecimal.ZERO;
+import static spofo.global.component.utils.CommonUtils.format;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -34,10 +35,10 @@ public class TradeLogStatistic {
         return TradeLogStatistic.builder()
                 .type(type)
                 .tradeDate(tradeDate)
-                .avgPrice(avgPrice)
-                .quantity(quantity)
-                .gain(gain)
-                .totalPrice(totalPrice)
+                .avgPrice(format(avgPrice))
+                .quantity(format(quantity))
+                .gain(format(gain))
+                .totalPrice(format(totalPrice))
                 .build();
     }
 }

@@ -12,4 +12,6 @@ public interface TradeLogRepository {
     void deleteByHoldingStockId(Long id);
 
     void deleteByHoldingStockEntityIdIn(List<Long> ids);
+
+    void deleteAll();
 }

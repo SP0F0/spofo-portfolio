@@ -47,4 +47,9 @@ public class PortfolioRepositoryImpl implements PortfolioRepository {
     public void delete(Portfolio portfolio) {
         portfolioJpaRepository.delete(PortfolioEntity.from(portfolio));
     }
+
+    @Override
+    public void deleteAll() {
+        portfolioJpaRepository.deleteAll();
+    }
 }

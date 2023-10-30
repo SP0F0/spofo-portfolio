@@ -97,7 +97,7 @@ public class HoldingStockControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$[0].totalAsset").value("132000"))
                 .andExpect(jsonPath("$[0].gain").value("70400"))
                 .andExpect(jsonPath("$[0].gainRate").value("114.29"))
-                .andExpect(jsonPath("$[0].avgPrice").value("30800.0"))
+                .andExpect(jsonPath("$[0].avgPrice").value("30800"))
                 .andExpect(jsonPath("$[0].currentPrice").value("66000"))
                 .andExpect(jsonPath("$[0].quantity").value("2"));
     }
@@ -594,7 +594,7 @@ public class HoldingStockControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("totalAsset").value("132000"))
                 .andExpect(jsonPath("gain").value("70400"))
                 .andExpect(jsonPath("gainRate").value("114.29"))
-                .andExpect(jsonPath("avgPrice").value("30800.0"))
+                .andExpect(jsonPath("avgPrice").value("30800"))
                 .andExpect(jsonPath("currentPrice").value("66000"))
                 .andExpect(jsonPath("quantity").value("2"))
                 .andExpect(jsonPath("imagePath").doesNotExist());

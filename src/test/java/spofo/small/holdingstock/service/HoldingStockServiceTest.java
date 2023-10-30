@@ -1,7 +1,6 @@
 package spofo.small.holdingstock.service;
 
 import static java.math.BigDecimal.ONE;
-import static java.math.RoundingMode.HALF_UP;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
@@ -239,7 +238,7 @@ public class HoldingStockServiceTest {
                         "avgPrice", "currentPrice", "quantity")
                 .contains(
                         tuple(getBD(132_000), getBD(70_400), getBD(114.29),
-                                getBD(30_800).setScale(2, HALF_UP), getBD(66_000), getBD(2))
+                                getBD(30_800), getBD(66_000), getBD(2))
                 );
     }
 
@@ -269,7 +268,7 @@ public class HoldingStockServiceTest {
                         "avgPrice", "currentPrice", "quantity")
                 .contains(
                         tuple(getBD(264_000), getBD(47_160), getBD(21.75),
-                                getBD(54_210).setScale(2, HALF_UP), getBD(66_000), getBD(4))
+                                getBD(54_210), getBD(66_000), getBD(4))
                 );
     }
 

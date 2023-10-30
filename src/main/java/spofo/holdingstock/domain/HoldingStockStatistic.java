@@ -2,6 +2,7 @@ package spofo.holdingstock.domain;
 
 import static java.math.BigDecimal.ZERO;
 import static java.math.RoundingMode.HALF_UP;
+import static spofo.global.component.utils.CommonUtils.format;
 import static spofo.global.component.utils.CommonUtils.getGlobalScale;
 import static spofo.global.component.utils.CommonUtils.isZero;
 import static spofo.global.component.utils.CommonUtils.toPercent;
@@ -62,12 +63,12 @@ public class HoldingStockStatistic {
 
         return HoldingStockStatistic.builder()
                 .holdingStockInfo(HoldingStockInfo.of(holdingStock, stock))
-                .totalAsset(totalAsset)
-                .gain(gain)
-                .gainRate(gainRate)
-                .avgPrice(avgPrice)
-                .currentPrice(currentPrice)
-                .quantity(quantity)
+                .totalAsset(format(totalAsset))
+                .gain(format(gain))
+                .gainRate(format(gainRate))
+                .avgPrice(format(avgPrice))
+                .currentPrice(format(currentPrice))
+                .quantity(format(quantity))
                 .build();
     }
 }

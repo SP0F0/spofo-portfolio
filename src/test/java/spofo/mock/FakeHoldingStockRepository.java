@@ -55,4 +55,9 @@ public class FakeHoldingStockRepository implements HoldingStockRepository {
     public void deleteByPortfolioId(Long id) {
         data.removeIf(item -> Objects.equals(item.getPortfolio().getId(), id));
     }
+
+    @Override
+    public void deleteAll() {
+        data.clear();
+    }
 }
