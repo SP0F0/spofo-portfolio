@@ -21,7 +21,6 @@ import static spofo.tradelog.domain.enums.TradeType.BUY;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import spofo.global.domain.exception.HoldingStockNotFound;
@@ -64,15 +63,13 @@ public class HoldingStockControllerTest extends ControllerTestSupport {
                 .build();
     }
 
-    private Map<String, Stock> getStockMap() {
-        Stock stock = Stock.builder()
+    private Stock getStock() {
+        return Stock.builder()
                 .code(TEST_STOCK_CODE)
                 .name("SK하이닉스")
                 .price(getBD(66000))
                 .sector("반도체")
                 .build();
-
-        return Map.of(TEST_STOCK_CODE, stock);
     }
 
     @Test
@@ -84,7 +81,7 @@ public class HoldingStockControllerTest extends ControllerTestSupport {
         HoldingStock holdingStock = getHoldingStock(TEST_STOCK_CODE, getPortfolio(),
                 List.of(log1, log2));
 
-        HoldingStockStatistic statistic = HoldingStockStatistic.of(holdingStock, getStockMap());
+        HoldingStockStatistic statistic = HoldingStockStatistic.of(holdingStock, getStock());
 
         given(holdingStockService.getHoldingStockStatistics(anyLong()))
                 .willReturn(List.of(statistic));
@@ -577,7 +574,7 @@ public class HoldingStockControllerTest extends ControllerTestSupport {
         HoldingStock holdingStock = getHoldingStock(TEST_STOCK_CODE, getPortfolio(),
                 List.of(log1, log2));
 
-        HoldingStockStatistic statistic = HoldingStockStatistic.of(holdingStock, getStockMap());
+        HoldingStockStatistic statistic = HoldingStockStatistic.of(holdingStock, getStock());
 
         given(holdingStockService.getStatistic(anyLong()))
                 .willReturn(statistic);
