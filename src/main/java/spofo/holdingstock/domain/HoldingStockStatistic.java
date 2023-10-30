@@ -10,7 +10,6 @@ import static spofo.tradelog.domain.enums.TradeType.BUY;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Map;
 import lombok.Builder;
 import lombok.Getter;
 import spofo.stock.domain.Stock;
@@ -28,8 +27,7 @@ public class HoldingStockStatistic {
     private BigDecimal currentPrice;
     private BigDecimal quantity;
 
-    public static HoldingStockStatistic of(HoldingStock holdingStock, Map<String, Stock> stocks) {
-        Stock stock = stocks.get(holdingStock.getStockCode());
+    public static HoldingStockStatistic of(HoldingStock holdingStock, Stock stock) {
         BigDecimal currentPrice = stock.getPrice();
 
         BigDecimal totalAsset = ZERO;

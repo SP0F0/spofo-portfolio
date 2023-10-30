@@ -7,7 +7,6 @@ import static spofo.tradelog.domain.enums.TradeType.BUY;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import spofo.holdingstock.domain.HoldingStock;
@@ -32,7 +31,7 @@ public class HoldingStockStatisticTest {
         HoldingStock holdingStock = getHoldingStock(List.of(log1, log2));
 
         // when
-        HoldingStockStatistic statistic = HoldingStockStatistic.of(holdingStock, getStockMap());
+        HoldingStockStatistic statistic = HoldingStockStatistic.of(holdingStock, getStock());
 
         // then
         assertThat(statistic.getHoldingStockInfo().getCode()).isEqualTo(TEST_STOCK_CODE);
@@ -58,7 +57,7 @@ public class HoldingStockStatisticTest {
         HoldingStock holdingStock = getHoldingStock(List.of(log1, log2, log3));
 
         // when
-        HoldingStockStatistic statistic = HoldingStockStatistic.of(holdingStock, getStockMap());
+        HoldingStockStatistic statistic = HoldingStockStatistic.of(holdingStock, getStock());
 
         // then
         assertThat(statistic.getHoldingStockInfo().getCode()).isEqualTo(TEST_STOCK_CODE);
@@ -88,14 +87,12 @@ public class HoldingStockStatisticTest {
                 .build();
     }
 
-    private Map<String, Stock> getStockMap() {
-        Stock stock = Stock.builder()
+    private Stock getStock() {
+        return Stock.builder()
                 .code(TEST_STOCK_CODE)
                 .name(TEST_STOCK_NAME)
                 .price(TEST_STOCK_PRICE)
                 .sector(TEST_STOCK_SECTOR)
                 .build();
-
-        return Map.of(TEST_STOCK_CODE, stock);
     }
 }

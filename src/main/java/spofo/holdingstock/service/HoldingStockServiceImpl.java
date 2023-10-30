@@ -38,7 +38,7 @@ public class HoldingStockServiceImpl implements HoldingStockService {
         String stockCode = holdingStock.getStockCode();
         Stock stock = stockServerService.getStock(stockCode);
 
-        return HoldingStockStatistic.of(holdingStock, Map.of(stockCode, stock));
+        return HoldingStockStatistic.of(holdingStock, stock);
     }
 
     @Override
@@ -82,7 +82,8 @@ public class HoldingStockServiceImpl implements HoldingStockService {
         List<String> stockCodes = getStockCodes(holdingStocks);
         Map<String, Stock> stocks = stockServerService.getStocks(stockCodes);
         return holdingStocks.stream()
-                .map(holdingStock -> HoldingStockStatistic.of(holdingStock, stocks))
+                .map(holdingStock -> HoldingStockStatistic.of(holdingStock,
+                        stocks.get(holdingStock.getStockCode())))
                 .toList();
     }
 
