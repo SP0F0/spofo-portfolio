@@ -40,17 +40,17 @@ public class HoldingStockServiceTest extends ServiceTestSupport {
         Portfolio savedPortfolio = portfolioRepository.save(getPortfolio());
         HoldingStock holdingStock = getHoldingStock(savedPortfolio);
 
-        holdingStockRepository.save(holdingStock);
+        HoldingStock savedHoldingStock = holdingStockRepository.save(holdingStock);
 
         // when
         List<HoldingStock> holdingStocks =
                 holdingStockService.getByPortfolioId(savedPortfolio.getId());
 
         // then
-        assertThat(holdingStocks)
+        assertThat(holdingStocks).hasSize(1)
                 .extracting("id", "stockCode", "portfolio")
-                .contains(
-                        tuple(1L, holdingStock.getStockCode(), null)
+                .containsExactlyInAnyOrder(
+                        tuple(savedHoldingStock.getId(), TEST_STOCK_CODE, null)
                 );
     }
 
@@ -179,14 +179,14 @@ public class HoldingStockServiceTest extends ServiceTestSupport {
         Portfolio savedPortfolio = portfolioRepository.save(getPortfolio());
 
         HoldingStock holdingStock = HoldingStock.of(getHoldingStockCreate(), savedPortfolio);
-        HoldingStock savedHoldingStock = holdingStockRepository.save(holdingStock);
+        holdingStockRepository.save(holdingStock);
 
         // when
-        holdingStockService.deleteByPortfolioId(savedHoldingStock.getId());
+        holdingStockService.deleteByPortfolioId(savedPortfolio.getId());
 
         // then
         List<HoldingStock> holdingStocks =
-                holdingStockService.getByPortfolioId(savedHoldingStock.getId());
+                holdingStockService.getByPortfolioId(savedPortfolio.getId());
 
         assertThat(holdingStocks).isEmpty();
     }
