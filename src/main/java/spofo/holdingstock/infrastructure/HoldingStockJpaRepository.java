@@ -1,6 +1,7 @@
 package spofo.holdingstock.infrastructure;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,5 +19,6 @@ public interface HoldingStockJpaRepository extends JpaRepository<HoldingStockEnt
 
     void deleteByPortfolioEntityId(Long id);
 
-    boolean existsByPortfolioEntityAndStockCode(PortfolioEntity portfolioEntity, String stockCode);
+    Optional<HoldingStockEntity> findByPortfolioEntityAndStockCode
+            (PortfolioEntity portfolioEntity, String stockCode);
 }

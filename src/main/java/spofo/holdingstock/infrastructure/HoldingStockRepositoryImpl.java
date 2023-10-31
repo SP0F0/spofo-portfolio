@@ -48,9 +48,10 @@ public class HoldingStockRepositoryImpl implements HoldingStockRepository {
     }
 
     @Override
-    public boolean exists(Portfolio portfolio, String stockCode) {
+    public Optional<HoldingStock> findByStockCode(Portfolio portfolio, String stockCode) {
         PortfolioEntity portfolioEntity = PortfolioEntity.from(portfolio);
         return holdingStockJpaRepository
-                .existsByPortfolioEntityAndStockCode(portfolioEntity, stockCode);
+                .findByPortfolioEntityAndStockCode(portfolioEntity, stockCode)
+                .map(HoldingStockEntity::toModel);
     }
 }

@@ -11,6 +11,8 @@ public interface HoldingStockRepository {
 
     Optional<HoldingStock> findById(Long id);
 
+    Optional<HoldingStock> findByStockCode(Portfolio portfolio, String stockCode);
+
     HoldingStock save(HoldingStock holdingStock);
 
     void delete(HoldingStock holdingStock);
@@ -18,6 +20,4 @@ public interface HoldingStockRepository {
     void deleteByPortfolioId(Long id);
 
     void deleteAll();
-
-    boolean exists(Portfolio portfolio, String stockCode);
 }

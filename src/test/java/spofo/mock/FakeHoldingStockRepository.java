@@ -63,9 +63,10 @@ public class FakeHoldingStockRepository implements HoldingStockRepository {
     }
 
     @Override
-    public boolean exists(Portfolio portfolio, String stockCode) {
+    public Optional<HoldingStock> findByStockCode(Portfolio portfolio, String stockCode) {
         return data.stream()
                 .filter(item -> item.getPortfolio().getId() == portfolio.getId())
-                .anyMatch(item -> Objects.equals(item.getStockCode(), stockCode));
+                .filter(item -> Objects.equals(item.getStockCode(), stockCode))
+                .findAny();
     }
 }
