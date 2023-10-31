@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Optional;
 import spofo.holdingstock.domain.HoldingStock;
 import spofo.holdingstock.service.port.HoldingStockRepository;
+import spofo.portfolio.domain.Portfolio;
 
 /**
  * FakeRepository는 Entity가 아닌 Domain을 관리한다.
@@ -59,5 +60,12 @@ public class FakeHoldingStockRepository implements HoldingStockRepository {
     @Override
     public void deleteAll() {
         data.clear();
+    }
+
+    @Override
+    public boolean exists(Portfolio portfolio, String stockCode) {
+        return data.stream()
+                .filter(item -> item.getPortfolio().getId() == portfolio.getId())
+                .anyMatch(item -> Objects.equals(item.getStockCode(), stockCode));
     }
 }

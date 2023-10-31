@@ -49,4 +49,9 @@ public class FakeHoldingStockService implements HoldingStockService {
     public List<HoldingStockStatistic> getHoldingStockStatistics(Long portfolioId) {
         return null;
     }
+
+    @Override
+    public boolean exists(Portfolio portfolio, String stockCode) {
+        return holdingStockRepository.exists(portfolio, stockCode);
+    }
 }

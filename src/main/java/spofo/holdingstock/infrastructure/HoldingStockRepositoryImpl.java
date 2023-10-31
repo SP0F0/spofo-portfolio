@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import spofo.holdingstock.domain.HoldingStock;
 import spofo.holdingstock.service.port.HoldingStockRepository;
+import spofo.portfolio.domain.Portfolio;
+import spofo.portfolio.infrastructure.PortfolioEntity;
 
 @Repository
 @RequiredArgsConstructor
@@ -43,5 +45,12 @@ public class HoldingStockRepositoryImpl implements HoldingStockRepository {
     @Override
     public void deleteAll() {
         holdingStockJpaRepository.deleteAll();
+    }
+
+    @Override
+    public boolean exists(Portfolio portfolio, String stockCode) {
+        PortfolioEntity portfolioEntity = PortfolioEntity.from(portfolio);
+        return holdingStockJpaRepository
+                .existsByPortfolioEntityAndStockCode(portfolioEntity, stockCode);
     }
 }
