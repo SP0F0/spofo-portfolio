@@ -15,6 +15,8 @@ public interface HoldingStockService {
 
     HoldingStock get(Long id);
 
+    HoldingStock get(Portfolio portfolio, String stockCode);
+
     HoldingStock create(HoldingStockCreate holdingStockCreate, TradeLogCreate tradeLogCreate,
             Portfolio portfolio);
 
@@ -23,6 +25,4 @@ public interface HoldingStockService {
     void deleteByPortfolioId(Long id);
 
     List<HoldingStockStatistic> getHoldingStockStatistics(Long portfolioId);
-
-    boolean exists(Portfolio portfolio, String stockCode);
 }

@@ -47,8 +47,9 @@ public class HoldingStockServiceImpl implements HoldingStockService {
     }
 
     @Override
-    public boolean exists(Portfolio portfolio, String stockCode) {
-        return holdingStockRepository.exists(portfolio, stockCode);
+    public HoldingStock get(Portfolio portfolio, String stockCode) {
+        return holdingStockRepository.findByStockCode(portfolio, stockCode)
+                .orElse(null);
     }
 
     @Override

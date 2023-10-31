@@ -256,7 +256,7 @@ public class HoldingStockServiceIntegrationTest extends ServiceIntegrationTestSu
 
     @Test
     @DisplayName("보유종목의 종목코드로 보유종목의 존재여부를 조회한다.")
-    void exists() {
+    void getWithStockCode() {
         // given
         given(mockStockServerService.getStock(anyString()))
                 .willReturn(getStock());
@@ -270,10 +270,10 @@ public class HoldingStockServiceIntegrationTest extends ServiceIntegrationTestSu
         holdingStockService.create(holdingStockCreate, tradeLogCreate, savedPortfolio);
 
         // when
-        boolean isExistsHoldingStock = holdingStockService.exists(savedPortfolio, TEST_STOCK_CODE);
+        HoldingStock holdingStock = holdingStockService.get(savedPortfolio, TEST_STOCK_CODE);
 
         // then
-        assertThat(isExistsHoldingStock).isTrue();
+        assertThat(holdingStock).isNotNull();
     }
 
     @Test
@@ -292,10 +292,10 @@ public class HoldingStockServiceIntegrationTest extends ServiceIntegrationTestSu
         holdingStockService.create(holdingStockCreate, tradeLogCreate, savedPortfolio);
 
         // when
-        boolean isExistsHoldingStock = holdingStockService.exists(savedPortfolio, "유효하지 않은 종목코드");
+        HoldingStock holdingStock = holdingStockService.get(savedPortfolio, "유효하지 않은 종목코드");
 
         // then
-        assertThat(isExistsHoldingStock).isFalse();
+        assertThat(holdingStock).isNull();
     }
 
     @Test
@@ -314,10 +314,10 @@ public class HoldingStockServiceIntegrationTest extends ServiceIntegrationTestSu
         holdingStockService.create(holdingStockCreate, tradeLogCreate, savedPortfolio);
 
         // when
-        boolean isExistsHoldingStock = holdingStockService.exists(savedPortfolio, "유효하지 않은 종목코드");
+        HoldingStock holdingStock = holdingStockService.get(savedPortfolio, "유효하지 않은 종목코드");
 
         // then
-        assertThat(isExistsHoldingStock).isFalse();
+        assertThat(holdingStock).isNull();
     }
 
     private Portfolio getPortfolio() {

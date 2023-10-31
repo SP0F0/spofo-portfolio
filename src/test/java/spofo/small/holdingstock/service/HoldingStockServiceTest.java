@@ -282,10 +282,10 @@ public class HoldingStockServiceTest {
         fakeHoldingStockRepository.save(holdingStock);
 
         // when
-        boolean isExistsHoldingStock = holdingStockService.exists(portfolio, TEST_STOCK_CODE);
+        HoldingStock foundHoldingStock = holdingStockService.get(portfolio, TEST_STOCK_CODE);
 
         // then
-        assertThat(isExistsHoldingStock).isTrue();
+        assertThat(foundHoldingStock).isNotNull();
     }
 
     @Test
@@ -298,10 +298,10 @@ public class HoldingStockServiceTest {
         fakeHoldingStockRepository.save(holdingStock);
 
         // when
-        boolean isExistsHoldingStock = holdingStockService.exists(portfolio, "유효하지 않은 종목코드");
+        HoldingStock foundHoldingStock = holdingStockService.get(portfolio, "유효하지 않은 종목코드");
 
         // then
-        assertThat(isExistsHoldingStock).isFalse();
+        assertThat(foundHoldingStock).isNull();
     }
 
     @Test
@@ -309,10 +309,10 @@ public class HoldingStockServiceTest {
     void existsWithNoPortfolio() {
         // given
         // when
-        boolean isExistsHoldingStock = holdingStockService.exists(null, "유효하지 않은 종목코드");
+        HoldingStock foundHoldingStock = holdingStockService.get(null, "유효하지 않은 종목코드");
 
         // then
-        assertThat(isExistsHoldingStock).isFalse();
+        assertThat(foundHoldingStock).isNull();
     }
 
     private Portfolio getPortfolio(Long id) {
