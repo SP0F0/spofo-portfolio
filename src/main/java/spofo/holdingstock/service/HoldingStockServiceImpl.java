@@ -47,6 +47,11 @@ public class HoldingStockServiceImpl implements HoldingStockService {
     }
 
     @Override
+    public boolean exists(Portfolio portfolio, String stockCode) {
+        return holdingStockRepository.exists(portfolio, stockCode);
+    }
+
+    @Override
     @Transactional
     public HoldingStock create(HoldingStockCreate holdingStockCreate, TradeLogCreate tradeLogCreate,
             Portfolio portfolio) {
