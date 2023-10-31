@@ -57,11 +57,16 @@ public class HoldingStockController {
     @PutMapping("/portfolios/{portfolioId}/stocks")
     public ResponseEntity<Map<String, Long>> create(
             @RequestBody @Valid HoldingStockRequest request, @PathVariable Long portfolioId) {
+        Portfolio portfolio = portfolioService.getPortfolio(portfolioId);
         HoldingStockCreate holdingStockCreate = request.toHoldingStockCreate();
         TradeLogCreate tradeLogCreate = request.toTradeLogCreate();
-        Portfolio portfolio = portfolioService.getPortfolio(portfolioId);
-        HoldingStock holdingStock =
-                holdingStockService.create(holdingStockCreate, tradeLogCreate, portfolio);
+        HoldingStock savedHoldingStock = holdingStockService.get(portfolio, request.getCode());
+
+        if (savedHoldingStock == null) {
+            holdingStockService.create(holdingStockCreate, tradeLogCreate, portfolio);
+        } else {
+            tradeLogService.create(tradeLogCreate, savedHoldingStock);
+        }
 
         Map<String, Long> response = Map.of("id", portfolioId);
 
