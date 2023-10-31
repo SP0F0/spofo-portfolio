@@ -12,6 +12,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static spofo.global.component.utils.CommonUtils.getBD;
@@ -133,7 +134,7 @@ public class HoldingStockControllerTest extends ControllerTestSupport {
                 .willReturn(holdingStock);
 
         // expected
-        mockMvc.perform(post("/portfolios/{portfolioId}/stocks", 1L)
+        mockMvc.perform(put("/portfolios/{portfolioId}/stocks", 1L)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -153,7 +154,7 @@ public class HoldingStockControllerTest extends ControllerTestSupport {
                 .build();
 
         // expected
-        mockMvc.perform(post("/portfolios/{portfolioId}/stocks", 1L)
+        mockMvc.perform(put("/portfolios/{portfolioId}/stocks", 1L)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -174,7 +175,7 @@ public class HoldingStockControllerTest extends ControllerTestSupport {
                 .build();
 
         // expected
-        mockMvc.perform(post("/portfolios/{portfolioId}/stocks", 1L)
+        mockMvc.perform(put("/portfolios/{portfolioId}/stocks", 1L)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -195,7 +196,7 @@ public class HoldingStockControllerTest extends ControllerTestSupport {
                 .build();
 
         // expected
-        mockMvc.perform(post("/portfolios/{portfolioId}/stocks", 1L)
+        mockMvc.perform(put("/portfolios/{portfolioId}/stocks", 1L)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -216,7 +217,7 @@ public class HoldingStockControllerTest extends ControllerTestSupport {
                 .build();
 
         // expected
-        mockMvc.perform(post("/portfolios/{portfolioId}/stocks", 1L)
+        mockMvc.perform(put("/portfolios/{portfolioId}/stocks", 1L)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -237,7 +238,7 @@ public class HoldingStockControllerTest extends ControllerTestSupport {
                 .build();
 
         // expected
-        mockMvc.perform(post("/portfolios/{portfolioId}/stocks", 1L)
+        mockMvc.perform(put("/portfolios/{portfolioId}/stocks", 1L)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -258,7 +259,7 @@ public class HoldingStockControllerTest extends ControllerTestSupport {
                 .build();
 
         // expected
-        mockMvc.perform(post("/portfolios/{portfolioId}/stocks", 1L)
+        mockMvc.perform(put("/portfolios/{portfolioId}/stocks", 1L)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -279,7 +280,7 @@ public class HoldingStockControllerTest extends ControllerTestSupport {
                 .build();
 
         // expected
-        mockMvc.perform(post("/portfolios/{portfolioId}/stocks", 1L)
+        mockMvc.perform(put("/portfolios/{portfolioId}/stocks", 1L)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -300,7 +301,7 @@ public class HoldingStockControllerTest extends ControllerTestSupport {
                 .build();
 
         // expected
-        mockMvc.perform(post("/portfolios/{portfolioId}/stocks", 1L)
+        mockMvc.perform(put("/portfolios/{portfolioId}/stocks", 1L)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
