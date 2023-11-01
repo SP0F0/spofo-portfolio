@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import spofo.holdingstock.controller.port.HoldingStockService;
@@ -53,14 +54,19 @@ public class HoldingStockController {
         return ok(HoldingStockResponse.from(statistic));
     }
 
-    @PostMapping("/portfolios/{portfolioId}/stocks")
+    @PutMapping("/portfolios/{portfolioId}/stocks")
     public ResponseEntity<Map<String, Long>> create(
             @RequestBody @Valid HoldingStockRequest request, @PathVariable Long portfolioId) {
+        Portfolio portfolio = portfolioService.getPortfolio(portfolioId);
         HoldingStockCreate holdingStockCreate = request.toHoldingStockCreate();
         TradeLogCreate tradeLogCreate = request.toTradeLogCreate();
-        Portfolio portfolio = portfolioService.getPortfolio(portfolioId);
-        HoldingStock holdingStock =
-                holdingStockService.create(holdingStockCreate, tradeLogCreate, portfolio);
+        HoldingStock savedHoldingStock = holdingStockService.get(portfolio, request.getCode());
+
+        if (savedHoldingStock == null) {
+            holdingStockService.create(holdingStockCreate, tradeLogCreate, portfolio);
+        } else {
+            tradeLogService.create(tradeLogCreate, savedHoldingStock);
+        }
 
         Map<String, Long> response = Map.of("id", portfolioId);
 

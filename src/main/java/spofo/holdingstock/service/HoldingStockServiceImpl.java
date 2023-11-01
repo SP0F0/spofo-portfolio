@@ -47,6 +47,12 @@ public class HoldingStockServiceImpl implements HoldingStockService {
     }
 
     @Override
+    public HoldingStock get(Portfolio portfolio, String stockCode) {
+        return holdingStockRepository.findByStockCode(portfolio, stockCode)
+                .orElse(null);
+    }
+
+    @Override
     @Transactional
     public HoldingStock create(HoldingStockCreate holdingStockCreate, TradeLogCreate tradeLogCreate,
             Portfolio portfolio) {
