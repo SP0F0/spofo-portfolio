@@ -7,8 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum Server {
 
-    AUTHSERVER("http://auth.spofo.net:8080"),
-    STOCKSERVER("http://stock.spofo.net:8080");
+    AUTHSERVER("https://auth.spofo.net"),
+    STOCKSERVER("https://stock.spofo.net");
 
     private String url;
 
