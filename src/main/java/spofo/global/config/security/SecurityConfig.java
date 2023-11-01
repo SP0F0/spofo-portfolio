@@ -49,7 +49,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(asList("https://spofo.net", "http://localhost:5173/"));
         configuration.addAllowedHeader("*");
         configuration.setAllowedMethods(asList("*"));
-        configuration.setAllowCredentials(false);
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
