@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.util.PatternMatchUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import spofo.auth.domain.MemberInfo;
 import spofo.auth.service.AuthServerService;
@@ -28,29 +29,35 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     private final AuthServerService authServerService;
     private final ObjectMapper objectMapper;
 
+    private static final String[] WHITE_LIST = {"/health-check"};
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
 
-        try {
-            String idToken = request.getHeader(AUTHORIZATION);
+        if (needsAuth(request.getRequestURI())) {
+            try {
+                String idToken = request.getHeader(AUTHORIZATION);
 
-            Long memberId = authServerService.verify(idToken)
-                    .orElseThrow(() -> new TokenNotValid());
+                Long memberId = authServerService.verify(idToken)
+                        .orElseThrow(() -> new TokenNotValid());
 
-            MemberInfo memberInfo = MemberInfo.builder()
-                    .id(memberId)
-                    .build();
+                MemberInfo memberInfo = MemberInfo.builder()
+                        .id(memberId)
+                        .build();
 
-            AuthenticationToken authenticationToken = AuthenticationToken.builder()
-                    .principal(memberInfo)
-                    .build();
+                AuthenticationToken authenticationToken = AuthenticationToken.builder()
+                        .principal(memberInfo)
+                        .build();
 
-            getContext().setAuthentication(authenticationToken);
+                getContext().setAuthentication(authenticationToken);
 
+                filterChain.doFilter(request, response);
+            } catch (TokenNotValid ex) {
+                handleTokenNotValidException(response, ex);
+            }
+        } else {
             filterChain.doFilter(request, response);
-        } catch (TokenNotValid ex) {
-            handleTokenNotValidException(response, ex);
         }
     }
 
@@ -67,5 +74,9 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         response.setContentType(APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(UTF_8.name());
         response.getWriter().write(objectMapper.writeValueAsString(errorResult));
+    }
+
+    private boolean needsAuth(String requestURI) {
+        return !PatternMatchUtils.simpleMatch(WHITE_LIST, requestURI);
     }
 }
