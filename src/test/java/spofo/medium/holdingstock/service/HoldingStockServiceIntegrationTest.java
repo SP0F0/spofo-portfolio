@@ -254,6 +254,72 @@ public class HoldingStockServiceIntegrationTest extends ServiceIntegrationTestSu
                 );
     }
 
+    @Test
+    @DisplayName("보유종목의 종목코드로 보유종목의 존재여부를 조회한다.")
+    void getWithStockCode() {
+        // given
+        given(mockStockServerService.getStock(anyString()))
+                .willReturn(getStock());
+        given(mockStockServerService.getStocks(anyList()))
+                .willReturn(getStockMap());
+
+        Portfolio savedPortfolio = getPortfolio();
+        HoldingStockCreate holdingStockCreate = getHoldingStockCreate();
+        TradeLogCreate tradeLogCreate = getTradeLogCreate(getBD(33_000), ONE);
+
+        holdingStockService.create(holdingStockCreate, tradeLogCreate, savedPortfolio);
+
+        // when
+        HoldingStock holdingStock = holdingStockService.get(savedPortfolio, TEST_STOCK_CODE);
+
+        // then
+        assertThat(holdingStock).isNotNull();
+    }
+
+    @Test
+    @DisplayName("유효하지 않은 종목코드로 보유종목의 존재여부를 조회할 수 없다.")
+    void existsWithNotValidStockCode() {
+        // given
+        given(mockStockServerService.getStock(anyString()))
+                .willReturn(getStock());
+        given(mockStockServerService.getStocks(anyList()))
+                .willReturn(getStockMap());
+
+        Portfolio savedPortfolio = getPortfolio();
+        HoldingStockCreate holdingStockCreate = getHoldingStockCreate();
+        TradeLogCreate tradeLogCreate = getTradeLogCreate(getBD(33_000), ONE);
+
+        holdingStockService.create(holdingStockCreate, tradeLogCreate, savedPortfolio);
+
+        // when
+        HoldingStock holdingStock = holdingStockService.get(savedPortfolio, "유효하지 않은 종목코드");
+
+        // then
+        assertThat(holdingStock).isNull();
+    }
+
+    @Test
+    @DisplayName("포트폴리오가 존재하지 않으면 보유종목의 존재여부를 조회할 수 없다.")
+    void existsWithNoPortfolio() {
+        // given
+        given(mockStockServerService.getStock(anyString()))
+                .willReturn(getStock());
+        given(mockStockServerService.getStocks(anyList()))
+                .willReturn(getStockMap());
+
+        Portfolio savedPortfolio = getPortfolio();
+        HoldingStockCreate holdingStockCreate = getHoldingStockCreate();
+        TradeLogCreate tradeLogCreate = getTradeLogCreate(getBD(33_000), ONE);
+
+        holdingStockService.create(holdingStockCreate, tradeLogCreate, savedPortfolio);
+
+        // when
+        HoldingStock holdingStock = holdingStockService.get(savedPortfolio, "유효하지 않은 종목코드");
+
+        // then
+        assertThat(holdingStock).isNull();
+    }
+
     private Portfolio getPortfolio() {
         PortfolioCreate createPortfolio = getPortfolioCreate();
         return portfolioService.create(createPortfolio, MEMBER_ID);

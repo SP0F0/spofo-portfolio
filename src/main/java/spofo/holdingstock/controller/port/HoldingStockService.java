@@ -15,6 +15,8 @@ public interface HoldingStockService {
 
     HoldingStock get(Long id);
 
+    HoldingStock get(Portfolio portfolio, String stockCode);
+
     HoldingStock create(HoldingStockCreate holdingStockCreate, TradeLogCreate tradeLogCreate,
             Portfolio portfolio);
 

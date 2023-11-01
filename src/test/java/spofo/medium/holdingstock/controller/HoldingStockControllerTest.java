@@ -5,13 +5,17 @@ import static java.math.BigDecimal.ZERO;
 import static java.util.Collections.emptyList;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static spofo.global.component.utils.CommonUtils.getBD;
@@ -128,17 +132,60 @@ public class HoldingStockControllerTest extends ControllerTestSupport {
                 .id(1L)
                 .build();
 
+        given(portfolioService.getPortfolio(anyLong()))
+                .willReturn(Portfolio.builder().build());
+
         given(holdingStockService.create(any(HoldingStockCreate.class), any(TradeLogCreate.class),
                 any(Portfolio.class)))
                 .willReturn(holdingStock);
 
         // expected
-        mockMvc.perform(post("/portfolios/{portfolioId}/stocks", 1L)
+        mockMvc.perform(put("/portfolios/{portfolioId}/stocks", 1L)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").value(1L));
+
+        verify(holdingStockService, times(1))
+                .create(any(HoldingStockCreate.class), any(TradeLogCreate.class),
+                        any(Portfolio.class));
+    }
+
+    @Test
+    @DisplayName("보유종목을 생성 시 이미 존재하는 보유종목에 대해서는 매매이력만 생성한다.")
+    void createHoldingStockWithExistsHoldingStock() throws Exception {
+        // given
+        HoldingStockRequest params = HoldingStockRequest.builder()
+                .code(TEST_STOCK_CODE)
+                .tradeDate(LocalDateTime.now())
+                .quantity(ONE)
+                .avgPrice(ONE)
+                .build();
+
+        HoldingStock holdingStock = HoldingStock.builder()
+                .id(1L)
+                .build();
+
+        given(portfolioService.getPortfolio(anyLong()))
+                .willReturn(Portfolio.builder().build());
+
+        given(holdingStockService.get(any(Portfolio.class), anyString()))
+                .willReturn(holdingStock);
+
+        given(tradeLogService.create(any(TradeLogCreate.class), any(HoldingStock.class)))
+                .willReturn(TradeLog.builder().build());
+
+        // expected
+        mockMvc.perform(put("/portfolios/{portfolioId}/stocks", 1L)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(params))
+                )
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("id").value(1L));
+
+        verify(tradeLogService, times(1))
+                .create(any(TradeLogCreate.class), any(HoldingStock.class));
     }
 
     @Test
@@ -153,7 +200,7 @@ public class HoldingStockControllerTest extends ControllerTestSupport {
                 .build();
 
         // expected
-        mockMvc.perform(post("/portfolios/{portfolioId}/stocks", 1L)
+        mockMvc.perform(put("/portfolios/{portfolioId}/stocks", 1L)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -174,7 +221,7 @@ public class HoldingStockControllerTest extends ControllerTestSupport {
                 .build();
 
         // expected
-        mockMvc.perform(post("/portfolios/{portfolioId}/stocks", 1L)
+        mockMvc.perform(put("/portfolios/{portfolioId}/stocks", 1L)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -195,7 +242,7 @@ public class HoldingStockControllerTest extends ControllerTestSupport {
                 .build();
 
         // expected
-        mockMvc.perform(post("/portfolios/{portfolioId}/stocks", 1L)
+        mockMvc.perform(put("/portfolios/{portfolioId}/stocks", 1L)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -216,7 +263,7 @@ public class HoldingStockControllerTest extends ControllerTestSupport {
                 .build();
 
         // expected
-        mockMvc.perform(post("/portfolios/{portfolioId}/stocks", 1L)
+        mockMvc.perform(put("/portfolios/{portfolioId}/stocks", 1L)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -237,7 +284,7 @@ public class HoldingStockControllerTest extends ControllerTestSupport {
                 .build();
 
         // expected
-        mockMvc.perform(post("/portfolios/{portfolioId}/stocks", 1L)
+        mockMvc.perform(put("/portfolios/{portfolioId}/stocks", 1L)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -258,7 +305,7 @@ public class HoldingStockControllerTest extends ControllerTestSupport {
                 .build();
 
         // expected
-        mockMvc.perform(post("/portfolios/{portfolioId}/stocks", 1L)
+        mockMvc.perform(put("/portfolios/{portfolioId}/stocks", 1L)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -279,7 +326,7 @@ public class HoldingStockControllerTest extends ControllerTestSupport {
                 .build();
 
         // expected
-        mockMvc.perform(post("/portfolios/{portfolioId}/stocks", 1L)
+        mockMvc.perform(put("/portfolios/{portfolioId}/stocks", 1L)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )
@@ -300,7 +347,7 @@ public class HoldingStockControllerTest extends ControllerTestSupport {
                 .build();
 
         // expected
-        mockMvc.perform(post("/portfolios/{portfolioId}/stocks", 1L)
+        mockMvc.perform(put("/portfolios/{portfolioId}/stocks", 1L)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(params))
                 )

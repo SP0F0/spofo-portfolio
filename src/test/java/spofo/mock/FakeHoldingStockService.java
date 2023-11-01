@@ -1,7 +1,9 @@
 package spofo.mock;
 
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import spofo.global.domain.exception.HoldingStockNotFound;
 import spofo.holdingstock.controller.port.HoldingStockService;
 import spofo.holdingstock.domain.HoldingStock;
 import spofo.holdingstock.domain.HoldingStockCreate;
@@ -27,7 +29,13 @@ public class FakeHoldingStockService implements HoldingStockService {
 
     @Override
     public HoldingStock get(Long id) {
-        return null;
+        return findById(id);
+    }
+
+    @Override
+    public HoldingStock get(Portfolio portfolio, String stockCode) {
+        return holdingStockRepository.findByStockCode(portfolio, stockCode)
+                .orElse(null);
     }
 
     @Override
@@ -48,5 +56,13 @@ public class FakeHoldingStockService implements HoldingStockService {
     @Override
     public List<HoldingStockStatistic> getHoldingStockStatistics(Long portfolioId) {
         return null;
+    }
+
+    private HoldingStock findById(Long id) {
+        return getFrom(holdingStockRepository.findById(id));
+    }
+
+    private HoldingStock getFrom(Optional<HoldingStock> holdingStockOptional) {
+        return holdingStockOptional.orElseThrow(HoldingStockNotFound::new);
     }
 }

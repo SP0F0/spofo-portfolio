@@ -272,6 +272,49 @@ public class HoldingStockServiceTest {
                 );
     }
 
+    @Test
+    @DisplayName("보유종목의 종목코드로 보유종목의 존재여부를 조회한다.")
+    void exists() {
+        // given
+        Portfolio portfolio = getPortfolio(PORTFOLIO_ID);
+        HoldingStock holdingStock = getHoldingStock(TEST_STOCK_CODE, portfolio);
+
+        fakeHoldingStockRepository.save(holdingStock);
+
+        // when
+        HoldingStock foundHoldingStock = holdingStockService.get(portfolio, TEST_STOCK_CODE);
+
+        // then
+        assertThat(foundHoldingStock).isNotNull();
+    }
+
+    @Test
+    @DisplayName("유효하지 않은 종목코드로 보유종목의 존재여부를 조회할 수 없다.")
+    void existsWithNotValidStockCode() {
+        // given
+        Portfolio portfolio = getPortfolio(PORTFOLIO_ID);
+        HoldingStock holdingStock = getHoldingStock(TEST_STOCK_CODE, portfolio);
+
+        fakeHoldingStockRepository.save(holdingStock);
+
+        // when
+        HoldingStock foundHoldingStock = holdingStockService.get(portfolio, "유효하지 않은 종목코드");
+
+        // then
+        assertThat(foundHoldingStock).isNull();
+    }
+
+    @Test
+    @DisplayName("포트폴리오가 존재하지 않으면 보유종목의 존재여부를 조회할 수 없다.")
+    void existsWithNoPortfolio() {
+        // given
+        // when
+        HoldingStock foundHoldingStock = holdingStockService.get(null, "유효하지 않은 종목코드");
+
+        // then
+        assertThat(foundHoldingStock).isNull();
+    }
+
     private Portfolio getPortfolio(Long id) {
         return Portfolio.builder()
                 .id(id)
