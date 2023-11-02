@@ -5,6 +5,7 @@ import static java.util.Collections.EMPTY_LIST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -13,6 +14,8 @@ import static spofo.global.domain.exception.ErrorCode.PORTFOLIO_NOT_FOUND;
 import static spofo.portfolio.domain.enums.Currency.KRW;
 import static spofo.portfolio.domain.enums.IncludeType.N;
 import static spofo.portfolio.domain.enums.IncludeType.Y;
+import static spofo.portfolio.domain.enums.PortfolioType.FAKE;
+import static spofo.portfolio.domain.enums.PortfolioType.LINK;
 import static spofo.portfolio.domain.enums.PortfolioType.REAL;
 import static spofo.tradelog.domain.enums.TradeType.BUY;
 
@@ -23,6 +26,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import spofo.global.domain.exception.PortfolioNotFound;
 import spofo.holdingstock.domain.HoldingStock;
+import spofo.portfolio.controller.request.PortfolioFilterRequest;
 import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioCreate;
 import spofo.portfolio.domain.PortfolioStatistic;
@@ -129,12 +133,14 @@ public class PortfolioServiceTest extends ServiceTestSupport {
         Portfolio portfolio1 = Portfolio.builder()
                 .id(1L)
                 .includeType(Y)
+                .type(REAL)
                 .holdingStocks(List.of(holdingStock))
                 .build();
 
         Portfolio portfolio2 = Portfolio.builder()
                 .id(2L)
                 .includeType(Y)
+                .type(FAKE)
                 .holdingStocks(List.of(holdingStock, holdingStock))
                 .build();
 
@@ -144,8 +150,11 @@ public class PortfolioServiceTest extends ServiceTestSupport {
         given(mockStockServerService.getStocks(anyList()))
                 .willReturn(getStockMap());
 
+        PortfolioFilterRequest filterRequest = PortfolioFilterRequest.builder().build();
+
         // when
-        List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(MEMBER_ID);
+        List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(MEMBER_ID,
+                filterRequest);
 
         // then
         assertThat(portfolios).hasSize(2)
@@ -160,11 +169,161 @@ public class PortfolioServiceTest extends ServiceTestSupport {
     }
 
     @Test
+    @DisplayName("포트폴리오를 [REAL] 필터링하여 조회한다.")
+    void getPortfoliosWithREAL() {
+        // given
+        TradeLog tradeLog = getTradeLog();
+        HoldingStock holdingStock = getHoldingStock(tradeLog);
+
+        Portfolio portfolio1 = Portfolio.builder()
+                .id(1L)
+                .includeType(Y)
+                .type(REAL)
+                .holdingStocks(List.of(holdingStock))
+                .build();
+
+        Portfolio portfolio2 = Portfolio.builder()
+                .id(2L)
+                .includeType(Y)
+                .type(FAKE)
+                .holdingStocks(List.of(holdingStock, holdingStock))
+                .build();
+
+        Portfolio portfolio3 = Portfolio.builder()
+                .id(3L)
+                .includeType(Y)
+                .type(LINK)
+                .holdingStocks(List.of(holdingStock, holdingStock, holdingStock))
+                .build();
+
+        given(portfolioRepository.findByMemberIdWithTradeLogs(MEMBER_ID))
+                .willReturn(List.of(portfolio1, portfolio2, portfolio3));
+
+        given(mockStockServerService.getStocks(anyList()))
+                .willReturn(getStockMap());
+
+        PortfolioFilterRequest filterRequest = PortfolioFilterRequest.builder().filter(REAL)
+                .build();
+
+        // when
+        List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(MEMBER_ID,
+                filterRequest);
+
+        // then
+        assertThat(portfolios).hasSize(1)
+                .extracting("portfolio.id", "totalAsset", "totalBuy", "totalGain", "gainRate")
+                .containsExactlyInAnyOrder(
+                        tuple(1L, getBD(66000), getBD(33000),
+                                getBD(33000), getBD(100))
+                );
+    }
+
+    @Test
+    @DisplayName("포트폴리오를 [FAKE] 필터링하여 조회한다.")
+    void getPortfoliosWithFAKE() {
+        // given
+        TradeLog tradeLog = getTradeLog();
+        HoldingStock holdingStock = getHoldingStock(tradeLog);
+
+        Portfolio portfolio1 = Portfolio.builder()
+                .id(1L)
+                .includeType(Y)
+                .type(REAL)
+                .holdingStocks(List.of(holdingStock))
+                .build();
+
+        Portfolio portfolio2 = Portfolio.builder()
+                .id(2L)
+                .includeType(Y)
+                .type(FAKE)
+                .holdingStocks(List.of(holdingStock, holdingStock))
+                .build();
+
+        Portfolio portfolio3 = Portfolio.builder()
+                .id(3L)
+                .includeType(Y)
+                .type(LINK)
+                .holdingStocks(List.of(holdingStock, holdingStock, holdingStock))
+                .build();
+
+        given(portfolioRepository.findByMemberIdWithTradeLogs(MEMBER_ID))
+                .willReturn(List.of(portfolio1, portfolio2, portfolio3));
+
+        given(mockStockServerService.getStocks(anyList()))
+                .willReturn(getStockMap());
+
+        PortfolioFilterRequest filterRequest = PortfolioFilterRequest.builder().filter(FAKE)
+                .build();
+
+        // when
+        List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(MEMBER_ID,
+                filterRequest);
+
+        // then
+        assertThat(portfolios).hasSize(1)
+                .extracting("portfolio.id", "totalAsset", "totalBuy", "totalGain", "gainRate")
+                .containsExactlyInAnyOrder(
+                        tuple(2L, getBD(132000), getBD(66000),
+                                getBD(66000), getBD(100))
+                );
+    }
+
+    @Test
+    @DisplayName("포트폴리오를 [LINK] 필터링하여 조회한다.")
+    void getPortfoliosWithLINK() {
+        // given
+        TradeLog tradeLog = getTradeLog();
+        HoldingStock holdingStock = getHoldingStock(tradeLog);
+
+        Portfolio portfolio1 = Portfolio.builder()
+                .id(1L)
+                .includeType(Y)
+                .type(REAL)
+                .holdingStocks(List.of(holdingStock))
+                .build();
+
+        Portfolio portfolio2 = Portfolio.builder()
+                .id(2L)
+                .includeType(Y)
+                .type(FAKE)
+                .holdingStocks(List.of(holdingStock, holdingStock))
+                .build();
+
+        Portfolio portfolio3 = Portfolio.builder()
+                .id(3L)
+                .includeType(Y)
+                .type(LINK)
+                .holdingStocks(List.of(holdingStock, holdingStock, holdingStock))
+                .build();
+
+        given(portfolioRepository.findByMemberIdWithTradeLogs(MEMBER_ID))
+                .willReturn(List.of(portfolio1, portfolio2, portfolio3));
+
+        given(mockStockServerService.getStocks(anyList()))
+                .willReturn(getStockMap());
+
+        PortfolioFilterRequest filterRequest = PortfolioFilterRequest.builder().filter(LINK)
+                .build();
+
+        // when
+        List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(MEMBER_ID,
+                filterRequest);
+
+        // then
+        assertThat(portfolios).hasSize(1)
+                .extracting("portfolio.id", "totalAsset", "totalBuy", "totalGain", "gainRate")
+                .containsExactlyInAnyOrder(
+                        tuple(3L, getBD(198000), getBD(99000),
+                                getBD(99000), getBD(100))
+                );
+    }
+
+    @Test
     @DisplayName("회원 1명이 등록한 포트폴리오가 존재하지 않으면 비어있는 리스트를 반환한다.")
     void getPortfoliosWithNoResult() {
         // given
         // when
-        List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(MEMBER_ID);
+        List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(MEMBER_ID, any());
 
         // then
         assertThat(portfolios).isEmpty();

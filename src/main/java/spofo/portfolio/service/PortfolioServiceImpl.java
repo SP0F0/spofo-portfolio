@@ -10,6 +10,7 @@ import spofo.global.domain.exception.PortfolioNotFound;
 import spofo.holdingstock.controller.port.HoldingStockService;
 import spofo.holdingstock.domain.HoldingStock;
 import spofo.portfolio.controller.port.PortfolioService;
+import spofo.portfolio.controller.request.PortfolioFilterRequest;
 import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioCreate;
 import spofo.portfolio.domain.PortfolioStatistic;
@@ -36,8 +37,12 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public List<PortfolioStatistic> getPortfolios(Long memberId) {
-        List<Portfolio> portfolios = portfolioRepository.findByMemberIdWithTradeLogs(memberId);
+    public List<PortfolioStatistic> getPortfolios(Long memberId, PortfolioFilterRequest filter) {
+        List<Portfolio> portfolios = portfolioRepository.findByMemberIdWithTradeLogs(memberId)
+                .stream()
+                .filter(portfolio -> filter == null || filter.isEmpty() || portfolio.getType()
+                        .equals(filter.getFilter()))
+                .toList();
         return getPortfolioStatistics(portfolios);
     }
 

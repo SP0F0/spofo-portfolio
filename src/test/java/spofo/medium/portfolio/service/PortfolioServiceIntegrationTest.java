@@ -6,6 +6,7 @@ import static java.time.LocalDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -14,6 +15,8 @@ import static spofo.global.domain.exception.ErrorCode.PORTFOLIO_NOT_FOUND;
 import static spofo.portfolio.domain.enums.Currency.KRW;
 import static spofo.portfolio.domain.enums.IncludeType.N;
 import static spofo.portfolio.domain.enums.IncludeType.Y;
+import static spofo.portfolio.domain.enums.PortfolioType.FAKE;
+import static spofo.portfolio.domain.enums.PortfolioType.LINK;
 import static spofo.portfolio.domain.enums.PortfolioType.REAL;
 import static spofo.tradelog.domain.enums.TradeType.BUY;
 
@@ -23,12 +26,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import spofo.global.domain.exception.PortfolioNotFound;
 import spofo.holdingstock.domain.HoldingStockCreate;
+import spofo.portfolio.controller.request.PortfolioFilterRequest;
 import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioCreate;
 import spofo.portfolio.domain.PortfolioStatistic;
 import spofo.portfolio.domain.PortfolioUpdate;
 import spofo.portfolio.domain.TotalPortfoliosStatistic;
 import spofo.portfolio.domain.enums.IncludeType;
+import spofo.portfolio.domain.enums.PortfolioType;
 import spofo.stock.domain.Stock;
 import spofo.support.service.ServiceIntegrationTestSupport;
 import spofo.tradelog.domain.TradeLogCreate;
@@ -52,7 +57,7 @@ public class PortfolioServiceIntegrationTest extends ServiceIntegrationTestSuppo
         given(mockStockServerService.getStocks(anyList()))
                 .willReturn(getStockMap());
 
-        savePortfolioWithTradeLogs();
+        savePortfolioWithTradeLogs(REAL);
 
         // when
         TotalPortfoliosStatistic totalPortfoliosStatistic =
@@ -74,7 +79,7 @@ public class PortfolioServiceIntegrationTest extends ServiceIntegrationTestSuppo
         given(mockStockServerService.getStocks(anyList()))
                 .willReturn(getStockMap());
 
-        Portfolio savedPortfolio = savePortfolioWithTradeLogs();
+        Portfolio savedPortfolio = savePortfolioWithTradeLogs(REAL);
         PortfolioUpdate updatePortfolio = getUpdatePortfolio(savedPortfolio.getId(), N);
 
         portfolioService.update(updatePortfolio, savedPortfolio.getId(), MEMBER_ID);
@@ -114,11 +119,14 @@ public class PortfolioServiceIntegrationTest extends ServiceIntegrationTestSuppo
         given(mockStockServerService.getStocks(anyList()))
                 .willReturn(getStockMap());
 
-        savePortfolioWithTradeLogs();
-        savePortfolioWithTradeLogs();
+        savePortfolioWithTradeLogs(REAL);
+        savePortfolioWithTradeLogs(REAL);
+
+        PortfolioFilterRequest filterRequest = PortfolioFilterRequest.builder().build();
 
         // when
-        List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(MEMBER_ID);
+        List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(MEMBER_ID,
+                filterRequest);
 
         // then
         assertThat(portfolios).hasSize(2)
@@ -130,11 +138,104 @@ public class PortfolioServiceIntegrationTest extends ServiceIntegrationTestSuppo
     }
 
     @Test
+    @DisplayName("포트폴리오를 [REAL] 필터링하여 조회한다.")
+    void getPortfoliosWithREAL() {
+        // given
+        given(mockStockServerService.getStock(anyString()))
+                .willReturn(getStock());
+
+        given(mockStockServerService.getStocks(anyList()))
+                .willReturn(getStockMap());
+
+        savePortfolioWithTradeLogs(REAL);
+        savePortfolioWithTradeLogs(REAL);
+        savePortfolioWithTradeLogs(FAKE);
+        savePortfolioWithTradeLogs(LINK);
+
+        PortfolioFilterRequest filterRequest = PortfolioFilterRequest.builder().filter(REAL)
+                .build();
+
+        // when
+        List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(MEMBER_ID,
+                filterRequest);
+
+        // then
+        assertThat(portfolios).hasSize(2)
+                .extracting("totalAsset", "totalBuy", "totalGain", "gainRate")
+                .containsExactlyInAnyOrder(
+                        tuple(getBD(66000), getBD(33000), getBD(33000), getBD(100)),
+                        tuple(getBD(66000), getBD(33000), getBD(33000), getBD(100))
+                );
+    }
+
+    @Test
+    @DisplayName("포트폴리오를 [FAKE] 필터링하여 조회한다.")
+    void getPortfoliosWithFAKE() {
+        // given
+        given(mockStockServerService.getStock(anyString()))
+                .willReturn(getStock());
+
+        given(mockStockServerService.getStocks(anyList()))
+                .willReturn(getStockMap());
+
+        savePortfolioWithTradeLogs(REAL);
+        savePortfolioWithTradeLogs(FAKE);
+        savePortfolioWithTradeLogs(LINK);
+
+        PortfolioFilterRequest filterRequest = PortfolioFilterRequest.builder().filter(FAKE)
+                .build();
+
+        // when
+        List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(MEMBER_ID,
+                filterRequest);
+
+        // then
+        assertThat(portfolios).hasSize(1)
+                .extracting("totalAsset", "totalBuy", "totalGain", "gainRate")
+                .containsExactlyInAnyOrder(
+                        tuple(getBD(66000), getBD(33000), getBD(33000), getBD(100))
+                );
+    }
+
+    @Test
+    @DisplayName("포트폴리오를 [LINK] 필터링하여 조회한다.")
+    void getPortfoliosWithLINK() {
+        // given
+        given(mockStockServerService.getStock(anyString()))
+                .willReturn(getStock());
+
+        given(mockStockServerService.getStocks(anyList()))
+                .willReturn(getStockMap());
+
+        savePortfolioWithTradeLogs(REAL);
+        savePortfolioWithTradeLogs(FAKE);
+        savePortfolioWithTradeLogs(LINK);
+        savePortfolioWithTradeLogs(LINK);
+        savePortfolioWithTradeLogs(LINK);
+
+        PortfolioFilterRequest filterRequest = PortfolioFilterRequest.builder().filter(LINK)
+                .build();
+
+        // when
+        List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(MEMBER_ID,
+                filterRequest);
+
+        // then
+        assertThat(portfolios).hasSize(3)
+                .extracting("totalAsset", "totalBuy", "totalGain", "gainRate")
+                .containsExactlyInAnyOrder(
+                        tuple(getBD(66000), getBD(33000), getBD(33000), getBD(100)),
+                        tuple(getBD(66000), getBD(33000), getBD(33000), getBD(100)),
+                        tuple(getBD(66000), getBD(33000), getBD(33000), getBD(100))
+                );
+    }
+
+    @Test
     @DisplayName("회원 1명이 등록한 포트폴리오가 존재하지 않으면 비어있는 리스트를 반환한다.")
     void getPortfoliosWithNoResult() {
         // given
         // when
-        List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(MEMBER_ID);
+        List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(MEMBER_ID, any());
 
         // then
         assertThat(portfolios).isEmpty();
@@ -144,7 +245,7 @@ public class PortfolioServiceIntegrationTest extends ServiceIntegrationTestSuppo
     @DisplayName("포트폴리오 1건을 조회한다.")
     void getPortfolio() {
         // given
-        PortfolioCreate portfolioCreate = getCreatePortfolio();
+        PortfolioCreate portfolioCreate = getCreatePortfolio(REAL);
         Portfolio savedPortfolio = portfolioService.create(portfolioCreate, MEMBER_ID);
 
         // when
@@ -182,7 +283,7 @@ public class PortfolioServiceIntegrationTest extends ServiceIntegrationTestSuppo
         given(mockStockServerService.getStocks(anyList()))
                 .willReturn(getStockMap());
 
-        Portfolio savedPortfolio = savePortfolioWithTradeLogs();
+        Portfolio savedPortfolio = savePortfolioWithTradeLogs(REAL);
 
         // when
         PortfolioStatistic statistic =
@@ -198,7 +299,7 @@ public class PortfolioServiceIntegrationTest extends ServiceIntegrationTestSuppo
     @DisplayName("포트폴리오 1건을 생성한다.")
     void createPortfolio() {
         // given
-        PortfolioCreate portfolioCreate = getCreatePortfolio();
+        PortfolioCreate portfolioCreate = getCreatePortfolio(REAL);
 
         // when
         Portfolio savedPortfolio = portfolioService.create(portfolioCreate, MEMBER_ID);
@@ -217,7 +318,7 @@ public class PortfolioServiceIntegrationTest extends ServiceIntegrationTestSuppo
     @DisplayName("포트폴리오 1건을 수정한다.")
     void updatePortfolio() {
         // given
-        PortfolioCreate createPortfolio = getCreatePortfolio();
+        PortfolioCreate createPortfolio = getCreatePortfolio(REAL);
         Portfolio savedPortfolio = portfolioService.create(createPortfolio, MEMBER_ID);
         PortfolioUpdate updatePortfolio = getUpdatePortfolio(savedPortfolio.getId(), N);
 
@@ -248,7 +349,7 @@ public class PortfolioServiceIntegrationTest extends ServiceIntegrationTestSuppo
     @DisplayName("보유종목이 없을 때 포트폴리오 1건을 삭제한다.")
     void deletePortfolio() {
         // given
-        Portfolio savedPortfolio = portfolioService.create(getCreatePortfolio(), MEMBER_ID);
+        Portfolio savedPortfolio = portfolioService.create(getCreatePortfolio(REAL), MEMBER_ID);
 
         // when
         portfolioService.delete(savedPortfolio.getId());
@@ -269,7 +370,7 @@ public class PortfolioServiceIntegrationTest extends ServiceIntegrationTestSuppo
         given(mockStockServerService.getStocks(anyList()))
                 .willReturn(getStockMap());
 
-        Portfolio savedPortfolio = savePortfolioWithTradeLogs();
+        Portfolio savedPortfolio = savePortfolioWithTradeLogs(REAL);
 
         // when
         portfolioService.delete(savedPortfolio.getId());
@@ -292,8 +393,8 @@ public class PortfolioServiceIntegrationTest extends ServiceIntegrationTestSuppo
                 .hasMessage(PORTFOLIO_NOT_FOUND.getMessage());
     }
 
-    private Portfolio savePortfolioWithTradeLogs() {
-        PortfolioCreate createPortfolio = getCreatePortfolio();
+    private Portfolio savePortfolioWithTradeLogs(PortfolioType type) {
+        PortfolioCreate createPortfolio = getCreatePortfolio(type);
         HoldingStockCreate holdingStockCreate = getHoldingStockCreate();
         TradeLogCreate tradeLogCreate = getCreateTradeLog();
 
@@ -310,12 +411,12 @@ public class PortfolioServiceIntegrationTest extends ServiceIntegrationTestSuppo
                 .build();
     }
 
-    private PortfolioCreate getCreatePortfolio() {
+    private PortfolioCreate getCreatePortfolio(PortfolioType type) {
         return PortfolioCreate.builder()
                 .name(PORTFOLIO_CREATE_NAME)
                 .description(PORTFOLIO_CREATE_DESC)
                 .currency(KRW)
-                .type(REAL)
+                .type(type)
                 .build();
     }
 

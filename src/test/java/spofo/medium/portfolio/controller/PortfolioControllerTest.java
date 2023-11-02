@@ -2,6 +2,7 @@ package spofo.medium.portfolio.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -26,6 +27,7 @@ import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import spofo.global.domain.exception.PortfolioNotFound;
+import spofo.portfolio.controller.request.PortfolioFilterRequest;
 import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioCreate;
 import spofo.portfolio.domain.PortfolioStatistic;
@@ -228,7 +230,10 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .gainRate(getBD(40))
                 .build();
 
-        given(portfolioService.getPortfolios(anyLong()))
+        PortfolioFilterRequest filterRequest = PortfolioFilterRequest.builder().filter(null)
+                .build();
+
+        given(portfolioService.getPortfolios(anyLong(), eq(filterRequest)))
                 .willReturn(List.of(statistic));
 
         // expected
@@ -249,51 +254,30 @@ public class PortfolioControllerTest extends ControllerTestSupport {
     }
 
     @Test
-    @DisplayName("포트폴리오 여러 건 중 [REAL] 필터링을 하여 조회한다.")
+    @DisplayName("포트폴리오 [REAL] 필터링을 하여 조회한다.")
     void getPortfolioSimpleWithREAL() throws Exception {
         // given
         Long memberId = 1L;
-        String name1 = "portfolio name1";
-        String name2 = "portfolio name2";
-        String name3 = "portfolio name3";
-        String description1 = "portfolio description1";
-        String description2 = "portfolio description2";
-        String description3 = "portfolio description3";
-        PortfolioCreate portfolioCreate1 = create(name1, description1, KRW, REAL);
-        PortfolioCreate portfolioCreate2 = create(name2, description2, KRW, FAKE);
-        PortfolioCreate portfolioCreate3 = create(name3, description3, KRW, LINK);
-        Portfolio portfolio1 = Portfolio.of(portfolioCreate1, memberId);
-        Portfolio portfolio2 = Portfolio.of(portfolioCreate2, memberId);
-        Portfolio portfolio3 = Portfolio.of(portfolioCreate3, memberId);
+        String name = "portfolio name";
+        String description = "portfolio description";
+        PortfolioCreate portfolioCreate = create(name, description, KRW, REAL);
+        Portfolio portfolio = Portfolio.of(portfolioCreate, memberId);
 
-        setField(portfolio1, "id", 1L);
-        setField(portfolio2, "id", 2L);
-        setField(portfolio3, "id", 3L);
+        setField(portfolio, "id", 1L);
 
-        PortfolioStatistic statistic1 = PortfolioStatistic.builder()
-                .portfolio(portfolio1)
+        PortfolioStatistic statistic = PortfolioStatistic.builder()
+                .portfolio(portfolio)
                 .totalAsset(getBD(100))
                 .totalBuy(getBD(60))
                 .totalGain(getBD(40))
                 .gainRate(getBD(40))
                 .build();
-        PortfolioStatistic statistic2 = PortfolioStatistic.builder()
-                .portfolio(portfolio2)
-                .totalAsset(getBD(100))
-                .totalBuy(getBD(70))
-                .totalGain(getBD(30))
-                .gainRate(getBD(30))
-                .build();
-        PortfolioStatistic statistic3 = PortfolioStatistic.builder()
-                .portfolio(portfolio3)
-                .totalAsset(getBD(100))
-                .totalBuy(getBD(80))
-                .totalGain(getBD(50))
-                .gainRate(getBD(50))
+
+        PortfolioFilterRequest filterRequest = PortfolioFilterRequest.builder().filter(REAL)
                 .build();
 
-        given(portfolioService.getPortfolios(anyLong()))
-                .willReturn(List.of(statistic1, statistic2, statistic3));
+        given(portfolioService.getPortfolios(anyLong(), eq(filterRequest)))
+                .willReturn(List.of(statistic));
 
         // expected
         mockMvc.perform(get("/portfolios?filter=REAL")
@@ -302,8 +286,8 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.[0].id").value(1))
-                .andExpect(jsonPath("$.[0].name").value(name1))
-                .andExpect(jsonPath("$.[0].description").value(description1))
+                .andExpect(jsonPath("$.[0].name").value(name))
+                .andExpect(jsonPath("$.[0].description").value(description))
                 .andExpect(jsonPath("$.[0].totalAsset").value("100"))
                 .andExpect(jsonPath("$.[0].totalBuy").value("60"))
                 .andExpect(jsonPath("$.[0].gain").value("40"))
@@ -313,51 +297,30 @@ public class PortfolioControllerTest extends ControllerTestSupport {
     }
 
     @Test
-    @DisplayName("포트폴리오 여러 건 중 [FAKE] 필터링을 하여 조회한다.")
+    @DisplayName("포트폴리오 [FAKE] 필터링을 하여 조회한다.")
     void getPortfolioSimpleWithFAKE() throws Exception {
         // given
         Long memberId = 1L;
-        String name1 = "portfolio name1";
-        String name2 = "portfolio name2";
-        String name3 = "portfolio name3";
-        String description1 = "portfolio description1";
-        String description2 = "portfolio description2";
-        String description3 = "portfolio description3";
-        PortfolioCreate portfolioCreate1 = create(name1, description1, KRW, REAL);
-        PortfolioCreate portfolioCreate2 = create(name2, description2, KRW, FAKE);
-        PortfolioCreate portfolioCreate3 = create(name3, description3, KRW, LINK);
-        Portfolio portfolio1 = Portfolio.of(portfolioCreate1, memberId);
-        Portfolio portfolio2 = Portfolio.of(portfolioCreate2, memberId);
-        Portfolio portfolio3 = Portfolio.of(portfolioCreate3, memberId);
+        String name = "portfolio name";
+        String description = "portfolio description";
+        PortfolioCreate portfolioCreate = create(name, description, KRW, FAKE);
+        Portfolio portfolio = Portfolio.of(portfolioCreate, memberId);
 
-        setField(portfolio1, "id", 1L);
-        setField(portfolio2, "id", 2L);
-        setField(portfolio3, "id", 3L);
+        setField(portfolio, "id", 1L);
 
-        PortfolioStatistic statistic1 = PortfolioStatistic.builder()
-                .portfolio(portfolio1)
+        PortfolioStatistic statistic = PortfolioStatistic.builder()
+                .portfolio(portfolio)
                 .totalAsset(getBD(100))
                 .totalBuy(getBD(60))
                 .totalGain(getBD(40))
                 .gainRate(getBD(40))
                 .build();
-        PortfolioStatistic statistic2 = PortfolioStatistic.builder()
-                .portfolio(portfolio2)
-                .totalAsset(getBD(100))
-                .totalBuy(getBD(70))
-                .totalGain(getBD(30))
-                .gainRate(getBD(30))
-                .build();
-        PortfolioStatistic statistic3 = PortfolioStatistic.builder()
-                .portfolio(portfolio3)
-                .totalAsset(getBD(100))
-                .totalBuy(getBD(80))
-                .totalGain(getBD(50))
-                .gainRate(getBD(50))
+
+        PortfolioFilterRequest filterRequest = PortfolioFilterRequest.builder().filter(FAKE)
                 .build();
 
-        given(portfolioService.getPortfolios(anyLong()))
-                .willReturn(List.of(statistic1, statistic2, statistic3));
+        given(portfolioService.getPortfolios(anyLong(), eq(filterRequest)))
+                .willReturn(List.of(statistic));
 
         // expected
         mockMvc.perform(get("/portfolios?filter=FAKE")
@@ -365,63 +328,42 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                         .contentType(APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.[0].id").value(2))
-                .andExpect(jsonPath("$.[0].name").value(name2))
-                .andExpect(jsonPath("$.[0].description").value(description2))
+                .andExpect(jsonPath("$.[0].id").value(1))
+                .andExpect(jsonPath("$.[0].name").value(name))
+                .andExpect(jsonPath("$.[0].description").value(description))
                 .andExpect(jsonPath("$.[0].totalAsset").value("100"))
-                .andExpect(jsonPath("$.[0].totalBuy").value("70"))
-                .andExpect(jsonPath("$.[0].gain").value("30"))
-                .andExpect(jsonPath("$.[0].gainRate").value("30"))
+                .andExpect(jsonPath("$.[0].totalBuy").value("60"))
+                .andExpect(jsonPath("$.[0].gain").value("40"))
+                .andExpect(jsonPath("$.[0].gainRate").value("40"))
                 .andExpect(jsonPath("$.[0].includeType").value("true"))
                 .andExpect(jsonPath("$.[0].type").value(FAKE.toString()));
     }
 
     @Test
-    @DisplayName("포트폴리오 여러 건 중 [LINK] 필터링을 하여 조회한다.")
+    @DisplayName("포트폴리오 [LINK] 필터링을 하여 조회한다.")
     void getPortfolioSimpleWithLINK() throws Exception {
         // given
         Long memberId = 1L;
-        String name1 = "portfolio name1";
-        String name2 = "portfolio name2";
-        String name3 = "portfolio name3";
-        String description1 = "portfolio description1";
-        String description2 = "portfolio description2";
-        String description3 = "portfolio description3";
-        PortfolioCreate portfolioCreate1 = create(name1, description1, KRW, REAL);
-        PortfolioCreate portfolioCreate2 = create(name2, description2, KRW, FAKE);
-        PortfolioCreate portfolioCreate3 = create(name3, description3, KRW, LINK);
-        Portfolio portfolio1 = Portfolio.of(portfolioCreate1, memberId);
-        Portfolio portfolio2 = Portfolio.of(portfolioCreate2, memberId);
-        Portfolio portfolio3 = Portfolio.of(portfolioCreate3, memberId);
+        String name = "portfolio name";
+        String description = "portfolio description";
+        PortfolioCreate portfolioCreate = create(name, description, KRW, LINK);
+        Portfolio portfolio = Portfolio.of(portfolioCreate, memberId);
 
-        setField(portfolio1, "id", 1L);
-        setField(portfolio2, "id", 2L);
-        setField(portfolio3, "id", 3L);
+        setField(portfolio, "id", 1L);
 
-        PortfolioStatistic statistic1 = PortfolioStatistic.builder()
-                .portfolio(portfolio1)
+        PortfolioStatistic statistic = PortfolioStatistic.builder()
+                .portfolio(portfolio)
                 .totalAsset(getBD(100))
                 .totalBuy(getBD(60))
                 .totalGain(getBD(40))
                 .gainRate(getBD(40))
                 .build();
-        PortfolioStatistic statistic2 = PortfolioStatistic.builder()
-                .portfolio(portfolio2)
-                .totalAsset(getBD(100))
-                .totalBuy(getBD(70))
-                .totalGain(getBD(30))
-                .gainRate(getBD(30))
-                .build();
-        PortfolioStatistic statistic3 = PortfolioStatistic.builder()
-                .portfolio(portfolio3)
-                .totalAsset(getBD(100))
-                .totalBuy(getBD(80))
-                .totalGain(getBD(50))
-                .gainRate(getBD(50))
+
+        PortfolioFilterRequest filterRequest = PortfolioFilterRequest.builder().filter(LINK)
                 .build();
 
-        given(portfolioService.getPortfolios(anyLong()))
-                .willReturn(List.of(statistic1, statistic2, statistic3));
+        given(portfolioService.getPortfolios(anyLong(), eq(filterRequest)))
+                .willReturn(List.of(statistic));
 
         // expected
         mockMvc.perform(get("/portfolios?filter=LINK")
@@ -429,15 +371,50 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                         .contentType(APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.[0].id").value(3))
-                .andExpect(jsonPath("$.[0].name").value(name3))
-                .andExpect(jsonPath("$.[0].description").value(description3))
+                .andExpect(jsonPath("$.[0].id").value(1))
+                .andExpect(jsonPath("$.[0].name").value(name))
+                .andExpect(jsonPath("$.[0].description").value(description))
                 .andExpect(jsonPath("$.[0].totalAsset").value("100"))
-                .andExpect(jsonPath("$.[0].totalBuy").value("80"))
-                .andExpect(jsonPath("$.[0].gain").value("50"))
-                .andExpect(jsonPath("$.[0].gainRate").value("50"))
+                .andExpect(jsonPath("$.[0].totalBuy").value("60"))
+                .andExpect(jsonPath("$.[0].gain").value("40"))
+                .andExpect(jsonPath("$.[0].gainRate").value("40"))
                 .andExpect(jsonPath("$.[0].includeType").value("true"))
                 .andExpect(jsonPath("$.[0].type").value(LINK.toString()));
+    }
+
+    @Test
+    @DisplayName("포트폴리오 내에 존재 하지 않는 타입을 필터링할시 조회되는 포트폴리오는 없다.")
+    void getPortfolioSimpleNoExitType() throws Exception {
+        // given
+        Long memberId = 1L;
+        String name = "portfolio name";
+        String description = "portfolio description";
+        PortfolioCreate portfolioCreate = create(name, description, KRW, REAL);
+        Portfolio portfolio = Portfolio.of(portfolioCreate, memberId);
+
+        setField(portfolio, "id", 1L);
+
+        PortfolioStatistic statistic = PortfolioStatistic.builder()
+                .portfolio(portfolio)
+                .totalAsset(getBD(100))
+                .totalBuy(getBD(60))
+                .totalGain(getBD(40))
+                .gainRate(getBD(40))
+                .build();
+
+        PortfolioFilterRequest filterRequest = PortfolioFilterRequest.builder().filter(LINK)
+                .build();
+
+        given(portfolioService.getPortfolios(anyLong(), eq(filterRequest)))
+                .willReturn(List.of());
+
+        // expected
+        mockMvc.perform(get("/portfolios?filter=LINK")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0));
     }
 
     @Test

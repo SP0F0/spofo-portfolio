@@ -179,7 +179,7 @@ public class PortfolioControllerDocsTest extends RestDocsSupport {
                 .gainRate(getBD(40))
                 .build();
 
-        given(portfolioService.getPortfolios(anyLong()))
+        given(portfolioService.getPortfolios(anyLong(), any()))
                 .willReturn(List.of(statistic));
 
         // expected

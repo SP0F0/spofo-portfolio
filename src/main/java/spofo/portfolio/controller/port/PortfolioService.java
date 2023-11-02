@@ -1,6 +1,7 @@
 package spofo.portfolio.controller.port;
 
 import java.util.List;
+import spofo.portfolio.controller.request.PortfolioFilterRequest;
 import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioCreate;
 import spofo.portfolio.domain.PortfolioStatistic;
@@ -11,7 +12,7 @@ public interface PortfolioService {
 
     TotalPortfoliosStatistic getPortfoliosStatistic(Long memberId);
 
-    List<PortfolioStatistic> getPortfolios(Long memberId);
+    List<PortfolioStatistic> getPortfolios(Long memberId, PortfolioFilterRequest filter);
 
     Portfolio getPortfolio(Long id);
 
