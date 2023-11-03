@@ -26,7 +26,7 @@ import spofo.mock.FakeHoldingStockService;
 import spofo.mock.FakePortfolioRepository;
 import spofo.mock.FakeStockServerService;
 import spofo.portfolio.controller.port.PortfolioService;
-import spofo.portfolio.controller.request.PortfolioFilterRequest;
+import spofo.portfolio.controller.request.PortfolioSearchCondition;
 import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioCreate;
 import spofo.portfolio.domain.PortfolioStatistic;
@@ -156,7 +156,7 @@ public class PortfolioServiceTest {
         fakePortfolioRepository.save(portfolio1);
         fakePortfolioRepository.save(portfolio2);
 
-        PortfolioFilterRequest filterRequest = PortfolioFilterRequest.builder().filter(null)
+        PortfolioSearchCondition filterRequest = PortfolioSearchCondition.builder().filter(null)
                 .build();
 
         // when
@@ -205,7 +205,7 @@ public class PortfolioServiceTest {
         fakePortfolioRepository.save(portfolio2);
         fakePortfolioRepository.save(portfolio3);
 
-        PortfolioFilterRequest filterRequest = PortfolioFilterRequest.builder().filter(REAL)
+        PortfolioSearchCondition filterRequest = PortfolioSearchCondition.builder().filter(REAL)
                 .build();
 
         // when
@@ -251,7 +251,7 @@ public class PortfolioServiceTest {
         fakePortfolioRepository.save(portfolio2);
         fakePortfolioRepository.save(portfolio3);
 
-        PortfolioFilterRequest filterRequest = PortfolioFilterRequest.builder().filter(FAKE)
+        PortfolioSearchCondition filterRequest = PortfolioSearchCondition.builder().filter(FAKE)
                 .build();
 
         // when
@@ -297,7 +297,7 @@ public class PortfolioServiceTest {
         fakePortfolioRepository.save(portfolio2);
         fakePortfolioRepository.save(portfolio3);
 
-        PortfolioFilterRequest filterRequest = PortfolioFilterRequest.builder().filter(LINK)
+        PortfolioSearchCondition filterRequest = PortfolioSearchCondition.builder().filter(LINK)
                 .build();
 
         // when

@@ -26,7 +26,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import spofo.global.domain.exception.PortfolioNotFound;
 import spofo.holdingstock.domain.HoldingStockCreate;
-import spofo.portfolio.controller.request.PortfolioFilterRequest;
+import spofo.portfolio.controller.request.PortfolioSearchCondition;
 import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioCreate;
 import spofo.portfolio.domain.PortfolioStatistic;
@@ -122,7 +122,7 @@ public class PortfolioServiceIntegrationTest extends ServiceIntegrationTestSuppo
         savePortfolioWithTradeLogs(REAL);
         savePortfolioWithTradeLogs(REAL);
 
-        PortfolioFilterRequest filterRequest = PortfolioFilterRequest.builder().build();
+        PortfolioSearchCondition filterRequest = PortfolioSearchCondition.builder().build();
 
         // when
         List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(MEMBER_ID,
@@ -152,7 +152,7 @@ public class PortfolioServiceIntegrationTest extends ServiceIntegrationTestSuppo
         savePortfolioWithTradeLogs(FAKE);
         savePortfolioWithTradeLogs(LINK);
 
-        PortfolioFilterRequest filterRequest = PortfolioFilterRequest.builder().filter(REAL)
+        PortfolioSearchCondition filterRequest = PortfolioSearchCondition.builder().filter(REAL)
                 .build();
 
         // when
@@ -182,7 +182,7 @@ public class PortfolioServiceIntegrationTest extends ServiceIntegrationTestSuppo
         savePortfolioWithTradeLogs(FAKE);
         savePortfolioWithTradeLogs(LINK);
 
-        PortfolioFilterRequest filterRequest = PortfolioFilterRequest.builder().filter(FAKE)
+        PortfolioSearchCondition filterRequest = PortfolioSearchCondition.builder().filter(FAKE)
                 .build();
 
         // when
@@ -213,7 +213,7 @@ public class PortfolioServiceIntegrationTest extends ServiceIntegrationTestSuppo
         savePortfolioWithTradeLogs(LINK);
         savePortfolioWithTradeLogs(LINK);
 
-        PortfolioFilterRequest filterRequest = PortfolioFilterRequest.builder().filter(LINK)
+        PortfolioSearchCondition filterRequest = PortfolioSearchCondition.builder().filter(LINK)
                 .build();
 
         // when

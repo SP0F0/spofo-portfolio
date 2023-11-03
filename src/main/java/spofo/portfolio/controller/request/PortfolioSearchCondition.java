@@ -10,7 +10,7 @@ import spofo.portfolio.domain.enums.PortfolioType;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class PortfolioFilterRequest {
+public class PortfolioSearchCondition {
 
     private PortfolioType filter;
 

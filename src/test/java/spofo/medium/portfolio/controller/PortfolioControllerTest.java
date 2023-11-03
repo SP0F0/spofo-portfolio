@@ -27,7 +27,7 @@ import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import spofo.global.domain.exception.PortfolioNotFound;
-import spofo.portfolio.controller.request.PortfolioFilterRequest;
+import spofo.portfolio.controller.request.PortfolioSearchCondition;
 import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioCreate;
 import spofo.portfolio.domain.PortfolioStatistic;
@@ -230,7 +230,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .gainRate(getBD(40))
                 .build();
 
-        PortfolioFilterRequest filterRequest = PortfolioFilterRequest.builder().filter(null)
+        PortfolioSearchCondition filterRequest = PortfolioSearchCondition.builder().filter(null)
                 .build();
 
         given(portfolioService.getPortfolios(anyLong(), eq(filterRequest)))
@@ -273,7 +273,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .gainRate(getBD(40))
                 .build();
 
-        PortfolioFilterRequest filterRequest = PortfolioFilterRequest.builder().filter(REAL)
+        PortfolioSearchCondition filterRequest = PortfolioSearchCondition.builder().filter(REAL)
                 .build();
 
         given(portfolioService.getPortfolios(anyLong(), eq(filterRequest)))
@@ -316,7 +316,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .gainRate(getBD(40))
                 .build();
 
-        PortfolioFilterRequest filterRequest = PortfolioFilterRequest.builder().filter(FAKE)
+        PortfolioSearchCondition filterRequest = PortfolioSearchCondition.builder().filter(FAKE)
                 .build();
 
         given(portfolioService.getPortfolios(anyLong(), eq(filterRequest)))
@@ -359,7 +359,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .gainRate(getBD(40))
                 .build();
 
-        PortfolioFilterRequest filterRequest = PortfolioFilterRequest.builder().filter(LINK)
+        PortfolioSearchCondition filterRequest = PortfolioSearchCondition.builder().filter(LINK)
                 .build();
 
         given(portfolioService.getPortfolios(anyLong(), eq(filterRequest)))
@@ -402,7 +402,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .gainRate(getBD(40))
                 .build();
 
-        PortfolioFilterRequest filterRequest = PortfolioFilterRequest.builder().filter(LINK)
+        PortfolioSearchCondition filterRequest = PortfolioSearchCondition.builder().filter(LINK)
                 .build();
 
         given(portfolioService.getPortfolios(anyLong(), eq(filterRequest)))
