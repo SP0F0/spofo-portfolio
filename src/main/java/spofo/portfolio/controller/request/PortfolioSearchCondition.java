@@ -12,9 +12,6 @@ import spofo.portfolio.domain.enums.PortfolioType;
 @Data
 public class PortfolioSearchCondition {
 
-    private PortfolioType filter;
+    private PortfolioType type;
 
-    public boolean isEmpty() {
-        return filter == null;
-    }
 }

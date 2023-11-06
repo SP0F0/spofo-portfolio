@@ -156,12 +156,12 @@ public class PortfolioServiceTest {
         fakePortfolioRepository.save(portfolio1);
         fakePortfolioRepository.save(portfolio2);
 
-        PortfolioSearchCondition filterRequest = PortfolioSearchCondition.builder().filter(null)
+        PortfolioSearchCondition condition = PortfolioSearchCondition.builder().type(null)
                 .build();
 
         // when
         List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(memberId,
-                filterRequest);
+                condition);
 
         // then
         assertThat(portfolios).hasSize(2)
@@ -205,12 +205,12 @@ public class PortfolioServiceTest {
         fakePortfolioRepository.save(portfolio2);
         fakePortfolioRepository.save(portfolio3);
 
-        PortfolioSearchCondition filterRequest = PortfolioSearchCondition.builder().filter(REAL)
+        PortfolioSearchCondition condition = PortfolioSearchCondition.builder().type(REAL)
                 .build();
 
         // when
         List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(memberId,
-                filterRequest);
+                condition);
 
         // then
         assertThat(portfolios).hasSize(1)
@@ -251,12 +251,12 @@ public class PortfolioServiceTest {
         fakePortfolioRepository.save(portfolio2);
         fakePortfolioRepository.save(portfolio3);
 
-        PortfolioSearchCondition filterRequest = PortfolioSearchCondition.builder().filter(FAKE)
+        PortfolioSearchCondition condition = PortfolioSearchCondition.builder().type(FAKE)
                 .build();
 
         // when
         List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(memberId,
-                filterRequest);
+                condition);
 
         // then
         assertThat(portfolios).hasSize(1)
@@ -297,12 +297,12 @@ public class PortfolioServiceTest {
         fakePortfolioRepository.save(portfolio2);
         fakePortfolioRepository.save(portfolio3);
 
-        PortfolioSearchCondition filterRequest = PortfolioSearchCondition.builder().filter(LINK)
+        PortfolioSearchCondition condition = PortfolioSearchCondition.builder().type(LINK)
                 .build();
 
         // when
         List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(memberId,
-                filterRequest);
+                condition);
 
         // then
         assertThat(portfolios).hasSize(1)

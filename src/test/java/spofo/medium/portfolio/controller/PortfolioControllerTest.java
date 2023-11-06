@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static spofo.global.component.utils.CommonUtils.getBD;
@@ -37,7 +38,6 @@ import spofo.portfolio.domain.enums.Currency;
 import spofo.portfolio.domain.enums.IncludeType;
 import spofo.portfolio.domain.enums.PortfolioType;
 import spofo.support.controller.ControllerTestSupport;
-
 
 public class PortfolioControllerTest extends ControllerTestSupport {
 
@@ -230,10 +230,10 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .gainRate(getBD(40))
                 .build();
 
-        PortfolioSearchCondition filterRequest = PortfolioSearchCondition.builder().filter(null)
+        PortfolioSearchCondition condition = PortfolioSearchCondition.builder().type(null)
                 .build();
 
-        given(portfolioService.getPortfolios(anyLong(), eq(filterRequest)))
+        given(portfolioService.getPortfolios(anyLong(), eq(condition)))
                 .willReturn(List.of(statistic));
 
         // expected
@@ -273,14 +273,13 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .gainRate(getBD(40))
                 .build();
 
-        PortfolioSearchCondition filterRequest = PortfolioSearchCondition.builder().filter(REAL)
-                .build();
+        PortfolioSearchCondition condition = PortfolioSearchCondition.builder().type(REAL).build();
 
-        given(portfolioService.getPortfolios(anyLong(), eq(filterRequest)))
+        given(portfolioService.getPortfolios(anyLong(), eq(condition)))
                 .willReturn(List.of(statistic));
 
         // expected
-        mockMvc.perform(get("/portfolios?filter=REAL")
+        mockMvc.perform(get("/portfolios?type=REAL")
                         .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                 )
@@ -316,14 +315,14 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .gainRate(getBD(40))
                 .build();
 
-        PortfolioSearchCondition filterRequest = PortfolioSearchCondition.builder().filter(FAKE)
+        PortfolioSearchCondition condition = PortfolioSearchCondition.builder().type(FAKE)
                 .build();
 
-        given(portfolioService.getPortfolios(anyLong(), eq(filterRequest)))
+        given(portfolioService.getPortfolios(anyLong(), eq(condition)))
                 .willReturn(List.of(statistic));
 
         // expected
-        mockMvc.perform(get("/portfolios?filter=FAKE")
+        mockMvc.perform(get("/portfolios?type=FAKE")
                         .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                 )
@@ -359,14 +358,14 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .gainRate(getBD(40))
                 .build();
 
-        PortfolioSearchCondition filterRequest = PortfolioSearchCondition.builder().filter(LINK)
+        PortfolioSearchCondition condition = PortfolioSearchCondition.builder().type(LINK)
                 .build();
 
-        given(portfolioService.getPortfolios(anyLong(), eq(filterRequest)))
+        given(portfolioService.getPortfolios(anyLong(), eq(condition)))
                 .willReturn(List.of(statistic));
 
         // expected
-        mockMvc.perform(get("/portfolios?filter=LINK")
+        mockMvc.perform(get("/portfolios?type=LINK")
                         .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                 )
@@ -402,10 +401,10 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .gainRate(getBD(40))
                 .build();
 
-        PortfolioSearchCondition filterRequest = PortfolioSearchCondition.builder().filter(LINK)
+        PortfolioSearchCondition condition = PortfolioSearchCondition.builder().type(LINK)
                 .build();
 
-        given(portfolioService.getPortfolios(anyLong(), eq(filterRequest)))
+        given(portfolioService.getPortfolios(anyLong(), eq(condition)))
                 .willReturn(List.of());
 
         // expected
@@ -414,6 +413,42 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                         .contentType(APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0));
+    }
+
+    @Test
+    @DisplayName("잘못된 타입으로 요청 시 조회되는 포트폴리오는 없다.")
+    void getPortfolioSimpleWithWrongType() throws Exception {
+        // given
+        Long memberId = 1L;
+        String name = "portfolio name";
+        String description = "portfolio description";
+        PortfolioCreate portfolioCreate = create(name, description, KRW, REAL);
+        Portfolio portfolio = Portfolio.of(portfolioCreate, memberId);
+
+        setField(portfolio, "id", 1L);
+
+        PortfolioStatistic statistic = PortfolioStatistic.builder()
+                .portfolio(portfolio)
+                .totalAsset(getBD(100))
+                .totalBuy(getBD(60))
+                .totalGain(getBD(40))
+                .gainRate(getBD(40))
+                .build();
+
+        PortfolioSearchCondition condition = PortfolioSearchCondition.builder().type(LINK)
+                .build();
+
+        given(portfolioService.getPortfolios(anyLong(), eq(condition)))
+                .willReturn(List.of());
+
+        // expected
+        mockMvc.perform(get("/portfolios?filter=??")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andDo(print())
                 .andExpect(jsonPath("$.length()").value(0));
     }
 

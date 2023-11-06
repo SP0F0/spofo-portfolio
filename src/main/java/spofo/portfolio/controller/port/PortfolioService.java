@@ -12,7 +12,7 @@ public interface PortfolioService {
 
     TotalPortfoliosStatistic getPortfoliosStatistic(Long memberId);
 
-    List<PortfolioStatistic> getPortfolios(Long memberId, PortfolioSearchCondition filter);
+    List<PortfolioStatistic> getPortfolios(Long memberId, PortfolioSearchCondition condition);
 
     Portfolio getPortfolio(Long id);
 

@@ -122,11 +122,11 @@ public class PortfolioServiceIntegrationTest extends ServiceIntegrationTestSuppo
         savePortfolioWithTradeLogs(REAL);
         savePortfolioWithTradeLogs(REAL);
 
-        PortfolioSearchCondition filterRequest = PortfolioSearchCondition.builder().build();
+        PortfolioSearchCondition condition = PortfolioSearchCondition.builder().build();
 
         // when
         List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(MEMBER_ID,
-                filterRequest);
+                condition);
 
         // then
         assertThat(portfolios).hasSize(2)
@@ -152,12 +152,12 @@ public class PortfolioServiceIntegrationTest extends ServiceIntegrationTestSuppo
         savePortfolioWithTradeLogs(FAKE);
         savePortfolioWithTradeLogs(LINK);
 
-        PortfolioSearchCondition filterRequest = PortfolioSearchCondition.builder().filter(REAL)
+        PortfolioSearchCondition condition = PortfolioSearchCondition.builder().type(REAL)
                 .build();
 
         // when
         List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(MEMBER_ID,
-                filterRequest);
+                condition);
 
         // then
         assertThat(portfolios).hasSize(2)
@@ -182,12 +182,12 @@ public class PortfolioServiceIntegrationTest extends ServiceIntegrationTestSuppo
         savePortfolioWithTradeLogs(FAKE);
         savePortfolioWithTradeLogs(LINK);
 
-        PortfolioSearchCondition filterRequest = PortfolioSearchCondition.builder().filter(FAKE)
+        PortfolioSearchCondition condition = PortfolioSearchCondition.builder().type(FAKE)
                 .build();
 
         // when
         List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(MEMBER_ID,
-                filterRequest);
+                condition);
 
         // then
         assertThat(portfolios).hasSize(1)
@@ -213,12 +213,12 @@ public class PortfolioServiceIntegrationTest extends ServiceIntegrationTestSuppo
         savePortfolioWithTradeLogs(LINK);
         savePortfolioWithTradeLogs(LINK);
 
-        PortfolioSearchCondition filterRequest = PortfolioSearchCondition.builder().filter(LINK)
+        PortfolioSearchCondition condition = PortfolioSearchCondition.builder().type(LINK)
                 .build();
 
         // when
         List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(MEMBER_ID,
-                filterRequest);
+                condition);
 
         // then
         assertThat(portfolios).hasSize(3)

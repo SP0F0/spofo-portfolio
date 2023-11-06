@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import spofo.auth.domain.MemberInfo;
 import spofo.auth.domain.annotation.LoginMember;
 import spofo.portfolio.controller.port.PortfolioService;
-import spofo.portfolio.controller.request.PortfolioSearchCondition;
 import spofo.portfolio.controller.request.PortfolioRequest;
+import spofo.portfolio.controller.request.PortfolioSearchCondition;
 import spofo.portfolio.controller.response.PortfolioResponse;
 import spofo.portfolio.controller.response.PortfolioStatisticResponse;
 import spofo.portfolio.controller.response.PortfoliosStatisticResponse;
@@ -48,10 +48,10 @@ public class PortfolioController {
 
     @GetMapping("/portfolios")
     public ResponseEntity<List<PortfolioStatisticResponse>> getPortfolioSimple(
-            @ModelAttribute PortfolioSearchCondition filter,
+            @ModelAttribute PortfolioSearchCondition condition,
             @LoginMember MemberInfo memberInfo) {
         List<PortfolioStatisticResponse> portfolios
-                = portfolioService.getPortfolios(memberInfo.getId(), filter)
+                = portfolioService.getPortfolios(memberInfo.getId(), condition)
                 .stream()
                 .map(PortfolioStatisticResponse::from)
                 .toList();

@@ -3,6 +3,7 @@ package spofo.mock;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 import lombok.RequiredArgsConstructor;
 import spofo.global.domain.exception.PortfolioNotFound;
 import spofo.holdingstock.domain.HoldingStock;
@@ -31,11 +32,11 @@ public class FakePortfolioService implements PortfolioService {
     }
 
     @Override
-    public List<PortfolioStatistic> getPortfolios(Long memberId, PortfolioSearchCondition filter) {
+    public List<PortfolioStatistic> getPortfolios(Long memberId,
+            PortfolioSearchCondition condition) {
         List<Portfolio> portfolios = portfolioRepository.findByMemberIdWithTradeLogs(memberId)
                 .stream()
-                .filter(portfolio -> filter == null || filter.isEmpty() || portfolio.getType()
-                        .equals(filter.getFilter()))
+                .filter(searchCondition(condition))
                 .toList();
         return getPortfolioStatistics(portfolios);
     }
@@ -92,5 +93,18 @@ public class FakePortfolioService implements PortfolioService {
                         .map(HoldingStock::getStockCode))
                 .distinct()
                 .toList();
+    }
+
+    private Predicate<Portfolio> searchCondition(PortfolioSearchCondition condition) {
+        if (condition == null) {
+            return x -> true;
+        }
+
+        Predicate<Portfolio> result = x -> true;
+
+        if (condition.getType() != null) {
+            result = result.and(portfolio -> portfolio.getType().equals(condition.getType()));
+        }
+        return result;
     }
 }
