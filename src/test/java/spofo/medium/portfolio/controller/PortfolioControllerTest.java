@@ -2,6 +2,7 @@ package spofo.medium.portfolio.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -10,12 +11,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static spofo.global.component.utils.CommonUtils.getBD;
 import static spofo.portfolio.domain.enums.Currency.KRW;
 import static spofo.portfolio.domain.enums.IncludeType.N;
 import static spofo.portfolio.domain.enums.IncludeType.Y;
+import static spofo.portfolio.domain.enums.PortfolioType.FAKE;
+import static spofo.portfolio.domain.enums.PortfolioType.LINK;
 import static spofo.portfolio.domain.enums.PortfolioType.REAL;
 
 import java.util.HashMap;
@@ -24,6 +28,7 @@ import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import spofo.global.domain.exception.PortfolioNotFound;
+import spofo.portfolio.controller.request.PortfolioSearchCondition;
 import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioCreate;
 import spofo.portfolio.domain.PortfolioStatistic;
@@ -33,7 +38,6 @@ import spofo.portfolio.domain.enums.Currency;
 import spofo.portfolio.domain.enums.IncludeType;
 import spofo.portfolio.domain.enums.PortfolioType;
 import spofo.support.controller.ControllerTestSupport;
-
 
 public class PortfolioControllerTest extends ControllerTestSupport {
 
@@ -66,6 +70,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("id").value(1L));
     }
 
+    @Test
     @DisplayName("포트폴리오 생성 시 이름은 필수 입력이다.")
     void createPortfolioWithNoName() throws Exception {
         // given
@@ -225,7 +230,10 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .gainRate(getBD(40))
                 .build();
 
-        given(portfolioService.getPortfolios(anyLong()))
+        PortfolioSearchCondition condition = PortfolioSearchCondition.builder().type(null)
+                .build();
+
+        given(portfolioService.getPortfolios(anyLong(), eq(condition)))
                 .willReturn(List.of(statistic));
 
         // expected
@@ -243,6 +251,205 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.[0].gainRate").value("40"))
                 .andExpect(jsonPath("$.[0].includeType").value("true"))
                 .andExpect(jsonPath("$.[0].type").value(REAL.toString()));
+    }
+
+    @Test
+    @DisplayName("포트폴리오 [REAL] 필터링을 하여 조회한다.")
+    void getPortfolioSimpleWithREAL() throws Exception {
+        // given
+        Long memberId = 1L;
+        String name = "portfolio name";
+        String description = "portfolio description";
+        PortfolioCreate portfolioCreate = create(name, description, KRW, REAL);
+        Portfolio portfolio = Portfolio.of(portfolioCreate, memberId);
+
+        setField(portfolio, "id", 1L);
+
+        PortfolioStatistic statistic = PortfolioStatistic.builder()
+                .portfolio(portfolio)
+                .totalAsset(getBD(100))
+                .totalBuy(getBD(60))
+                .totalGain(getBD(40))
+                .gainRate(getBD(40))
+                .build();
+
+        PortfolioSearchCondition condition = PortfolioSearchCondition.builder().type(REAL).build();
+
+        given(portfolioService.getPortfolios(anyLong(), eq(condition)))
+                .willReturn(List.of(statistic));
+
+        // expected
+        mockMvc.perform(get("/portfolios?type=REAL")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.[0].id").value(1))
+                .andExpect(jsonPath("$.[0].name").value(name))
+                .andExpect(jsonPath("$.[0].description").value(description))
+                .andExpect(jsonPath("$.[0].totalAsset").value("100"))
+                .andExpect(jsonPath("$.[0].totalBuy").value("60"))
+                .andExpect(jsonPath("$.[0].gain").value("40"))
+                .andExpect(jsonPath("$.[0].gainRate").value("40"))
+                .andExpect(jsonPath("$.[0].includeType").value("true"))
+                .andExpect(jsonPath("$.[0].type").value(REAL.toString()));
+    }
+
+    @Test
+    @DisplayName("포트폴리오 [FAKE] 필터링을 하여 조회한다.")
+    void getPortfolioSimpleWithFAKE() throws Exception {
+        // given
+        Long memberId = 1L;
+        String name = "portfolio name";
+        String description = "portfolio description";
+        PortfolioCreate portfolioCreate = create(name, description, KRW, FAKE);
+        Portfolio portfolio = Portfolio.of(portfolioCreate, memberId);
+
+        setField(portfolio, "id", 1L);
+
+        PortfolioStatistic statistic = PortfolioStatistic.builder()
+                .portfolio(portfolio)
+                .totalAsset(getBD(100))
+                .totalBuy(getBD(60))
+                .totalGain(getBD(40))
+                .gainRate(getBD(40))
+                .build();
+
+        PortfolioSearchCondition condition = PortfolioSearchCondition.builder().type(FAKE)
+                .build();
+
+        given(portfolioService.getPortfolios(anyLong(), eq(condition)))
+                .willReturn(List.of(statistic));
+
+        // expected
+        mockMvc.perform(get("/portfolios?type=FAKE")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.[0].id").value(1))
+                .andExpect(jsonPath("$.[0].name").value(name))
+                .andExpect(jsonPath("$.[0].description").value(description))
+                .andExpect(jsonPath("$.[0].totalAsset").value("100"))
+                .andExpect(jsonPath("$.[0].totalBuy").value("60"))
+                .andExpect(jsonPath("$.[0].gain").value("40"))
+                .andExpect(jsonPath("$.[0].gainRate").value("40"))
+                .andExpect(jsonPath("$.[0].includeType").value("true"))
+                .andExpect(jsonPath("$.[0].type").value(FAKE.toString()));
+    }
+
+    @Test
+    @DisplayName("포트폴리오 [LINK] 필터링을 하여 조회한다.")
+    void getPortfolioSimpleWithLINK() throws Exception {
+        // given
+        Long memberId = 1L;
+        String name = "portfolio name";
+        String description = "portfolio description";
+        PortfolioCreate portfolioCreate = create(name, description, KRW, LINK);
+        Portfolio portfolio = Portfolio.of(portfolioCreate, memberId);
+
+        setField(portfolio, "id", 1L);
+
+        PortfolioStatistic statistic = PortfolioStatistic.builder()
+                .portfolio(portfolio)
+                .totalAsset(getBD(100))
+                .totalBuy(getBD(60))
+                .totalGain(getBD(40))
+                .gainRate(getBD(40))
+                .build();
+
+        PortfolioSearchCondition condition = PortfolioSearchCondition.builder().type(LINK)
+                .build();
+
+        given(portfolioService.getPortfolios(anyLong(), eq(condition)))
+                .willReturn(List.of(statistic));
+
+        // expected
+        mockMvc.perform(get("/portfolios?type=LINK")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.[0].id").value(1))
+                .andExpect(jsonPath("$.[0].name").value(name))
+                .andExpect(jsonPath("$.[0].description").value(description))
+                .andExpect(jsonPath("$.[0].totalAsset").value("100"))
+                .andExpect(jsonPath("$.[0].totalBuy").value("60"))
+                .andExpect(jsonPath("$.[0].gain").value("40"))
+                .andExpect(jsonPath("$.[0].gainRate").value("40"))
+                .andExpect(jsonPath("$.[0].includeType").value("true"))
+                .andExpect(jsonPath("$.[0].type").value(LINK.toString()));
+    }
+
+    @Test
+    @DisplayName("포트폴리오 내에 존재 하지 않는 타입을 필터링할시 조회되는 포트폴리오는 없다.")
+    void getPortfolioSimpleNoExitType() throws Exception {
+        // given
+        Long memberId = 1L;
+        String name = "portfolio name";
+        String description = "portfolio description";
+        PortfolioCreate portfolioCreate = create(name, description, KRW, REAL);
+        Portfolio portfolio = Portfolio.of(portfolioCreate, memberId);
+
+        setField(portfolio, "id", 1L);
+
+        PortfolioStatistic statistic = PortfolioStatistic.builder()
+                .portfolio(portfolio)
+                .totalAsset(getBD(100))
+                .totalBuy(getBD(60))
+                .totalGain(getBD(40))
+                .gainRate(getBD(40))
+                .build();
+
+        PortfolioSearchCondition condition = PortfolioSearchCondition.builder().type(LINK)
+                .build();
+
+        given(portfolioService.getPortfolios(anyLong(), eq(condition)))
+                .willReturn(List.of());
+
+        // expected
+        mockMvc.perform(get("/portfolios?filter=LINK")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0));
+    }
+
+    @Test
+    @DisplayName("잘못된 타입으로 요청 시 조회되는 포트폴리오는 없다.")
+    void getPortfolioSimpleWithWrongType() throws Exception {
+        // given
+        Long memberId = 1L;
+        String name = "portfolio name";
+        String description = "portfolio description";
+        PortfolioCreate portfolioCreate = create(name, description, KRW, REAL);
+        Portfolio portfolio = Portfolio.of(portfolioCreate, memberId);
+
+        setField(portfolio, "id", 1L);
+
+        PortfolioStatistic statistic = PortfolioStatistic.builder()
+                .portfolio(portfolio)
+                .totalAsset(getBD(100))
+                .totalBuy(getBD(60))
+                .totalGain(getBD(40))
+                .gainRate(getBD(40))
+                .build();
+
+        PortfolioSearchCondition condition = PortfolioSearchCondition.builder().type(LINK)
+                .build();
+
+        given(portfolioService.getPortfolios(anyLong(), eq(condition)))
+                .willReturn(List.of());
+
+        // expected
+        mockMvc.perform(get("/portfolios?filter=??")
+                        .header(AUTHORIZATION, AUTH_TOKEN)
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.length()").value(0));
     }
 
     @Test

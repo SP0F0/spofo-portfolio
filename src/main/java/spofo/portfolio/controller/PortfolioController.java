@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,6 +21,7 @@ import spofo.auth.domain.MemberInfo;
 import spofo.auth.domain.annotation.LoginMember;
 import spofo.portfolio.controller.port.PortfolioService;
 import spofo.portfolio.controller.request.PortfolioRequest;
+import spofo.portfolio.controller.request.PortfolioSearchCondition;
 import spofo.portfolio.controller.response.PortfolioResponse;
 import spofo.portfolio.controller.response.PortfolioStatisticResponse;
 import spofo.portfolio.controller.response.PortfoliosStatisticResponse;
@@ -46,9 +48,10 @@ public class PortfolioController {
 
     @GetMapping("/portfolios")
     public ResponseEntity<List<PortfolioStatisticResponse>> getPortfolioSimple(
+            @ModelAttribute PortfolioSearchCondition condition,
             @LoginMember MemberInfo memberInfo) {
         List<PortfolioStatisticResponse> portfolios
-                = portfolioService.getPortfolios(memberInfo.getId())
+                = portfolioService.getPortfolios(memberInfo.getId(), condition)
                 .stream()
                 .map(PortfolioStatisticResponse::from)
                 .toList();

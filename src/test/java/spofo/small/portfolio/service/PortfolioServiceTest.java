@@ -4,12 +4,14 @@ import static java.math.BigDecimal.ZERO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.mockito.ArgumentMatchers.any;
 import static spofo.global.component.utils.CommonUtils.getBD;
 import static spofo.global.domain.exception.ErrorCode.PORTFOLIO_NOT_FOUND;
 import static spofo.portfolio.domain.enums.Currency.KRW;
 import static spofo.portfolio.domain.enums.IncludeType.N;
 import static spofo.portfolio.domain.enums.IncludeType.Y;
 import static spofo.portfolio.domain.enums.PortfolioType.FAKE;
+import static spofo.portfolio.domain.enums.PortfolioType.LINK;
 import static spofo.portfolio.domain.enums.PortfolioType.REAL;
 import static spofo.tradelog.domain.enums.TradeType.BUY;
 
@@ -24,6 +26,7 @@ import spofo.mock.FakeHoldingStockService;
 import spofo.mock.FakePortfolioRepository;
 import spofo.mock.FakeStockServerService;
 import spofo.portfolio.controller.port.PortfolioService;
+import spofo.portfolio.controller.request.PortfolioSearchCondition;
 import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioCreate;
 import spofo.portfolio.domain.PortfolioStatistic;
@@ -153,8 +156,12 @@ public class PortfolioServiceTest {
         fakePortfolioRepository.save(portfolio1);
         fakePortfolioRepository.save(portfolio2);
 
+        PortfolioSearchCondition condition = PortfolioSearchCondition.builder().type(null)
+                .build();
+
         // when
-        List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(memberId);
+        List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(memberId,
+                condition);
 
         // then
         assertThat(portfolios).hasSize(2)
@@ -169,13 +176,151 @@ public class PortfolioServiceTest {
     }
 
     @Test
+    @DisplayName("포트폴리오를 [REAL] 필터링하여 조회한다.")
+    void getPortfoliosWithREAL() {
+        // given
+        Long memberId = 1L;
+        TradeLog tradeLog = getTradeLog();
+        HoldingStock holdingStock = getHoldingStock(tradeLog);
+
+        Portfolio portfolio1 = Portfolio.builder()
+                .memberId(memberId)
+                .type(REAL)
+                .holdingStocks(List.of(holdingStock))
+                .build();
+
+        Portfolio portfolio2 = Portfolio.builder()
+                .memberId(memberId)
+                .type(FAKE)
+                .holdingStocks(List.of(holdingStock, holdingStock))
+                .build();
+
+        Portfolio portfolio3 = Portfolio.builder()
+                .memberId(memberId)
+                .type(LINK)
+                .holdingStocks(List.of(holdingStock, holdingStock))
+                .build();
+
+        fakePortfolioRepository.save(portfolio1);
+        fakePortfolioRepository.save(portfolio2);
+        fakePortfolioRepository.save(portfolio3);
+
+        PortfolioSearchCondition condition = PortfolioSearchCondition.builder().type(REAL)
+                .build();
+
+        // when
+        List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(memberId,
+                condition);
+
+        // then
+        assertThat(portfolios).hasSize(1)
+                .extracting("portfolio.id", "totalAsset", "totalBuy", "totalGain", "gainRate")
+                .containsExactlyInAnyOrder(
+                        tuple(1L, getBD(66000), getBD(33000),
+                                getBD(33000), getBD(100))
+                );
+    }
+
+    @Test
+    @DisplayName("포트폴리오를 [FAKE] 필터링하여 조회한다.")
+    void getPortfoliosWithFAKE() {
+        // given
+        Long memberId = 1L;
+        TradeLog tradeLog = getTradeLog();
+        HoldingStock holdingStock = getHoldingStock(tradeLog);
+
+        Portfolio portfolio1 = Portfolio.builder()
+                .memberId(memberId)
+                .type(REAL)
+                .holdingStocks(List.of(holdingStock))
+                .build();
+
+        Portfolio portfolio2 = Portfolio.builder()
+                .memberId(memberId)
+                .type(FAKE)
+                .holdingStocks(List.of(holdingStock, holdingStock))
+                .build();
+
+        Portfolio portfolio3 = Portfolio.builder()
+                .memberId(memberId)
+                .type(LINK)
+                .holdingStocks(List.of(holdingStock, holdingStock, holdingStock))
+                .build();
+
+        fakePortfolioRepository.save(portfolio1);
+        fakePortfolioRepository.save(portfolio2);
+        fakePortfolioRepository.save(portfolio3);
+
+        PortfolioSearchCondition condition = PortfolioSearchCondition.builder().type(FAKE)
+                .build();
+
+        // when
+        List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(memberId,
+                condition);
+
+        // then
+        assertThat(portfolios).hasSize(1)
+                .extracting("portfolio.id", "totalAsset", "totalBuy", "totalGain", "gainRate")
+                .containsExactlyInAnyOrder(
+                        tuple(2L, getBD(132000), getBD(66000),
+                                getBD(66000), getBD(100))
+                );
+    }
+
+    @Test
+    @DisplayName("포트폴리오를 [LINK] 필터링하여 조회한다.")
+    void getPortfoliosWithLINK() {
+        // given
+        Long memberId = 1L;
+        TradeLog tradeLog = getTradeLog();
+        HoldingStock holdingStock = getHoldingStock(tradeLog);
+
+        Portfolio portfolio1 = Portfolio.builder()
+                .memberId(memberId)
+                .type(REAL)
+                .holdingStocks(List.of(holdingStock))
+                .build();
+
+        Portfolio portfolio2 = Portfolio.builder()
+                .memberId(memberId)
+                .type(FAKE)
+                .holdingStocks(List.of(holdingStock, holdingStock))
+                .build();
+
+        Portfolio portfolio3 = Portfolio.builder()
+                .memberId(memberId)
+                .type(LINK)
+                .holdingStocks(List.of(holdingStock, holdingStock, holdingStock))
+                .build();
+
+        fakePortfolioRepository.save(portfolio1);
+        fakePortfolioRepository.save(portfolio2);
+        fakePortfolioRepository.save(portfolio3);
+
+        PortfolioSearchCondition condition = PortfolioSearchCondition.builder().type(LINK)
+                .build();
+
+        // when
+        List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(memberId,
+                condition);
+
+        // then
+        assertThat(portfolios).hasSize(1)
+                .extracting("portfolio.id", "totalAsset", "totalBuy", "totalGain", "gainRate")
+                .containsExactlyInAnyOrder(
+                        tuple(3L, getBD(198000), getBD(99000),
+                                getBD(99000), getBD(100))
+                );
+    }
+
+    @Test
     @DisplayName("회원 1명이 등록한 포트폴리오가 존재하지 않으면 비어있는 리스트를 반환한다.")
     void getPortfoliosWithNoResult() {
         // given
         Long memberId = 1L;
 
         // when
-        List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(memberId);
+        List<PortfolioStatistic> portfolios = portfolioService.getPortfolios(memberId, any());
 
         // then
         assertThat(portfolios).isEmpty();
