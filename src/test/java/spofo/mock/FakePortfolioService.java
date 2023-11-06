@@ -25,19 +25,21 @@ public class FakePortfolioService implements PortfolioService {
     private final StockServerService stockServerService;
 
     @Override
-    public TotalPortfoliosStatistic getPortfoliosStatistic(Long memberId) {
+    public TotalPortfoliosStatistic getPortfoliosStatistic(Long memberId,
+            PortfolioSearchCondition condition) {
         List<Portfolio> portfolios = portfolioRepository.findByMemberIdWithTradeLogs(memberId);
-        List<PortfolioStatistic> portfolioStatistics = getPortfolioStatistics(portfolios);
+        List<PortfolioStatistic> portfolioStatistics =
+                getPortfolioStatistics(filter(portfolios, condition));
+
         return TotalPortfoliosStatistic.of(portfolioStatistics);
     }
 
     @Override
     public List<PortfolioStatistic> getPortfolios(Long memberId,
             PortfolioSearchCondition condition) {
-        List<Portfolio> portfolios = portfolioRepository.findByMemberIdWithTradeLogs(memberId)
-                .stream()
-                .filter(searchCondition(condition))
-                .toList();
+        List<Portfolio> portfolios =
+                filter(portfolioRepository.findByMemberIdWithTradeLogs(memberId), condition);
+
         return getPortfolioStatistics(portfolios);
     }
 
@@ -106,5 +108,12 @@ public class FakePortfolioService implements PortfolioService {
             result = result.and(portfolio -> portfolio.getType().equals(condition.getType()));
         }
         return result;
+    }
+
+    private List<Portfolio> filter(List<Portfolio> portfolios,
+            PortfolioSearchCondition condition) {
+        return portfolios.stream()
+                .filter(searchCondition(condition))
+                .toList();
     }
 }

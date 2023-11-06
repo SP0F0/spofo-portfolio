@@ -196,7 +196,8 @@ public class PortfolioControllerTest extends ControllerTestSupport {
                 .gainRate(getBD(10))
                 .build();
 
-        given(portfolioService.getPortfoliosStatistic(anyLong()))
+        given(portfolioService.getPortfoliosStatistic(anyLong(),
+                any(PortfolioSearchCondition.class)))
                 .willReturn(statistic);
 
         // expected

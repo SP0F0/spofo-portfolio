@@ -78,14 +78,20 @@ public class PortfolioServiceTest {
         Portfolio portfolio = Portfolio.builder()
                 .memberId(memberId)
                 .includeType(Y)
+                .type(REAL)
                 .holdingStocks(List.of(holdingStock))
                 .build();
 
         fakePortfolioRepository.save(portfolio);
 
+        PortfolioSearchCondition condition = PortfolioSearchCondition
+                .builder()
+                .type(REAL)
+                .build();
+
         // when
         TotalPortfoliosStatistic totalPortfoliosStatistic = portfolioService.getPortfoliosStatistic(
-                memberId);
+                memberId, condition);
 
         // then
         assertThat(totalPortfoliosStatistic.getTotalAsset()).isEqualTo(getBD(66000));
@@ -104,14 +110,20 @@ public class PortfolioServiceTest {
         Portfolio portfolio = Portfolio.builder()
                 .memberId(memberId)
                 .includeType(N)
+                .type(REAL)
                 .holdingStocks(List.of(holdingStock))
                 .build();
 
         fakePortfolioRepository.save(portfolio);
 
+        PortfolioSearchCondition condition = PortfolioSearchCondition
+                .builder()
+                .type(REAL)
+                .build();
+
         // when
         TotalPortfoliosStatistic totalPortfoliosStatistic = portfolioService.getPortfoliosStatistic(
-                memberId);
+                memberId, condition);
 
         // then
         assertThat(totalPortfoliosStatistic.getTotalAsset()).isEqualTo(getBD(0));
@@ -125,9 +137,14 @@ public class PortfolioServiceTest {
         // given
         Long memberId = 1L;
 
+        PortfolioSearchCondition condition = PortfolioSearchCondition
+                .builder()
+                .type(REAL)
+                .build();
+
         // when
         TotalPortfoliosStatistic totalPortfoliosStatistic = portfolioService.getPortfoliosStatistic(
-                memberId);
+                memberId, condition);
 
         // then
         assertThat(totalPortfoliosStatistic.getTotalAsset()).isEqualTo(getBD(0));

@@ -10,7 +10,8 @@ import spofo.portfolio.domain.TotalPortfoliosStatistic;
 
 public interface PortfolioService {
 
-    TotalPortfoliosStatistic getPortfoliosStatistic(Long memberId);
+    TotalPortfoliosStatistic getPortfoliosStatistic(Long memberId,
+            PortfolioSearchCondition condition);
 
     List<PortfolioStatistic> getPortfolios(Long memberId, PortfolioSearchCondition condition);
 
