@@ -201,6 +201,7 @@ public class PortfolioControllerTest extends ControllerTestSupport {
 
         // expected
         mockMvc.perform(get("/portfolios/total")
+                        .param("type", "REAL")
                         .header(AUTHORIZATION, AUTH_TOKEN)
                         .contentType(APPLICATION_JSON)
                 )
