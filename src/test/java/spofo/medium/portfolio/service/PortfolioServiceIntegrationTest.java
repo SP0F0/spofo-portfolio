@@ -59,9 +59,14 @@ public class PortfolioServiceIntegrationTest extends ServiceIntegrationTestSuppo
 
         savePortfolioWithTradeLogs(REAL);
 
+        PortfolioSearchCondition condition = PortfolioSearchCondition
+                .builder()
+                .type(REAL)
+                .build();
+
         // when
         TotalPortfoliosStatistic totalPortfoliosStatistic =
-                portfolioService.getPortfoliosStatistic(MEMBER_ID);
+                portfolioService.getPortfoliosStatistic(MEMBER_ID, condition);
 
         // then
         assertThat(totalPortfoliosStatistic.getTotalAsset()).isEqualTo(getBD(66000));
@@ -84,9 +89,14 @@ public class PortfolioServiceIntegrationTest extends ServiceIntegrationTestSuppo
 
         portfolioService.update(updatePortfolio, savedPortfolio.getId(), MEMBER_ID);
 
+        PortfolioSearchCondition condition = PortfolioSearchCondition
+                .builder()
+                .type(REAL)
+                .build();
+
         // when
         TotalPortfoliosStatistic totalPortfoliosStatistic =
-                portfolioService.getPortfoliosStatistic(MEMBER_ID);
+                portfolioService.getPortfoliosStatistic(MEMBER_ID, condition);
 
         // then
         assertThat(totalPortfoliosStatistic.getTotalAsset()).isEqualTo(ZERO);
@@ -98,10 +108,14 @@ public class PortfolioServiceIntegrationTest extends ServiceIntegrationTestSuppo
     @DisplayName("회원 1명이 등록한 포트폴리오가 존재하지 않으면 통계 결과는 모두 0이다.")
     void getPortfoliosStatisticWithNoResult() {
         // given
-
+        PortfolioSearchCondition condition = PortfolioSearchCondition
+                .builder()
+                .type(REAL)
+                .build();
+        
         // when
         TotalPortfoliosStatistic totalPortfoliosStatistic =
-                portfolioService.getPortfoliosStatistic(MEMBER_ID);
+                portfolioService.getPortfoliosStatistic(MEMBER_ID, condition);
 
         // then
         assertThat(totalPortfoliosStatistic.getTotalAsset()).isEqualTo(ZERO);

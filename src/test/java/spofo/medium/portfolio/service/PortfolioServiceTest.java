@@ -54,11 +54,13 @@ public class PortfolioServiceTest extends ServiceTestSupport {
 
         Portfolio portfolio1 = Portfolio.builder()
                 .includeType(Y)
+                .type(REAL)
                 .holdingStocks(List.of(holdingStock))
                 .build();
 
         Portfolio portfolio2 = Portfolio.builder()
                 .includeType(Y)
+                .type(REAL)
                 .holdingStocks(List.of(holdingStock))
                 .build();
 
@@ -68,9 +70,14 @@ public class PortfolioServiceTest extends ServiceTestSupport {
         given(mockStockServerService.getStocks(anyList()))
                 .willReturn(getStockMap());
 
+        PortfolioSearchCondition condition = PortfolioSearchCondition
+                .builder()
+                .type(REAL)
+                .build();
+
         // when
         TotalPortfoliosStatistic totalPortfoliosStatistic =
-                portfolioService.getPortfoliosStatistic(MEMBER_ID);
+                portfolioService.getPortfoliosStatistic(MEMBER_ID, condition);
 
         // then
         assertThat(totalPortfoliosStatistic.getTotalAsset()).isEqualTo(getBD(132000));
@@ -87,6 +94,7 @@ public class PortfolioServiceTest extends ServiceTestSupport {
 
         Portfolio portfolio = Portfolio.builder()
                 .includeType(N)
+                .type(REAL)
                 .holdingStocks(List.of(holdingStock))
                 .build();
 
@@ -96,9 +104,14 @@ public class PortfolioServiceTest extends ServiceTestSupport {
         given(mockStockServerService.getStocks(anyList()))
                 .willReturn(getStockMap());
 
+        PortfolioSearchCondition condition = PortfolioSearchCondition
+                .builder()
+                .type(REAL)
+                .build();
+
         // when
         TotalPortfoliosStatistic totalPortfoliosStatistic =
-                portfolioService.getPortfoliosStatistic(MEMBER_ID);
+                portfolioService.getPortfoliosStatistic(MEMBER_ID, condition);
 
         // then
         assertThat(totalPortfoliosStatistic.getTotalAsset()).isEqualTo(ZERO);
@@ -113,9 +126,14 @@ public class PortfolioServiceTest extends ServiceTestSupport {
         given(portfolioRepository.findByMemberIdWithTradeLogs(MEMBER_ID))
                 .willReturn(EMPTY_LIST);
 
+        PortfolioSearchCondition condition = PortfolioSearchCondition
+                .builder()
+                .type(REAL)
+                .build();
+
         // when
         TotalPortfoliosStatistic totalPortfoliosStatistic =
-                portfolioService.getPortfoliosStatistic(MEMBER_ID);
+                portfolioService.getPortfoliosStatistic(MEMBER_ID, condition);
 
         // then
         assertThat(totalPortfoliosStatistic.getTotalAsset()).isEqualTo(ZERO);

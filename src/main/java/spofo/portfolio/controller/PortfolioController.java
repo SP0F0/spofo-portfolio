@@ -39,9 +39,10 @@ public class PortfolioController {
 
     @GetMapping("/portfolios/total")
     public ResponseEntity<PortfoliosStatisticResponse> getPortfoliosStatistic(
+            @ModelAttribute PortfolioSearchCondition condition,
             @LoginMember MemberInfo memberInfo) {
         TotalPortfoliosStatistic statistic
-                = portfolioService.getPortfoliosStatistic(memberInfo.getId());
+                = portfolioService.getPortfoliosStatistic(memberInfo.getId(), condition);
 
         return ok(PortfoliosStatisticResponse.from(statistic));
     }

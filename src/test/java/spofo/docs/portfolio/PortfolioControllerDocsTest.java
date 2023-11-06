@@ -44,6 +44,7 @@ import org.springframework.restdocs.request.ParameterDescriptor;
 import spofo.docs.RestDocsSupport;
 import spofo.portfolio.controller.PortfolioController;
 import spofo.portfolio.controller.port.PortfolioService;
+import spofo.portfolio.controller.request.PortfolioSearchCondition;
 import spofo.portfolio.domain.Portfolio;
 import spofo.portfolio.domain.PortfolioCreate;
 import spofo.portfolio.domain.PortfolioStatistic;
@@ -148,7 +149,8 @@ public class PortfolioControllerDocsTest extends RestDocsSupport {
                 .gainRate(getBD(10))
                 .build();
 
-        given(portfolioService.getPortfoliosStatistic(anyLong()))
+        given(portfolioService.getPortfoliosStatistic(anyLong(),
+                any(PortfolioSearchCondition.class)))
                 .willReturn(statistic);
 
         // expected
